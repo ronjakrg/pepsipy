@@ -1,6 +1,6 @@
 name: CI Pipeline
 
-on: [push, pull_request]
+on: [pull_request]
 
 jobs:
   build:
@@ -20,6 +20,6 @@ jobs:
           pip install .
           pip install pytest
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-          
+
       - name: Run tests
         run: pytest

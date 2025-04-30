@@ -30,7 +30,7 @@ jobs:
             --cov=peptidefeatures \
             --cov-report=xml \
             --cov-report=json:coverage.json
-            
+
       - name: Upload coverage report
         uses: actions/upload-artifact@v4
         with:
@@ -44,7 +44,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Download coverage.json
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: coverage-report
           path: .

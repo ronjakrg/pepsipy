@@ -6,6 +6,10 @@
 #   To run this code, execute python -m src.
 # ────────────────────────────────────────────────
 
+import pandas as pd
+
 from src.features.sequence import aa_number
 
-print(aa_number("PEPTID"))
+peptides = pd.read_csv("./data/peptides.csv")
+peptides["aa_number"] = peptides["Sequence"].apply(aa_number)
+print(peptides.head())

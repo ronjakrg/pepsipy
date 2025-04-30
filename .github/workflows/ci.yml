@@ -31,6 +31,3 @@ jobs:
 
       - name: Run tests
         run: pytest
-      
-      - name: Format code with black
-        run: black src

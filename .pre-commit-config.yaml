@@ -4,6 +4,6 @@ repos:
       - id: black
         name: Format code with black
         entry: bash -c 'black "$@"; git add -u' --
-        args: [src]
+        args: ["--verbose", "src"]
         language: python
         files: ^src/.*\.py$

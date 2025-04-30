@@ -26,14 +26,16 @@ jobs:
           pip install pytest black pytest-cov
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
       
-      - name: Run tests with coverage report
-        run: pytest --cov=src --cov-report=xml
+      - name: Run tests & build coverage file
+        run: |
+          export PYTHONPATH=. pytest 
+          pytest --cache-clear --cov=. --cov-report term-missing tests/
 
-      - name: Save coverage.xml as artifact
+      - name: Save coverage comment
         uses: actions/upload-artifact@v4
         with:
-          name: coverage-report
-          path: coverage.xml
+          name: python-coverage-comment-action
+          path: python-coverage-comment-action.txt
       
       - name: Format code with black
         run: black --check --diff src

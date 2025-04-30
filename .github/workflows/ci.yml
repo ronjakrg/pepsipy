@@ -27,7 +27,7 @@ jobs:
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
       
       - name: Run tests & build coverage report
-        run: pytest --cov=src --cov-report=xml
+        run: pytest --cov=peptidefeatures --cov-report=xml
 
       - name: Save coverage report as artifact
         uses: actions/upload-artifact@v4
@@ -36,7 +36,7 @@ jobs:
           path: coverage.xml
       
       - name: Format code with black
-        run: black --check --diff src
+        run: black --check --diff peptidefeatures
 
   coverage-comment:
         name: Comment coverage report

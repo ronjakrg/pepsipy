@@ -1,0 +1,30 @@
+[build-system]
+requires = ["hatchling >= 1.26"]
+build-backend = "hatchling.build"
+
+[project]
+name = "thesis-peptide-features"
+version = "0.1"
+dependencies = [
+  "numpy>=1.22",
+]
+
+authors = [
+  { name="Ronja Krueger", email="ronja.krueger@student.hpi.de" }
+]
+description = "A package to calculate peptide features."
+readme = "README.md"
+requires-python = ">=3.11"
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Operating System :: OS Independent",
+]
+license = "MIT"
+keywords = ["peptide", "proteomics"]
+
+[project.urls]
+Repository = "https://github.com/ronjakrg/thesis-peptide-features"
+Issues = "https://github.com/ronjakrg/thesis-peptide-features/issues"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src"]

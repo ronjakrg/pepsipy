@@ -1,5 +1,6 @@
 from src.utils import AA
 
+
 def aa_number(seq: str) -> int:
     """
     Computes the number of amino acids in a given sequence.
@@ -9,6 +10,7 @@ def aa_number(seq: str) -> int:
         if aa in AA:
             num += 1
     return num
+
 
 def aa_frequency(seq: str) -> dict[str, int]:
     """

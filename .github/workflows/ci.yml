@@ -36,7 +36,7 @@ jobs:
           path: coverage.xml
       
       - name: Format code with black
-        run: black --check --diff peptidefeatures
+        run: black --check --diff src
 
   coverage-comment:
         name: Comment coverage report

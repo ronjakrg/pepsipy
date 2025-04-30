@@ -1,4 +1,4 @@
-from src.utils import AA
+from src.peptidefeatures.utils import AA
 
 
 def aa_number(seq: str) -> int:

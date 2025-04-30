@@ -1,4 +1,4 @@
-from src.features.sequence import aa_number, aa_frequency
+from src.peptidefeatures.features.sequence import aa_number, aa_frequency
 
 def test_aa_number():
     assert aa_number("ACDEFGHIKLMNPQRSTVWY") == 20

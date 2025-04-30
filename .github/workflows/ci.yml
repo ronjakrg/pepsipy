@@ -25,9 +25,9 @@ jobs:
           pip install .
           pip install pytest black pre-commit
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-      - name: Format code with black
-        run: |
-          pre-commit run black --show-diff-on-failure --files $(git ls-files 'src/**/*.py')
-
+      
       - name: Run tests
         run: pytest
+      
+      - name: Format code with black
+        run: black --check --diff src

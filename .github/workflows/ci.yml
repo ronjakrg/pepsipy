@@ -8,7 +8,7 @@ on:
   pull_request: {}
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -37,3 +37,21 @@ jobs:
       
       - name: Format code with black
         run: black --check --diff src
+
+  coverage-comment:
+        name: Comment coverage report
+        needs: test
+        runs-on: ubuntu-latest
+        if: github.event_name == 'pull_request'
+        steps:
+        - uses: actions/checkout@v3
+
+        - name: Download coverage artifact
+          uses: actions/download-artifact@v4
+          with:
+            name: coverage-report
+            path: .
+        - name: Comment coverage in PR
+          uses: py-cov-action/python-coverage-comment-action@v3
+          with:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

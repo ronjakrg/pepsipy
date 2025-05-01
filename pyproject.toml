@@ -5,12 +5,6 @@ build-backend = "hatchling.build"
 [project]
 name = "thesis-peptide-features"
 version = "0.1"
-dependencies = [
-  "numpy",
-  "pandas",
-  "plotly",
-]
-
 authors = [
   { name="Ronja Krueger", email="ronja.krueger@student.hpi.de" }
 ]
@@ -29,4 +23,13 @@ Repository = "https://github.com/ronjakrg/thesis-peptide-features"
 Issues = "https://github.com/ronjakrg/thesis-peptide-features/issues"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src"]
+packages = ["peptidefeatures"]
+
+[tool.coverage.run]
+source = ["src"]
+relative_files = true
+
+[tool.coverage.report]
+omit = [
+  "**/__main__.py"
+]

@@ -1,4 +1,5 @@
-from src.utils import AA
+from peptidefeatures.utils import AA
+
 
 def aa_number(seq: str) -> int:
     """
@@ -9,6 +10,7 @@ def aa_number(seq: str) -> int:
         if aa in AA:
             num += 1
     return num
+
 
 def aa_frequency(seq: str) -> dict[str, int]:
     """

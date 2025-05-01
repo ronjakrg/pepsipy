@@ -24,3 +24,6 @@ Issues = "https://github.com/ronjakrg/thesis-peptide-features/issues"
 
 [tool.hatch.build.targets.wheel]
 packages = ["peptidefeatures"]
+
+[tool.coverage.run]
+relative_files = true

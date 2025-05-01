@@ -28,3 +28,8 @@ packages = ["peptidefeatures"]
 [tool.coverage.run]
 source = ["src"]
 relative_files = true
+
+[tool.coverage.report]
+omit = [
+  "**/__main__.py"
+]

@@ -26,4 +26,13 @@ Issues = "https://github.com/ronjakrg/thesis-peptide-features/issues"
 packages = ["peptidefeatures"]
 
 [tool.coverage.run]
+branch = true
+
+[tool.coverage.report]
+exclude_also = [
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    ]
+
+[run]
 relative_files = true

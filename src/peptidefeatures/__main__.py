@@ -1,3 +1,4 @@
+# pragma: no cover
 # ─────────────────────────────────────────────────────
 #                     PLAYGROUND
 #   This file is just an experimental sandbox and is

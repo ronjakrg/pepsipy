@@ -1,4 +1,4 @@
-from src.peptidefeatures.constants import AA_LETTERS
+from peptidefeatures.constants import AA_LETTERS
 
 
 def sanitize_sequence(seq: str) -> str:

@@ -1,8 +1,7 @@
 # Taken from "Nomenclature and Symbolism for Amino, Acids and Peptides Recommendations 1983"
 # https://doi.org/10.1351/pac198456050595
-
 AA_LETTERS = "ACDEFGHIKLMNPQRSTVWY"
-AA_LETTERS_TLC = {
+AA_THREE_LETTERS = {
     "A": "Ala",
     "C": "Cys",
     "D": "Asp",
@@ -27,7 +26,6 @@ AA_LETTERS_TLC = {
 
 # Taken from IUPAC Standards Online Database
 # https://doi.org/10.1515/iupac
-
 AA_WEIGHTS = {
     "A": 89.094,
     "C": 121.154,
@@ -50,5 +48,4 @@ AA_WEIGHTS = {
     "W": 204.229,
     "Y": 181.191,
 }
-
 WATER = 18.015

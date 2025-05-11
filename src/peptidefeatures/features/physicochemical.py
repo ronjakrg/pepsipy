@@ -1,5 +1,5 @@
-from src.peptidefeatures.constants import AA_WEIGHTS, WATER
-from src.peptidefeatures.features.sequence import aa_number
+from peptidefeatures.constants import AA_WEIGHTS, WATER
+from peptidefeatures.features.sequence import aa_number
 
 
 def molecular_weight(seq: str) -> float:

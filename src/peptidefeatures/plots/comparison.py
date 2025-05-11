@@ -7,13 +7,14 @@ from peptidefeatures.constants import LABEL
 
 
 def metrics_compare_graph(
-    peptides: pd.DataFrame,
+    df: pd.DataFrame,
     func_a: Callable,
     func_b: Callable,
 ) -> go.Figure:
     """
     Creates a scatter plot from two given methods that compute metrics.
     """
+    peptides = df.copy()
     metric_a = func_a.__name__
     metric_b = func_b.__name__
 

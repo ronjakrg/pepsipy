@@ -1,15 +1,11 @@
-from peptidefeatures.constants import AA_LETTERS
+from src.peptidefeatures.constants import AA_LETTERS
 
 
 def aa_number(seq: str) -> int:
     """
     Computes the number of amino acids in a given sequence.
     """
-    num = 0
-    for aa in seq:
-        if aa in AA_LETTERS:
-            num += 1
-    return num
+    return len(seq)
 
 
 def aa_frequency(seq: str) -> dict[str, int]:

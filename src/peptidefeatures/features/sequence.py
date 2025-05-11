@@ -1,4 +1,4 @@
-from src.peptidefeatures.constants import AA_LETTERS
+from peptidefeatures.constants import AA_LETTERS
 
 
 def aa_number(seq: str) -> int:

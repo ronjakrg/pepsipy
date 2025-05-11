@@ -1,6 +1,8 @@
 # Calculating Diverse Peptide Features
 
-[![Coverage badge](https://github.com/ronjakrg/thesis-peptide-features/raw/python-coverage-comment-action-data/badge.svg)](https://github.com/ronjakrg/thesis-peptide-features/tree/python-coverage-comment-action-data/) [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![CI](https://github.com/ronjakrg/thesis-peptide-features/actions/workflows/ci.yml/badge.svg)](https://github.com/ronjakrg/thesis-peptide-features/actions/workflows/ci.yml)
+[![Coverage badge](https://github.com/ronjakrg/thesis-peptide-features/raw/python-coverage-comment-action-data/badge.svg)](https://github.com/ronjakrg/thesis-peptide-features/tree/python-coverage-comment-action-data/)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 This package provides methods for computing a wide range of peptide features — including sequence composition, charge, solubility, and other physicochemical properties.
 

@@ -6,15 +6,4 @@
 #   To run this code, execute python -m peptidefeatures.
 # ──────────────────────────────────────────────────────
 
-import pandas as pd
-
-from src.peptidefeatures.features.sequence import aa_number, aa_frequency
-from src.peptidefeatures.plots.sequence import aa_freq_distribution
-
-peptides = pd.read_csv("./data/peptides.csv")
-peptides["aa_number"] = peptides["Sequence"].apply(aa_number)
-peptides["aa_frequency"] = peptides["Sequence"].apply(aa_frequency)
-# print(peptides.head())
-
-fig = aa_freq_distribution(aa_frequency("PEPTIDE"))
-fig.show()
+print("# Executing main code from peptidefeatures ... #")

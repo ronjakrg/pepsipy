@@ -1,10 +1,16 @@
 import plotly.express as px
 import plotly.graph_objects as go
+import pandas as pd
+from typing import Callable
 
 from peptidefeatures.constants import LABEL
 
 
-def metrics_compare_graph(peptides, func_a, func_b) -> go.Figure:
+def metrics_compare_graph(
+    peptides: pd.DataFrame,
+    func_a: Callable,
+    func_b: Callable,
+) -> go.Figure:
     """
     Creates a scatter plot from two given methods that compute metrics.
     """

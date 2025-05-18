@@ -13,6 +13,6 @@ def sanitize_sequence(seq: str) -> str:
 def get_group(name: str, groups: list) -> str:
     """
     Returns the group that is found in the prefix of the sample name.
-    If no group was found, "UNKNOWN" will be returned.
+    If no group was found, "None" will be returned.
     """
-    return next((g for g in groups if name.startswith(g)), "UNKNOWN")
+    return next((g for g in groups if name.startswith(g)), "None")

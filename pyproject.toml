@@ -1,6 +1,9 @@
 [build-system]
-requires = ["hatchling >= 1.26"]
-build-backend = "hatchling.build"
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
 
 [project]
 name = "thesis-peptide-features"
@@ -22,8 +25,8 @@ keywords = ["peptide", "proteomics"]
 Repository = "https://github.com/ronjakrg/thesis-peptide-features"
 Issues = "https://github.com/ronjakrg/thesis-peptide-features/issues"
 
-[tool.hatch.build.targets.wheel]
-packages = ["peptidefeatures"]
+[project.scripts]
+run = "peptidefeatures.__main__:main"
 
 [tool.coverage.run]
 source = ["src"]

@@ -4,7 +4,7 @@ import plotly.graph_objects as go
 
 def aa_freq_distribution(freq: dict[str, int]) -> go.Figure:
     """
-    Creates bar plot with amino acid frequency distribution.
+    Creates a bar plot with amino acid frequency distribution.
     """
     fig = px.bar(
         x=list(freq.keys()),

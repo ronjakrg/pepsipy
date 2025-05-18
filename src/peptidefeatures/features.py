@@ -1,4 +1,4 @@
-from peptidefeatures.constants import AA_LETTERS
+from peptidefeatures.constants import AA_LETTERS, AA_WEIGHTS, WATER
 
 
 def aa_number(seq: str) -> int:
@@ -18,3 +18,13 @@ def aa_frequency(seq: str) -> dict[str, int]:
     for aa in seq:
         freq[aa] += 1
     return freq
+
+
+def molecular_weight(seq: str) -> float:
+    """
+    Computes the average molecular weight of a given sequence in Da.
+    Note: The input sequence must be pre-sanitized to compute only valid amino acids.
+    """
+    num = aa_number(seq)
+    weight = sum(AA_WEIGHTS[aa] for aa in seq) - (num - 1) * WATER
+    return round(weight, 3)

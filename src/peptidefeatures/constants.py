@@ -1,3 +1,5 @@
+# <---- BIOCHEMICAL ---->
+
 # Taken from "Nomenclature and Symbolism for Amino, Acids and Peptides Recommendations 1983"
 # https://doi.org/10.1351/pac198456050595
 AA_LETTERS = "ACDEFGHIKLMNPQRSTVWY"
@@ -49,3 +51,15 @@ AA_WEIGHTS = {
     "Y": 181.191,
 }
 WATER = 18.015
+
+# <---- MISCELLANEOUS ---->
+
+# Contains a readable label for each function id
+LABEL = {
+    "aa_number": "Number of Amino Acids",
+    "aa_frequency": "Frequency of Amino Acids",
+    "molecular_weight": "Molecular Weight (Da)",
+}
+
+# Color selection for plots
+COLORS = ["#CE5A5A", "#4A536A"]

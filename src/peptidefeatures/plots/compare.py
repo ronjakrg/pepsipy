@@ -28,6 +28,7 @@ def scatter_features(
     )
     return fig
 
+
 def box_feature(
     df: pd.DataFrame,
     groups: list,

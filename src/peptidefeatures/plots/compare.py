@@ -6,7 +6,7 @@ from typing import Callable
 from peptidefeatures.constants import LABEL
 
 
-def metrics_compare_graph(
+def features(
     df: pd.DataFrame,
     func_a: Callable,
     func_b: Callable,

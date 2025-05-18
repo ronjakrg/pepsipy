@@ -1,33 +1,32 @@
 import plotly.express as px
 import plotly.graph_objects as go
 import pandas as pd
-from typing import Callable
 
-from peptidefeatures.constants import LABEL
-
+from peptidefeatures.constants import COLORS
+from peptidefeatures.utils import get_group
 
 def features(
     df: pd.DataFrame,
-    func_a: Callable,
-    func_b: Callable,
+    plot_type: str,
+    groups: list,
+    feature_a: str,
+    feature_b: str,
 ) -> go.Figure:
     """
-    Creates a scatter plot from two given methods that compute metrics.
+    Creates a plot to compare two features across groups.
     """
     peptides = df.copy()
-    metric_a = func_a.__name__
-    metric_b = func_b.__name__
+    peptides["Group"] = peptides["Sample"].apply(lambda x: get_group(x, groups))
 
-    peptides[metric_a] = peptides["Sequence"].apply(func_a)
-    peptides[metric_b] = peptides["Sequence"].apply(func_b)
-    fig = px.scatter(
-        peptides,
-        x=metric_a,
-        y=metric_b,
-        labels={
-            metric_a: LABEL[metric_a],
-            metric_b: LABEL[metric_b],
-        },
-        title="Comparison of Peptide Metrics",
-    )
+    if plot_type == "scatter":
+        fig = px.scatter(
+            peptides,
+            x=feature_a,
+            y=feature_b,
+            color="Group",
+            color_discrete_sequence=COLORS,
+            title="Comparison of peptide features across groups",
+        )
+    elif plot_type == "histogramm":
+        print("Not implemented yet.")
     return fig

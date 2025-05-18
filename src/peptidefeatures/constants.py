@@ -60,3 +60,6 @@ LABEL = {
     "aa_frequency": "Frequency of Amino Acids",
     "molecular_weight": "Molecular Weight (Da)",
 }
+
+# Color selection for plots
+COLORS = ["#CE5A5A", "#4A536A"]

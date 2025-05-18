@@ -5,6 +5,7 @@ import pandas as pd
 from peptidefeatures.constants import COLORS
 from peptidefeatures.utils import get_group
 
+
 def features(
     df: pd.DataFrame,
     plot_type: str,

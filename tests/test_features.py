@@ -8,6 +8,7 @@ INVALID_SEQ = "ABC"
     (aa_frequency, INVALID_SEQ),
     (three_letter_code, INVALID_SEQ),
 ])
+
 def test_invalid_amino_acid(func, seq):
     with pytest.raises(ValueError) as e:
         func(seq)

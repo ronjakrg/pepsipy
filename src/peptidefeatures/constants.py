@@ -74,7 +74,7 @@ HYDROPATHY_INDICES = {
     "T": -0.7,
     "V": 4.2,
     "W": -0.9,
-    "Y":  -1.3,
+    "Y": -1.3,
 }
 
 # <---- MISCELLANEOUS ---->

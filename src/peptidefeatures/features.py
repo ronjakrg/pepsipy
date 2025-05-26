@@ -29,6 +29,7 @@ def molecular_weight(seq: str) -> float:
     weight = sum(AA_WEIGHTS[aa] for aa in seq) - (num - 1) * WATER
     return round(weight, 3)
 
+
 def gravy(seq: str) -> float:
     """
     Computes the GRAVY (grand average of hydropathy) score of a given sequence.

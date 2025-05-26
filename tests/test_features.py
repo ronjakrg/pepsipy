@@ -29,4 +29,4 @@ def test_three_letter_code():
     assert "ProGluProThrIleAspGlu" == three_letter_code("PEPTIDE")
 
 def test_gravy():
-    pytest.approx(-1.414) == gravy("PEPTIDE")
+    assert pytest.approx(-1.414) == gravy("PEPTIDE")

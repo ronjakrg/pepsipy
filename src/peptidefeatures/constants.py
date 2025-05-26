@@ -2,7 +2,7 @@
 
 # Taken from "Nomenclature and Symbolism for Amino, Acids and Peptides Recommendations 1983"
 # https://doi.org/10.1351/pac198456050595
-AA_LETTERS = "ACDEFGHIKLMNPQRSTVWY"
+AA_LETTERS = set("ACDEFGHIKLMNPQRSTVWY")
 AA_THREE_LETTERS = {
     "A": "Ala",
     "C": "Cys",

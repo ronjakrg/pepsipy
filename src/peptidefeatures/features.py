@@ -32,11 +32,8 @@ def molecular_weight(seq: str) -> float:
     Note: The input sequence must be pre-sanitized to compute only valid amino acids.
     """
     num = aa_number(seq)
-    try:
-        weight = sum(AA_WEIGHTS[aa] for aa in seq) - (num - 1) * WATER
-        return round(weight, 3)
-    except KeyError as e:
-        raise ValueError(f"Invalid amino acid symbol: '{e.args[0]}'") from None
+    weight = sum(AA_WEIGHTS[aa] for aa in seq) - (num - 1) * WATER
+    return round(weight, 3)
 
 
 def three_letter_code(seq: str) -> str:

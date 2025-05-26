@@ -1,11 +1,11 @@
 import pytest
 from peptidefeatures.features import aa_number, aa_frequency, three_letter_code, molecular_weight
 
+# Any function that calls one of these functions is already covered by a test for invalid amino acids.
 INVALID_SEQ = "ABC"
 @pytest.mark.parametrize("func, seq", [
     (aa_number, INVALID_SEQ),
     (aa_frequency, INVALID_SEQ),
-    (molecular_weight, INVALID_SEQ),
     (three_letter_code, INVALID_SEQ),
 ])
 def test_invalid_amino_acid(func, seq):

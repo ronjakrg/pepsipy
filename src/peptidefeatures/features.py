@@ -1,4 +1,10 @@
-from peptidefeatures.constants import AA_LETTERS, AA_THREE_LETTERS, AA_WEIGHTS, HYDROPATHY_INDICES, WATER
+from peptidefeatures.constants import (
+    AA_LETTERS,
+    AA_THREE_LETTERS,
+    AA_WEIGHTS,
+    HYDROPATHY_INDICES,
+    WATER,
+)
 
 
 def aa_number(seq: str) -> int:

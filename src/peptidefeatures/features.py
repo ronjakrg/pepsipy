@@ -6,11 +6,9 @@ def aa_number(seq: str) -> int:
     Computes the number of amino acids in a given sequence.
     Note: The input sequence must be pre-sanitized to compute only valid amino acids.
     """
-    isInvalid = set(seq) - AA_LETTERS
-    if isInvalid:
-        raise ValueError(
-            f"Invalid amino acid symbol(s): {', '.join(sorted(isInvalid))}"
-        )
+    invalid = set(seq) - AA_LETTERS
+    if invalid:
+        raise ValueError(f"Invalid amino acid symbol: {', '.join(sorted(invalid))}")
     return len(seq)
 
 

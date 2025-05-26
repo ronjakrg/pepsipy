@@ -22,7 +22,7 @@ def test_aa_frequency():
     assert 20 == len(freq)
     
 def test_molecular_weight():
-    assert 799.832 == molecular_weight("PEPTIDE")
+    assert pytest.approx(799.832) == molecular_weight("PEPTIDE")
 
 def test_three_letter_code():
     assert "ProGluProThrIleAspGlu" == three_letter_code("PEPTIDE")

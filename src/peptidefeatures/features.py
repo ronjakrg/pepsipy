@@ -61,3 +61,7 @@ def gravy(seq: str) -> float:
     num = aa_number(seq)
     hydropathy_sum = sum(HYDROPATHY_INDICES[aa] for aa in seq)
     return round(hydropathy_sum / num, 3)
+
+
+def molecular_formula(seq: str) -> str:
+    return ""

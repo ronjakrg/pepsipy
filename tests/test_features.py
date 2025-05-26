@@ -1,5 +1,5 @@
 import pytest
-from peptidefeatures.features import aa_number, aa_frequency, three_letter_code, gravy, molecular_weight
+from peptidefeatures.features import aa_number, aa_frequency, three_letter_code, gravy, molecular_formula, molecular_weight
 
 # Any function that calls one of these functions is already covered by a test for invalid amino acids.
 INVALID_SEQ = "ABC"
@@ -30,3 +30,7 @@ def test_three_letter_code():
 
 def test_gravy():
     assert pytest.approx(-1.414) == gravy("PEPTIDE")
+
+def test_molecular_formula():
+    assert "C34H53N7O15" == molecular_formula("PEPTIDE")
+    assert "C266H401N69O78S5" == molecular_formula("WQNTDTSMIESSPIGHKDHRTLPTYQWERCWGKSVMELIVCSIWTLYICE")

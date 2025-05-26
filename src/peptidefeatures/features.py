@@ -1,4 +1,4 @@
-from peptidefeatures.constants import AA_LETTERS, AA_WEIGHTS, WATER
+from peptidefeatures.constants import AA_LETTERS, AA_WEIGHTS, HYDROPATHY_INDICES, WATER
 
 
 def aa_number(seq: str) -> int:
@@ -28,3 +28,12 @@ def molecular_weight(seq: str) -> float:
     num = aa_number(seq)
     weight = sum(AA_WEIGHTS[aa] for aa in seq) - (num - 1) * WATER
     return round(weight, 3)
+
+def gravy(seq: str) -> float:
+    """
+    Computes the GRAVY (grand average of hydropathy) score of a given sequence.
+    Note: The input sequence must be pre-sanitized to compute only valid amino acids.
+    """
+    num = aa_number(seq)
+    hydropathy_sum = sum(HYDROPATHY_INDICES[aa] for aa in seq)
+    return round(hydropathy_sum / num, 3)

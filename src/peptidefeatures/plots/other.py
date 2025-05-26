@@ -3,13 +3,14 @@ import plotly.express as px
 import plotly.graph_objects as go
 
 from peptidefeatures.constants import COLORS, HYDROPATHY_INDICES
+from peptidefeatures.features import aa_frequency
 
 
-# TODO: Include computation of freq, only have seq as parameter
-def aa_freq_distribution(freq: dict[str, int]) -> go.Figure:
+def aa_distribution(seq: str) -> go.Figure:
     """
-    Creates a bar plot with amino acid frequency distribution.
+    Computes a bar plot showing the frequency distribution for a given sequence.
     """
+    freq = aa_frequency(seq)
     fig = px.bar(
         x=list(freq.keys()),
         y=list(freq.values()),
@@ -18,7 +19,9 @@ def aa_freq_distribution(freq: dict[str, int]) -> go.Figure:
             "y": "Frequency",
         },
         title="Amino Acid Frequency",
+        color_discrete_sequence=COLORS,
     )
+    fig.update_xaxes(categoryorder="category ascending")
     fig.update_yaxes(tickmode="linear", tick0=0, dtick=1)
     return fig
 
@@ -48,4 +51,4 @@ def hydropathy_plot(seq: str) -> go.Figure:
         y=0,
         line_dash="dash",
     )
-    fig.show()
+    return fig

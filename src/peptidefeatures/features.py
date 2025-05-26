@@ -1,4 +1,10 @@
-from peptidefeatures.constants import AA_LETTERS, AA_THREE_LETTERS, AA_WEIGHTS, WATER
+from peptidefeatures.constants import (
+    AA_LETTERS,
+    AA_THREE_LETTERS,
+    AA_WEIGHTS,
+    HYDROPATHY_INDICES,
+    WATER,
+)
 
 
 def aa_number(seq: str) -> int:
@@ -45,3 +51,13 @@ def three_letter_code(seq: str) -> str:
         return "".join(AA_THREE_LETTERS[aa] for aa in seq)
     except KeyError as e:
         raise ValueError(f"Invalid amino acid symbol: '{e.args[0]}'") from None
+
+
+def gravy(seq: str) -> float:
+    """
+    Computes the GRAVY (grand average of hydropathy) score of a given sequence.
+    Note: The input sequence must be pre-sanitized to compute only valid amino acids.
+    """
+    num = aa_number(seq)
+    hydropathy_sum = sum(HYDROPATHY_INDICES[aa] for aa in seq)
+    return round(hydropathy_sum / num, 3)

@@ -54,7 +54,7 @@ WATER = 18.015
 
 # Taken from Kyte and Doolittle, 1982
 # https://doi.org/10.1016/0022-2836(82)90515-0
-HYDROPATHY_SCALE = {
+HYDROPATHY_INDICES = {
     "A": 1.8,
     "C": 2.5,
     "D": -3.5,

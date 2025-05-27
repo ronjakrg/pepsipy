@@ -1,4 +1,6 @@
 import pytest
+import requests
+
 from peptidefeatures.features import aa_number, aa_frequency, three_letter_code, gravy, molecular_formula, molecular_weight, isoelectric_point
 
 # Any function that calls one of these functions is already covered by a test for invalid amino acids.
@@ -40,6 +42,9 @@ def test_molecular_formula():
     assert "C34H53N7O15" == molecular_formula("PEPTIDE")
     assert "C266H401N69O78S5" == molecular_formula("WQNTDTSMIESSPIGHKDHRTLPTYQWERCWGKSVMELIVCSIWTLYICE")
 
-# TODO: Adjust test since pI values are kind of vague
-def test_isoelectric_point():
-    assert pytest.approx(3.65, rel=1e-3) == isoelectric_point("PEPTIDE")
+# TODO: Add mock test for isoelectric_point()
+
+def test_external_ipc2_availability():
+    url = "https://ipc2.mimuw.edu.pl/ipc-2.0.1.zip"
+    res = requests.head(url, allow_redirects=True, timeout=5)
+    assert 200 == res.status_code

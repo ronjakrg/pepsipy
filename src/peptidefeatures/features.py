@@ -66,7 +66,7 @@ def gravy(seq: str) -> float:
 
 def molecular_formula(seq: str) -> str:
     """
-    Computes the molecular formular of a given sequence.
+    Computes the molecular formula of a given sequence.
     Note: The input sequence must be pre-sanitized to compute only valid amino acids.
     """
     total_atoms = {}

@@ -97,7 +97,7 @@ def molecular_formula(seq: str) -> str:
 def isoelectric_point(seq: str) -> float:
     """
     Predicts the isoelectric point of a given sequence using IPC 2.0.
-    The pretrained model IPC2.peptide.svr19 is used for the prediction. 
+    The pretrained model IPC2.peptide.svr19 is used for the prediction.
     """
     ipc_path = EXTERNAL_PATH / "ipc-2.0.1"
     model_path = ipc_path / "models" / "IPC2_peptide_75_SVR_19.pickle"
@@ -107,7 +107,7 @@ def isoelectric_point(seq: str) -> float:
         raise RuntimeError("ipc-2.0.1 installation could not be found.")
 
     # Ignoring warning because this function is dynamically added at runtime
-    from ipc2_lib.svr_functions import get_pI_features # type: ignore
+    from ipc2_lib.svr_functions import get_pI_features  # type: ignore
 
     clean_seq = sanitize_sequence(seq)
     X, _ = get_pI_features([[clean_seq, ""]])

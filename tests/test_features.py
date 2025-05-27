@@ -36,5 +36,6 @@ def test_gravy():
     assert pytest.approx(-0.744) == gravy("ENFNDTHIIVINCNHVCAECRDTPGWHKCKVPIRMQQMRKWPAESNTRYI")
 
 def test_molecular_formula():
+    assert "C5H9NO4" == molecular_formula("E")
     assert "C34H53N7O15" == molecular_formula("PEPTIDE")
     assert "C266H401N69O78S5" == molecular_formula("WQNTDTSMIESSPIGHKDHRTLPTYQWERCWGKSVMELIVCSIWTLYICE")

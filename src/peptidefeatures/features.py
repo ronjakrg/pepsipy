@@ -1,4 +1,5 @@
 from peptidefeatures.constants import (
+    AA_FORMULA,
     AA_LETTERS,
     AA_THREE_LETTERS,
     AA_WEIGHTS,
@@ -61,3 +62,26 @@ def gravy(seq: str) -> float:
     num = aa_number(seq)
     hydropathy_sum = sum(HYDROPATHY_INDICES[aa] for aa in seq)
     return round(hydropathy_sum / num, 3)
+
+
+def molecular_formula(seq: str) -> str:
+    """
+    Computes the molecular formula of a given sequence.
+    Note: The input sequence must be pre-sanitized to compute only valid amino acids.
+    """
+    total_atoms = {}
+    for aa in seq:
+        for atom, count in AA_FORMULA[aa].items():
+            total_atoms[atom] = total_atoms.get(atom, 0) + count
+
+    num_bindings = aa_number(seq) - 1
+    total_atoms["H"] -= 2 * num_bindings
+    total_atoms["O"] -= num_bindings
+
+    sorted_atoms = ["C", "H", "N", "O", "S"]
+    formula_elems = [
+        f"{atom}{total_atoms[atom]}" if total_atoms[atom] > 1 else atom
+        for atom in sorted_atoms
+        if atom in total_atoms
+    ]
+    return "".join(formula_elems)

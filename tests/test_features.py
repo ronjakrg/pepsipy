@@ -1,5 +1,5 @@
 import pytest
-from peptidefeatures.features import aa_number, aa_frequency, three_letter_code, gravy, molecular_weight
+from peptidefeatures.features import aa_number, aa_frequency, three_letter_code, gravy, molecular_formula, molecular_weight
 
 # Any function that calls one of these functions is already covered by a test for invalid amino acids.
 INVALID_SEQ = "ABC"
@@ -16,6 +16,7 @@ def test_invalid_amino_acid(func, seq):
 
 def test_aa_number():
     assert 20 == aa_number("ACDEFGHIKLMNPQRSTVWY")
+    assert 50 == aa_number("LHVEDNDEGSPMYMTRCVAWEHITINTNKHYQLYIMWRDGMWYDRMIPAQ")
 
 def test_aa_frequency():
     freq = aa_frequency("AAACCDEEFFF")
@@ -24,9 +25,17 @@ def test_aa_frequency():
     
 def test_molecular_weight():
     assert pytest.approx(799.832) == molecular_weight("PEPTIDE")
+    assert pytest.approx(5730, rel=1e-3) == molecular_weight("AGSCCDCILIQNNADMDTDYVCGLVTQMRHGVLEPHILWWAIMWSCHEMI")
 
 def test_three_letter_code():
     assert "ProGluProThrIleAspGlu" == three_letter_code("PEPTIDE")
+    assert "LeuTrpTrpTyrPheMetLysProGluLysLeuAlaGlyGluAsnLysGluProLeuGlnMetMetIleHisTyrIleTyrHisValCysCysTrpAsnGluPheGlyCysAspProGlyValGluLysPheArgProGluMetAlaLeu" == three_letter_code("LWWYFMKPEKLAGENKEPLQMMIHYIYHVCCWNEFGCDPGVEKFRPEMAL")
 
 def test_gravy():
     assert pytest.approx(-1.414) == gravy("PEPTIDE")
+    assert pytest.approx(-0.744) == gravy("ENFNDTHIIVINCNHVCAECRDTPGWHKCKVPIRMQQMRKWPAESNTRYI")
+
+def test_molecular_formula():
+    assert "C5H9NO4" == molecular_formula("E")
+    assert "C34H53N7O15" == molecular_formula("PEPTIDE")
+    assert "C266H401N69O78S5" == molecular_formula("WQNTDTSMIESSPIGHKDHRTLPTYQWERCWGKSVMELIVCSIWTLYICE")

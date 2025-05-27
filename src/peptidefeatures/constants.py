@@ -1,3 +1,5 @@
+from pathlib import Path
+
 # <---- BIOCHEMICAL ---->
 
 # Taken from "Nomenclature and Symbolism for Amino, Acids and Peptides Recommendations 1983"
@@ -101,12 +103,7 @@ HYDROPATHY_INDICES = {
 
 # <---- MISCELLANEOUS ---->
 
-# Contains a readable label for each function id
-LABEL = {
-    "aa_number": "Number of Amino Acids",
-    "aa_frequency": "Frequency of Amino Acids",
-    "molecular_weight": "Molecular Weight (Da)",
-}
-
-# Color selection for plots
 COLORS = ["#CE5A5A", "#4A536A"]
+
+PROJECT_PATH = Path(__file__).resolve().parent.parent.parent
+EXTERNAL_PATH = PROJECT_PATH / "external"

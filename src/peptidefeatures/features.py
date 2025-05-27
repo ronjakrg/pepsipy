@@ -1,11 +1,18 @@
+import numpy as np
+import os
+import pickle
+import sys
+
 from peptidefeatures.constants import (
     AA_FORMULA,
     AA_LETTERS,
     AA_THREE_LETTERS,
     AA_WEIGHTS,
+    EXTERNAL_PATH,
     HYDROPATHY_INDICES,
     WATER,
 )
+from peptidefeatures.utils import sanitize_sequence
 
 
 def aa_number(seq: str) -> int:
@@ -88,4 +95,25 @@ def molecular_formula(seq: str) -> str:
 
 
 def isoelectric_point(seq: str) -> float:
-    return 0.0
+    """
+    Predicts the isoelectric point of a given sequence using IPC 2.0.
+    The pretrained model IPC2.peptide.svr19 is used for the prediction. 
+    """
+    ipc_path = EXTERNAL_PATH / "ipc-2.0.1"
+    model_path = ipc_path / "models" / "IPC2_peptide_75_SVR_19.pickle"
+    if os.path.exists(ipc_path):
+        sys.path.append(str(ipc_path / "scripts"))
+    else:
+        raise RuntimeError("ipc-2.0.1 installation could not be found.")
+
+    from ipc2_lib.svr_functions import get_pI_features
+    from ipc2_lib.essentials import aa_letters
+
+    clean_seq = sanitize_sequence(seq)
+    X, _ = get_pI_features([[clean_seq, ""]])
+    X = np.array(X)
+
+    with open(model_path, "rb") as f:
+        model = pickle.load(f)
+
+    return float(model.predict(X)[0])

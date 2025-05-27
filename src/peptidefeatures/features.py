@@ -85,3 +85,7 @@ def molecular_formula(seq: str) -> str:
         if atom in total_atoms
     ]
     return "".join(formula_elems)
+
+
+def isoelectric_point(seq: str) -> float:
+    return 0.0

@@ -106,8 +106,8 @@ def isoelectric_point(seq: str) -> float:
     else:
         raise RuntimeError("ipc-2.0.1 installation could not be found.")
 
-    from ipc2_lib.svr_functions import get_pI_features
-    from ipc2_lib.essentials import aa_letters
+    # Ignoring warning because this function is dynamically added at runtime
+    from ipc2_lib.svr_functions import get_pI_features # type: ignore
 
     clean_seq = sanitize_sequence(seq)
     X, _ = get_pI_features([[clean_seq, ""]])

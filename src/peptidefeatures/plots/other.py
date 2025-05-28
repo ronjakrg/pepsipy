@@ -18,7 +18,7 @@ def aa_distribution(seq: str) -> go.Figure:
             "x": "Amino Acid",
             "y": "Frequency",
         },
-        title="Amino Acid Frequency",
+        title=f"Amino Acid Frequency of Sequence {seq}",
         color_discrete_sequence=COLORS,
     )
     fig.update_xaxes(categoryorder="category ascending")

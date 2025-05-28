@@ -17,15 +17,18 @@ def scatter_features(
     """
     peptides = df.copy()
     peptides["Group"] = peptides["Sample"].apply(lambda x: get_group(x, groups))
-
+    print(peptides.head())
     fig = px.scatter(
         peptides,
         x=feature_a,
         y=feature_b,
         color="Group",
         color_discrete_sequence=COLORS,
+        symbol="Group",
+        symbol_sequence=["square", "circle"],
         title="Comparison of Peptide Features Across Groups",
     )
+    fig.update_traces(marker=dict(size=10))
     return fig
 
 

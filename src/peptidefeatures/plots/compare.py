@@ -17,7 +17,6 @@ def scatter_features(
     """
     peptides = df.copy()
     peptides["Group"] = peptides["Sample"].apply(lambda x: get_group(x, groups))
-    print(peptides.head())
     fig = px.scatter(
         peptides,
         x=feature_a,

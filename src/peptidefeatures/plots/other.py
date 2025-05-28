@@ -43,7 +43,7 @@ def hydropathy_plot(seq: str) -> go.Figure:
     fig = px.line(
         df,
         y="Hydropathy Index",
-        title="Hydropathy Plot",
+        title=f"Hydropathy Plot of Sequence {seq}",
         color_discrete_sequence=COLORS,
         hover_data={"Amino Acid": True, "Hydropathy Index": True},
     )

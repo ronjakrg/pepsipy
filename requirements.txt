@@ -3,3 +3,4 @@ numpy
 pytest
 pandas
 plotly
+kaleido

@@ -5,10 +5,10 @@
 | Name                                |    Stmts |     Miss |    Cover |   Missing |
 |------------------------------------ | -------: | -------: | -------: | --------: |
 | src/peptidefeatures/\_\_init\_\_.py |        0 |        0 |     100% |           |
-| src/peptidefeatures/constants.py    |        8 |        0 |     100% |           |
-| src/peptidefeatures/features.py     |       38 |        0 |     100% |           |
+| src/peptidefeatures/constants.py    |        9 |        0 |     100% |           |
+| src/peptidefeatures/features.py     |       51 |        0 |     100% |           |
 | src/peptidefeatures/utils.py        |        6 |        0 |     100% |           |
-|                           **TOTAL** |   **52** |    **0** | **100%** |           |
+|                           **TOTAL** |   **66** |    **0** | **100%** |           |
 
 
 ## Setup coverage badge

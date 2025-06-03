@@ -26,7 +26,6 @@ def install_ipc():
     """
     Downloads and installs IPC 2.0 in /external/ipc-2.0.1 if it doesn't exist yet.
     """
-     # TODO Check if /external exists in repository
     ipc_path = EXTERNAL_PATH / "ipc-2.0.1"
 
     print("Checking if IPC 2.0 is installed ...")
@@ -36,6 +35,7 @@ def install_ipc():
     ipc_url = "https://ipc2.mimuw.edu.pl/ipc-2.0.1.zip"
 
     print("Downloading IPC 2.0 ...")
+    EXTERNAL_PATH.mkdir(parents=True, exist_ok=True)
     zip_path = EXTERNAL_PATH / "ipc2.zip"
     try:
         urllib.request.urlretrieve(ipc_url, zip_path)

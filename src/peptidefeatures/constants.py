@@ -3,7 +3,7 @@
 # Taken from "Nomenclature and Symbolism for Amino, Acids and Peptides Recommendations 1983"
 # https://doi.org/10.1351/pac198456050595
 AA_LETTERS = set("ACDEFGHIKLMNPQRSTVWY")
-AA_THREE_LETTERS = {
+AA_THREE_LETTER_CODE = {
     "A": "Ala",
     "C": "Cys",
     "D": "Asp",
@@ -24,6 +24,28 @@ AA_THREE_LETTERS = {
     "V": "Val",
     "W": "Trp",
     "Y": "Tyr",
+}
+AA_ONE_LETTER_CODE = {
+    "Ala": "A",
+    "Cys": "C",
+    "Asp": "D",
+    "Glu": "E",
+    "Phe": "F",
+    "Gly": "G",
+    "His": "H",
+    "Ile": "I",
+    "Lys": "K",
+    "Leu": "L",
+    "Met": "M",
+    "Asn": "N",
+    "Pro": "P",
+    "Gln": "Q",
+    "Arg": "R",
+    "Ser": "S",
+    "Thr": "T",
+    "Val": "V",
+    "Trp": "W",
+    "Tyr": "Y",
 }
 AA_FORMULA = {
     "A": {"C": 3, "H": 7, "N": 1, "O": 2},

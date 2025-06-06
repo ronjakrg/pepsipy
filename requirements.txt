@@ -4,4 +4,4 @@ pytest
 pandas
 plotly
 kaleido
-sklearn
+scikit-learn

@@ -5,6 +5,7 @@ from peptidefeatures.features import (
     aa_number,
     aa_frequency,
     gravy,
+    isoelectric_point,
     molecular_formula,
     molecular_weight,
     one_letter_code,
@@ -101,7 +102,8 @@ def test_molecular_formula():
     )
 
 
-# TODO: Add mock test for isoelectric_point()
+def test_isoelectric_point():
+    assert type(isoelectric_point("PEPTIDE")) is float
 
 
 def test_external_ipc2_availability():

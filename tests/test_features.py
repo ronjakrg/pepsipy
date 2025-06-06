@@ -79,13 +79,16 @@ def test_three_letter_code():
 
 def test_one_letter_code():
     assert "PEPTIDE" == one_letter_code("ProGluProThrIleAspGlu")
-    assert "YLCSIKSTPPLVFGQVDNVHFCMEIPKSFDVRENSRWVDDALEFVYYQVG" == one_letter_code("TyrLeuCysSerIleLysSerThrProProLeuValPheGlyGlnValAspAsnValHisPheCysMetGluIleProLysSerPheAspValArgGluAsnSerArgTrpValAspAspAlaLeuGluPheValTyrTyrGlnValGly")
+    assert "YLCSIKSTPPLVFGQVDNVHFCMEIPKSFDVRENSRWVDDALEFVYYQVG" == one_letter_code(
+        "TyrLeuCysSerIleLysSerThrProProLeuValPheGlyGlnValAspAsnValHisPheCysMetGluIleProLysSerPheAspValArgGluAsnSerArgTrpValAspAspAlaLeuGluPheValTyrTyrGlnValGly"
+    )
     with pytest.raises(ValueError) as e:
         one_letter_code("Pro Glu Pro Thr Ile Asp Glu")
     assert "Invalid input" in str(e.value)
     with pytest.raises(ValueError) as e:
         one_letter_code("PrGluProThrIleAspGlu")
     assert "Invalid three letter code" in str(e.value)
+
 
 def test_gravy():
     assert pytest.approx(-1.414) == gravy("PEPTIDE")

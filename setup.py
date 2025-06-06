@@ -12,7 +12,9 @@ def install_ipc():
     """
     Downloads and installs IPC 2.0 in /external/ipc-2.0.1 if it doesn't exist yet.
     """
-    EXTERNAL_PATH = Path(__file__).resolve().parent / "src" / "peptidefeatures" / "external"
+    EXTERNAL_PATH = (
+        Path(__file__).resolve().parent / "src" / "peptidefeatures" / "external"
+    )
     ipc_path = EXTERNAL_PATH / "ipc-2.0.1"
 
     print("Checking if IPC 2.0 is installed ...")
@@ -30,7 +32,7 @@ def install_ipc():
         print(f"ERROR while downloading: {e}", file=sys.stderr)
         sys.exit(1)
     print("Done")
-    
+
     print("Unpacking zip file ...")
     try:
         with zipfile.ZipFile(zip_path, "r") as zf:
@@ -39,13 +41,15 @@ def install_ipc():
         print(f"Invalid zip file: {e}", file=sys.stderr)
         sys.exit(1)
     print("Done")
-    
+
     if ipc_path.exists() and ipc_path.is_dir():
         pass
     else:
-        print("Unexpected error: Folder 'ipc-2.0.1' could not be found.", file=sys.stderr)
+        print(
+            "Unexpected error: Folder 'ipc-2.0.1' could not be found.", file=sys.stderr
+        )
         sys.exit(1)
-    
+
     zip_path.unlink()
     print("IPC 2.0 successfully installed!")
 
@@ -55,10 +59,12 @@ class buildPy(_build_py):
         install_ipc()
         super().run()
 
+
 class install(_install):
     def run(self):
         install_ipc()
         super().run()
+
 
 setup(
     cmdclass={

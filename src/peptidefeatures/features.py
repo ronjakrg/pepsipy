@@ -4,6 +4,7 @@ import pickle
 import string
 import sys
 
+from Bio.SeqUtils import IsoelectricPoint
 import numpy as np
 
 from peptidefeatures.constants import (
@@ -116,27 +117,32 @@ def molecular_formula(seq: str) -> str:
     return "".join(formula_elems)
 
 
-def isoelectric_point(seq: str) -> float:
+def isoelectric_point(seq: str, option: str) -> float:
     """
     Predicts the isoelectric point of a given sequence using IPC 2.0.
     The pretrained model IPC2.peptide.svr19 is used for the prediction.
     """
-    EXTERNAL_PATH = Path(__file__).resolve().parent / "external"
-    ipc_path = EXTERNAL_PATH / "ipc-2.0.1"
-    model_path = ipc_path / "models" / "IPC2_peptide_75_SVR_19.pickle"
-    if os.path.exists(ipc_path):
-        sys.path.append(str(ipc_path / "scripts"))
-    else:
-        raise RuntimeError("IPC 2.0 installation could not be found.")
+    if option == "kozlowski":
+        EXTERNAL_PATH = Path(__file__).resolve().parent / "external"
+        ipc_path = EXTERNAL_PATH / "ipc-2.0.1"
+        model_path = ipc_path / "models" / "IPC2_peptide_75_SVR_19.pickle"
+        if os.path.exists(ipc_path):
+            sys.path.append(str(ipc_path / "scripts"))
+        else:
+            raise RuntimeError("IPC 2.0 installation could not be found.")
 
-    # Ignoring warning because this function is dynamically added at runtime
-    from ipc2_lib.svr_functions import get_pI_features  # type: ignore
+        # Ignoring warning because this function is dynamically added at runtime
+        from ipc2_lib.svr_functions import get_pI_features  # type: ignore
 
-    clean_seq = sanitize_sequence(seq)
-    X, _ = get_pI_features([[clean_seq, ""]])
-    X = np.array(X)
+        clean_seq = sanitize_sequence(seq)
+        X, _ = get_pI_features([[clean_seq, ""]])
+        X = np.array(X)
 
-    with open(model_path, "rb") as f:
-        model = pickle.load(f)
+        with open(model_path, "rb") as f:
+            model = pickle.load(f)
 
-    return float(model.predict(X)[0])
+        return float(model.predict(X)[0])
+
+    if option == "bjellqvist":
+        calc = IsoelectricPoint.IsoelectricPoint(seq)
+        return round(calc.pi(), 3)

@@ -106,7 +106,8 @@ def test_molecular_formula():
 
 
 def test_isoelectric_point():
-    assert type(isoelectric_point("PEPTIDE")) is float
+    assert type(isoelectric_point("PEPTIDE", "kozlowski")) is float
+    assert type(isoelectric_point("PEPTIDE", "bjellqvist")) is float
 
 
 def test_external_ipc2_availability():

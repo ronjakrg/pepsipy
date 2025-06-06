@@ -31,8 +31,8 @@ jobs:
           coverage run -m pytest
           coverage xml
 
-      - name: Format code with black
-        run: black --check --diff src
+      - name: Check code formatting with black
+        run: black --check --diff src tests setup.py
 
       - name: Coverage comment
         uses: py-cov-action/python-coverage-comment-action@v3

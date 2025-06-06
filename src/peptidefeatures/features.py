@@ -1,13 +1,16 @@
-import numpy as np
 import os
-import pickle
-import sys
 from pathlib import Path
+import pickle
+import string
+import sys
+
+import numpy as np
 
 from peptidefeatures.constants import (
     AA_FORMULA,
     AA_LETTERS,
-    AA_THREE_LETTERS,
+    AA_THREE_LETTER_CODE,
+    AA_ONE_LETTER_CODE,
     AA_WEIGHTS,
     HYDROPATHY_INDICES,
     WATER,
@@ -56,9 +59,28 @@ def three_letter_code(seq: str) -> str:
     Note: The input sequence must be pre-sanitized to compute only valid amino acids.
     """
     try:
-        return "".join(AA_THREE_LETTERS[aa] for aa in seq)
+        return "".join(AA_THREE_LETTER_CODE[aa] for aa in seq)
     except KeyError as e:
         raise ValueError(f"Invalid amino acid symbol: '{e.args[0]}'") from None
+
+
+def one_letter_code(codes: str) -> str:
+    """
+    Converts concatenated three-letter amino acid codes into their one-letter code representation.
+    """
+    separators = set(string.whitespace + string.punctuation)
+    if any(ch in separators for ch in codes):
+        raise ValueError(
+            f"Invalid input: Separators between codes are not allowed."
+        ) from None
+    seq = []
+    for i in range(0, len(codes), 3):
+        code = codes[i : i + 3]
+        try:
+            seq.append(AA_ONE_LETTER_CODE[code])
+        except KeyError as e:
+            raise ValueError(f"Invalid three letter code: '{e.args[0]}'.") from None
+    return "".join(seq)
 
 
 def gravy(seq: str) -> float:

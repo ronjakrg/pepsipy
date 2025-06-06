@@ -2,13 +2,13 @@ import numpy as np
 import os
 import pickle
 import sys
+from pathlib import Path
 
 from peptidefeatures.constants import (
     AA_FORMULA,
     AA_LETTERS,
     AA_THREE_LETTERS,
     AA_WEIGHTS,
-    EXTERNAL_PATH,
     HYDROPATHY_INDICES,
     WATER,
 )
@@ -99,12 +99,13 @@ def isoelectric_point(seq: str) -> float:
     Predicts the isoelectric point of a given sequence using IPC 2.0.
     The pretrained model IPC2.peptide.svr19 is used for the prediction.
     """
+    EXTERNAL_PATH = Path(__file__).resolve().parent / "external"
     ipc_path = EXTERNAL_PATH / "ipc-2.0.1"
     model_path = ipc_path / "models" / "IPC2_peptide_75_SVR_19.pickle"
     if os.path.exists(ipc_path):
         sys.path.append(str(ipc_path / "scripts"))
     else:
-        raise RuntimeError("ipc-2.0.1 installation could not be found.")
+        raise RuntimeError("IPC 2.0 installation could not be found.")
 
     # Ignoring warning because this function is dynamically added at runtime
     from ipc2_lib.svr_functions import get_pI_features  # type: ignore

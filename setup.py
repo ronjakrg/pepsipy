@@ -1,5 +1,6 @@
 from setuptools import setup
 from setuptools.command.install import install as _install
+from setuptools.command.build_py import build_py as _build_py
 
 import sys
 import zipfile
@@ -11,7 +12,7 @@ def install_ipc():
     """
     Downloads and installs IPC 2.0 in /external/ipc-2.0.1 if it doesn't exist yet.
     """
-    EXTERNAL_PATH = Path(__file__).resolve().parent / "external"
+    EXTERNAL_PATH = Path(__file__).resolve().parent / "src" / "peptidefeatures" / "external"
     ipc_path = EXTERNAL_PATH / "ipc-2.0.1"
 
     print("Checking if IPC 2.0 is installed ...")
@@ -49,13 +50,19 @@ def install_ipc():
     print("IPC 2.0 successfully installed!")
 
 
-class install(_install):
+class buildPy(_build_py):
     def run(self):
-        self.announce("⏳ Checking for IPC 2.0 installation ...", level=3)
         install_ipc()
         super().run()
 
+class install(_install):
+    def run(self):
+        install_ipc()
+        super().run()
 
 setup(
-    cmdclass={"install": install}
+    cmdclass={
+        "build_py": buildPy,
+        "install": install,
+    }
 )

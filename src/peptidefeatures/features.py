@@ -1,4 +1,11 @@
+import os
+from pathlib import Path
+import pickle
 import string
+import sys
+
+from Bio.SeqUtils import IsoelectricPoint
+import numpy as np
 
 from peptidefeatures.constants import (
     AA_FORMULA,
@@ -9,6 +16,7 @@ from peptidefeatures.constants import (
     HYDROPATHY_INDICES,
     WATER,
 )
+from peptidefeatures.utils import sanitize_sequence
 
 
 def aa_number(seq: str) -> int:
@@ -107,3 +115,40 @@ def molecular_formula(seq: str) -> str:
         if atom in total_atoms
     ]
     return "".join(formula_elems)
+
+
+def isoelectric_point(seq: str, option: str) -> float:
+    """
+    Computes the theoretical pI of a given sequence.
+    Option "kozlowski" uses IPC 2.0 (Kozlowski, 2021) to predict the pI
+    with the pretrained model IPC2.peptide.svr19.
+    Option "bjellqvist" uses the biopython package (Bjellqvist, 1993).
+    """
+    clean_seq = sanitize_sequence(seq)
+
+    if option == "kozlowski":
+        EXTERNAL_PATH = Path(__file__).resolve().parent / "external"
+        ipc_path = EXTERNAL_PATH / "ipc-2.0.1"
+        model_path = ipc_path / "models" / "IPC2_peptide_75_SVR_19.pickle"
+        if os.path.exists(ipc_path):
+            sys.path.append(str(ipc_path / "scripts"))
+        else:
+            raise RuntimeError("IPC 2.0 installation could not be found.")
+
+        # Ignoring warning because this function is dynamically added at runtime
+        from ipc2_lib.svr_functions import get_pI_features  # type: ignore
+
+        X, _ = get_pI_features([[clean_seq, ""]])
+        X = np.array(X)
+
+        with open(model_path, "rb") as f:
+            model = pickle.load(f)
+
+        return float(model.predict(X)[0])
+
+    elif option == "bjellqvist":
+        calc = IsoelectricPoint.IsoelectricPoint(clean_seq)
+        return round(calc.pi(), 3)
+
+    else:
+        raise ValueError(f"Unknown option: {option}")

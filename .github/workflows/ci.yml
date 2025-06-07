@@ -26,6 +26,10 @@ jobs:
           pip install pytest coverage black
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
+      - name: Install package and download external data
+        run: |
+          pip install .
+
       - name: Run tests with coverage
         run: |
           coverage run -m pytest

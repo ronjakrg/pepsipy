@@ -3,3 +3,6 @@ numpy
 pytest
 pandas
 plotly
+kaleido
+scikit-learn
+biopython

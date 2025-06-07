@@ -1,5 +1,6 @@
 from peptidefeatures.utils import sanitize_sequence, get_group
 
+
 def test_sanitize_sequence():
     assert "PEPTIDE" == sanitize_sequence("pEPtiDe :)")
 

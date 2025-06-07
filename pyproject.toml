@@ -5,6 +5,9 @@ build-backend = "setuptools.build_meta"
 [tool.setuptools.packages.find]
 where = ["src"]
 
+[tool.setuptools.package-data]
+"peptidefeatures" = ["external/**"]
+
 [project]
 name = "thesis-peptide-features"
 version = "0.1"
@@ -34,5 +37,6 @@ relative_files = true
 
 [tool.coverage.report]
 omit = [
-  "**/__main__.py"
+  "**/__main__.py",
+  "**/external/*",
 ]

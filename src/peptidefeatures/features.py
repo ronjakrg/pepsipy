@@ -1,3 +1,4 @@
+from functools import partial
 import os
 from pathlib import Path
 import pickle
@@ -6,6 +7,7 @@ import sys
 
 from Bio.SeqUtils import IsoelectricPoint
 import numpy as np
+import pandas as pd
 
 from peptidefeatures.constants import (
     AA_FORMULA,
@@ -16,7 +18,38 @@ from peptidefeatures.constants import (
     HYDROPATHY_INDICES,
     WATER,
 )
-from peptidefeatures.utils import sanitize_seq
+from peptidefeatures.utils import sanitize_seq, get_distinct_seq, get_seq_column_name
+
+
+def compute_features(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Computes all selected features on a pd.DataFrame.
+    The column containing the peptide sequence must be named "Sequence".
+    """
+    # TODO Accept parameters for choice of features and options
+    seq_col_name = get_seq_column_name(df)
+    sequences = get_distinct_seq(df)
+    isoelectric_point_option = "bjellqvist"
+    feature_to_func = {
+        "Three Letter Code": three_letter_code,
+        "Molecular formula": molecular_formula,
+        "Molecular weight": molecular_weight,
+        "Isoelectric point": partial(
+            isoelectric_point, option=isoelectric_point_option
+        ),
+        "Sequence length": seq_length,
+        "Frequency of AA": aa_frequency,
+        "GRAVY": gravy,
+    }
+    for feature, func in feature_to_func.items():
+        sequences[feature] = sequences[seq_col_name].apply(func)
+    merged = pd.merge(
+        df,
+        sequences,
+        on=seq_col_name,
+        how="left",
+    )
+    return merged
 
 
 def seq_length(seq: str) -> int:

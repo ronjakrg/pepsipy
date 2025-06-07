@@ -2,25 +2,13 @@ import pytest
 
 import pandas as pd
 
+from constants import TEST_DATA
 from peptidefeatures.utils import (
     sanitize_seq,
     get_group,
     get_seq_column_name,
     get_distinct_seq,
 )
-
-data = {
-    "Sample": [
-        "AD01_C1_INSOLUBLE_01",
-        "CTR01_C1_INSOLUBLE_01",
-        "CTR01_C1_INSOLUBLE_01",
-    ],
-    "Protein ID": ["A0A075B6S2", "A0A075B6R2", "A0A075B6R2"],
-    "Sequence": ["FSGVPDR", "VTISVDK", "VTISVDK"],
-    "Intensity": [936840, 33411000, 33411000],
-    "PEP": [0.0068633, 0.057623, 0.057623],
-}
-df = pd.DataFrame(data)
 
 
 def test_sanitize_seq():
@@ -34,13 +22,13 @@ def test_get_group():
 
 
 def test_get_seq_column_name():
-    assert "Sequence" == get_seq_column_name(df)
+    assert "Sequence" == get_seq_column_name(TEST_DATA)
     with pytest.raises(ValueError) as e:
         get_seq_column_name(pd.DataFrame())
     assert "None of the containing columns are recognized" in str(e.value)
 
 
 def test_get_distinct_seq():
-    assert get_distinct_seq(df).equals(
+    assert get_distinct_seq(TEST_DATA).equals(
         pd.DataFrame({"Sequence": ["FSGVPDR", "VTISVDK"]})
     )

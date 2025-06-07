@@ -1,6 +1,7 @@
 import pytest
 import requests
 
+from constants import TEST_DATA
 from peptidefeatures.features import (
     seq_length,
     aa_frequency,
@@ -10,6 +11,7 @@ from peptidefeatures.features import (
     molecular_weight,
     one_letter_code,
     three_letter_code,
+    compute_features,
 )
 
 # Any function that calls one of these functions is already covered by a test for invalid amino acids.
@@ -117,3 +119,10 @@ def test_external_ipc2_availability():
     url = "https://ipc2.mimuw.edu.pl/ipc-2.0.1.zip"
     res = requests.head(url, allow_redirects=True, timeout=5)
     assert 200 == res.status_code
+
+
+def test_compute_features():
+    res = compute_features(TEST_DATA)
+    assert "GRAVY" in res.columns
+    res_grouped = res.groupby("Sequence")["GRAVY"].nunique()
+    assert (res_grouped <= 1).all()

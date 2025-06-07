@@ -119,9 +119,13 @@ def molecular_formula(seq: str) -> str:
 
 def isoelectric_point(seq: str, option: str) -> float:
     """
-    Predicts the isoelectric point of a given sequence using IPC 2.0.
-    The pretrained model IPC2.peptide.svr19 is used for the prediction.
+    Computes the theoretical pI of a given sequence.
+    Option "kozlowski" uses IPC 2.0 (Kozlowski, 2021) to predict the pI
+    with the pretrained model IPC2.peptide.svr19.
+    Option "bjellqvist" uses the biopython package (Bjellqvist, 1993).
     """
+    clean_seq = sanitize_sequence(seq)
+
     if option == "kozlowski":
         EXTERNAL_PATH = Path(__file__).resolve().parent / "external"
         ipc_path = EXTERNAL_PATH / "ipc-2.0.1"
@@ -134,7 +138,6 @@ def isoelectric_point(seq: str, option: str) -> float:
         # Ignoring warning because this function is dynamically added at runtime
         from ipc2_lib.svr_functions import get_pI_features  # type: ignore
 
-        clean_seq = sanitize_sequence(seq)
         X, _ = get_pI_features([[clean_seq, ""]])
         X = np.array(X)
 
@@ -142,7 +145,11 @@ def isoelectric_point(seq: str, option: str) -> float:
             model = pickle.load(f)
 
         return float(model.predict(X)[0])
-
-    if option == "bjellqvist":
-        calc = IsoelectricPoint.IsoelectricPoint(seq)
+    
+    elif option == "bjellqvist":
+        calc = IsoelectricPoint.IsoelectricPoint(clean_seq)
         return round(calc.pi(), 3)
+    
+    else:
+        raise ValueError(f"Unknown option: {option}")
+    

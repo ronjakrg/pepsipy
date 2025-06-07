@@ -108,6 +108,9 @@ def test_molecular_formula():
 def test_isoelectric_point():
     assert type(isoelectric_point("PEPTIDE", "kozlowski")) is float
     assert type(isoelectric_point("PEPTIDE", "bjellqvist")) is float
+    with pytest.raises(ValueError) as e:
+        isoelectric_point("PEPTIDE", "foo")
+    assert "Unknown option" in str(e.value)
 
 
 def test_external_ipc2_availability():

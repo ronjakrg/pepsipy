@@ -25,7 +25,7 @@ def get_seq_column_name(df: pd.DataFrame) -> str:
     Finds the first column of a dataframe that contains the substring "sequence".
     """
     seq_col_name = next((col for col in df.columns if "sequence" in col.lower()), None)
-    if seq_col_name == None:
+    if seq_col_name is None:
         raise ValueError(
             f"None of the containing columns are recognized as sequence column: {df.columns}"
         )

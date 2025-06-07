@@ -24,7 +24,8 @@ from peptidefeatures.utils import sanitize_seq, get_distinct_seq, get_seq_column
 def compute_features(df: pd.DataFrame) -> pd.DataFrame:
     """
     Computes all selected features on a pd.DataFrame.
-    The column containing the peptide sequence must be named "Sequence".
+    The column containing the peptide sequence must contain the
+    substring "sequence".
     """
     # TODO Accept parameters for choice of features and options
     seq_col_name = get_seq_column_name(df)

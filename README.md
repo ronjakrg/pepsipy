@@ -2,13 +2,13 @@
 
 [Full report](https://htmlpreview.github.io/?https://github.com/ronjakrg/thesis-peptide-features/blob/python-coverage-comment-action-data/htmlcov/index.html)
 
-| Name                                |    Stmts |     Miss |    Cover |   Missing |
-|------------------------------------ | -------: | -------: | -------: | --------: |
-| src/peptidefeatures/\_\_init\_\_.py |        0 |        0 |     100% |           |
-| src/peptidefeatures/constants.py    |        9 |        0 |     100% |           |
-| src/peptidefeatures/features.py     |       51 |        0 |     100% |           |
-| src/peptidefeatures/utils.py        |        6 |        0 |     100% |           |
-|                           **TOTAL** |   **66** |    **0** | **100%** |           |
+| Name                                |    Stmts |     Miss |   Cover |   Missing |
+|------------------------------------ | -------: | -------: | ------: | --------: |
+| src/peptidefeatures/\_\_init\_\_.py |        0 |        0 |    100% |           |
+| src/peptidefeatures/constants.py    |       11 |        0 |    100% |           |
+| src/peptidefeatures/features.py     |       77 |        1 |     99% |       136 |
+| src/peptidefeatures/utils.py        |        6 |        0 |    100% |           |
+|                           **TOTAL** |   **94** |    **1** | **99%** |           |
 
 
 ## Setup coverage badge

@@ -145,11 +145,10 @@ def isoelectric_point(seq: str, option: str) -> float:
             model = pickle.load(f)
 
         return float(model.predict(X)[0])
-    
+
     elif option == "bjellqvist":
         calc = IsoelectricPoint.IsoelectricPoint(clean_seq)
         return round(calc.pi(), 3)
-    
+
     else:
         raise ValueError(f"Unknown option: {option}")
-    

@@ -1,3 +1,5 @@
+import pandas as pd
+
 from peptidefeatures.constants import AA_LETTERS
 
 
@@ -16,3 +18,17 @@ def get_group(name: str, groups: list) -> str:
     If no group was found, "None" will be returned.
     """
     return next((g for g in groups if name.startswith(g)), "None")
+
+
+def get_distinct_seq(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Finds the first column containing "sequence" in its header and
+    returns a dataframe containing only unique sequences.
+    """
+    seq_col_name = next((col for col in df.columns if "seq" in col.lower()), None)
+    if seq_col_name == None:
+        raise ValueError(
+            f"None of the containing columns are recognized as sequence column: {df.columns}"
+        )
+
+    return df[[seq_col_name]].drop_duplicates(keep="first")

@@ -2,7 +2,7 @@ import pytest
 import requests
 
 from peptidefeatures.features import (
-    aa_number,
+    seq_length,
     aa_frequency,
     gravy,
     isoelectric_point,
@@ -19,7 +19,7 @@ INVALID_SEQ = "ABC"
 @pytest.mark.parametrize(
     "func, seq",
     [
-        (aa_number, INVALID_SEQ),
+        (seq_length, INVALID_SEQ),
         (aa_frequency, INVALID_SEQ),
         (three_letter_code, INVALID_SEQ),
     ],
@@ -30,9 +30,9 @@ def test_invalid_amino_acid(func, seq):
     assert "Invalid amino acid symbol" in str(e.value)
 
 
-def test_aa_number():
-    assert 20 == aa_number("ACDEFGHIKLMNPQRSTVWY")
-    assert 50 == aa_number("LHVEDNDEGSPMYMTRCVAWEHITINTNKHYQLYIMWRDGMWYDRMIPAQ")
+def test_seq_length():
+    assert 20 == seq_length("ACDEFGHIKLMNPQRSTVWY")
+    assert 50 == seq_length("LHVEDNDEGSPMYMTRCVAWEHITINTNKHYQLYIMWRDGMWYDRMIPAQ")
 
 
 def test_aa_frequency():

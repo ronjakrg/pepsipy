@@ -1,8 +1,8 @@
-from peptidefeatures.utils import sanitize_sequence, get_group
+from peptidefeatures.utils import sanitize_seq, get_group
 
 
-def test_sanitize_sequence():
-    assert "PEPTIDE" == sanitize_sequence("pEPtiDe :)")
+def test_sanitize_seq():
+    assert "PEPTIDE" == sanitize_seq("pEPtiDe :)")
 
 
 def test_get_group():

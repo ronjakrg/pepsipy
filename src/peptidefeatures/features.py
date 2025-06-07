@@ -16,12 +16,12 @@ from peptidefeatures.constants import (
     HYDROPATHY_INDICES,
     WATER,
 )
-from peptidefeatures.utils import sanitize_sequence
+from peptidefeatures.utils import sanitize_seq
 
 
-def aa_number(seq: str) -> int:
+def seq_length(seq: str) -> int:
     """
-    Computes the number of amino acids in a given sequence.
+    Computes the length in a given sequence.
     Note: The input sequence must be pre-sanitized to compute only valid amino acids.
     """
     invalid = set(seq) - AA_LETTERS
@@ -49,7 +49,7 @@ def molecular_weight(seq: str) -> float:
     Computes the average molecular weight of a given sequence in Da.
     Note: The input sequence must be pre-sanitized to compute only valid amino acids.
     """
-    num = aa_number(seq)
+    num = seq_length(seq)
     weight = sum(AA_WEIGHTS[aa] for aa in seq) - (num - 1) * WATER
     return round(weight, 3)
 
@@ -89,7 +89,7 @@ def gravy(seq: str) -> float:
     Computes the GRAVY (grand average of hydropathy) score of a given sequence.
     Note: The input sequence must be pre-sanitized to compute only valid amino acids.
     """
-    num = aa_number(seq)
+    num = seq_length(seq)
     hydropathy_sum = sum(HYDROPATHY_INDICES[aa] for aa in seq)
     return round(hydropathy_sum / num, 3)
 
@@ -104,7 +104,7 @@ def molecular_formula(seq: str) -> str:
         for atom, count in AA_FORMULA[aa].items():
             total_atoms[atom] = total_atoms.get(atom, 0) + count
 
-    num_bindings = aa_number(seq) - 1
+    num_bindings = seq_length(seq) - 1
     total_atoms["H"] -= 2 * num_bindings
     total_atoms["O"] -= num_bindings
 
@@ -124,7 +124,7 @@ def isoelectric_point(seq: str, option: str) -> float:
     with the pretrained model IPC2.peptide.svr19.
     Option "bjellqvist" uses the biopython package (Bjellqvist, 1993).
     """
-    clean_seq = sanitize_sequence(seq)
+    clean_seq = sanitize_seq(seq)
 
     if option == "kozlowski":
         EXTERNAL_PATH = Path(__file__).resolve().parent / "external"

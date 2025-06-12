@@ -47,9 +47,7 @@ def compute_features(df: pd.DataFrame) -> pd.DataFrame:
         "Frequency of AA": aa_frequency,
         "GRAVY": gravy,
         "Aromaticity": aromaticity,
-        "Classification": partial(
-            aa_classification, classify_by=classification_option
-        )
+        "Classification": partial(aa_classification, classify_by=classification_option),
     }
     for feature, func in feature_to_func.items():
         sequences[feature] = sequences[seq_col_name].apply(func)

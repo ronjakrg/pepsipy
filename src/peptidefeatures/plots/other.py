@@ -6,7 +6,11 @@ from peptidefeatures.constants import AA_WEIGHTS, COLORS, HYDROPATHY_INDICES
 from peptidefeatures.features import aa_frequency
 
 
-def aa_distribution(seq: str, order: str, show_all: bool) -> go.Figure:
+def aa_distribution(
+    seq: str,
+    order: str = "category ascending",
+    show_all: bool = False,
+) -> go.Figure:
     """
     Computes a bar plot showing the frequency distribution for a given sequence.
         seq: Sequence which amino acids are analysed

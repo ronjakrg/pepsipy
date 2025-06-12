@@ -8,10 +8,10 @@ from peptidefeatures.utils import get_group, get_column_name
 
 def scatter_features(
     df: pd.DataFrame,
-    groups: list,
     feature_a: str,
     feature_b: str,
-    intensity_threshold: float,
+    groups: list = None,
+    intensity_threshold: float = 0.0,
 ) -> go.Figure:
     """
     Creates a scatter plot to compare two features across groups.
@@ -45,9 +45,9 @@ def scatter_features(
 
 def box_feature(
     df: pd.DataFrame,
-    groups: list,
     feature: str,
-    intensity_threshold: float,
+    groups: list = None,
+    intensity_threshold: float = 0.0,
 ) -> go.Figure:
     """
     Creates box plots for each group to compare a feature between groups.

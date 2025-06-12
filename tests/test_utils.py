@@ -18,6 +18,7 @@ def test_sanitize_seq():
 def test_get_group():
     groups = ["AD", "CTR"]
     assert "AD" == get_group("AD01_C1_INSOLUBLE_01", groups)
+    assert "None" == get_group("AD01_C1_INSOLUBLE_01", None)
     assert "None" == get_group(":)", groups)
 
 

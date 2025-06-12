@@ -15,7 +15,7 @@ def aa_distribution(
     Computes a bar plot showing the frequency distribution for a given sequence.
         seq: Sequence which amino acids are analysed
         order: Specification of how the amino acids should be sorted, can be any of "frequency", "alphabetical", "classification", "hydropathy" or "weight".
-        show_all: Specification all amino acids should be listed, even when not found in the sequence
+        show_all: Specification if all amino acids should be listed, even when not found in the sequence
     """
     freq = aa_frequency(seq)
     if not show_all:

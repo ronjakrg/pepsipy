@@ -3,7 +3,7 @@ import plotly.graph_objects as go
 import pandas as pd
 
 from peptidefeatures.constants import COLORS
-from peptidefeatures.utils import get_group
+from peptidefeatures.utils import get_group, get_column_name
 
 
 def scatter_features(
@@ -11,12 +11,23 @@ def scatter_features(
     groups: list,
     feature_a: str,
     feature_b: str,
+    intensity_threshold: float,
 ) -> go.Figure:
     """
     Creates a scatter plot to compare two features across groups.
+        df: Dataframe that contains the features
+        groups: List of prefixes representing groups that can be found in column "Sample"
+        feature_a: Feature shown on x-axis
+        feature_b: Feature shown on y-axis
+        intensity_threshold: Peptides with intensities below this threshold are not included
     """
     peptides = df.copy()
+    intensity_col = get_column_name(peptides, "intensity")
+    seq_col = get_column_name(peptides, "sequence")
+    peptides = peptides[peptides[intensity_col] > intensity_threshold]
+    # TODO Generalize sample column
     peptides["Group"] = peptides["Sample"].apply(lambda x: get_group(x, groups))
+
     fig = px.scatter(
         peptides,
         x=feature_a,
@@ -24,8 +35,9 @@ def scatter_features(
         color="Group",
         color_discrete_sequence=COLORS,
         symbol="Group",
-        symbol_sequence=["square", "circle"],
-        title="Comparison of Peptide Features Across Groups",
+        symbol_sequence=["square", "circle", "arrow-up", "star"],
+        title="Comparison of peptide features across groups",
+        hover_name=seq_col,
     )
     fig.update_traces(marker=dict(size=10))
     return fig
@@ -35,11 +47,19 @@ def box_feature(
     df: pd.DataFrame,
     groups: list,
     feature: str,
+    intensity_threshold: float,
 ) -> go.Figure:
     """
-    Creates a box plot to compare a feature between groups.
+    Creates box plots for each group to compare a feature between groups.
+        df: Dataframe that contains the features
+        groups: List of prefixes representing groups that can be found in column "Sample"
+        feature: Feature to be compared
+        intensity_threshold: Peptides with intensities below this threshold are not included
     """
     peptides = df.copy()
+    intensity_col = get_column_name(peptides, "intensity")
+    seq_col = get_column_name(peptides, "sequence")
+    peptides = peptides[peptides[intensity_col] > intensity_threshold]
     peptides["Group"] = peptides["Sample"].apply(lambda x: get_group(x, groups))
 
     fig = px.box(
@@ -48,6 +68,7 @@ def box_feature(
         y=feature,
         color="Group",
         color_discrete_sequence=COLORS,
-        title=f"Distribution of {feature} Across Groups",
+        title=f"Distribution of {feature} across groups",
+        hover_name=seq_col,
     )
     return fig

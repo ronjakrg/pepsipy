@@ -2,15 +2,20 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 
-from peptidefeatures.constants import COLORS, HYDROPATHY_INDICES
+from peptidefeatures.constants import AA_WEIGHTS, COLORS, HYDROPATHY_INDICES
 from peptidefeatures.features import aa_frequency
 
 
-def aa_distribution(seq: str) -> go.Figure:
+def aa_distribution(seq: str, order: str, show_all: bool) -> go.Figure:
     """
     Computes a bar plot showing the frequency distribution for a given sequence.
+        seq: Sequence which amino acids are analysed
+        order: Specification of how the amino acids should be sorted, can be any of "frequency", "alphabetical", "classification", "hydropathy" or "weight".
+        show_all: Specification all amino acids should be listed, even when not found in the sequence
     """
     freq = aa_frequency(seq)
+    if not show_all:
+        freq = {key: val for key, val in freq.items() if val > 0}
     fig = px.bar(
         x=list(freq.keys()),
         y=list(freq.values()),
@@ -21,8 +26,24 @@ def aa_distribution(seq: str) -> go.Figure:
         title=f"Amino Acid Frequency of Sequence {seq}",
         color_discrete_sequence=COLORS,
     )
-    fig.update_xaxes(categoryorder="category ascending")
     fig.update_yaxes(tickmode="linear", tick0=0, dtick=1)
+
+    # Sort amino acids by given order specification
+    if order == "frequency":
+        fig.update_xaxes(categoryorder="total ascending")
+    elif order == "alphabetical":
+        fig.update_xaxes(categoryorder="category ascending")
+    elif order == "classification":
+        # TODO Add when aa classification is implemented
+        raise NotImplementedError
+    elif order == "hydropathy":
+        sorted_aa = sorted(list(freq.keys()), key=lambda aa: HYDROPATHY_INDICES[aa])
+        fig.update_xaxes(categoryorder="array", categoryarray=sorted_aa)
+    elif order == "weight":
+        sorted_aa = sorted(list(freq.keys()), key=lambda aa: AA_WEIGHTS[aa])
+        fig.update_xaxes(categoryorder="array", categoryarray=sorted_aa)
+    else:
+        raise ValueError(f"Unknown option for sorting amino acids: {order}.")
     return fig
 
 

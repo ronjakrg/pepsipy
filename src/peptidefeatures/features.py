@@ -195,6 +195,6 @@ def aromaticity(seq: str) -> float:
     frequency of amino acids F, Y, and W (Lobry and Gautier, 1994).
     """
     freq = aa_frequency(seq)
-    len = seq_length(seq)
+    seq_len = seq_length(seq)
     num_aromatic = freq["F"] + freq["Y"] + freq["W"]
-    return round(num_aromatic / len, 3)
+    return round(num_aromatic / seq_len, 3)

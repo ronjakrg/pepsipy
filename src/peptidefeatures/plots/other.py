@@ -43,9 +43,7 @@ def aa_distribution(seq: str, order: str, show_all: bool) -> go.Figure:
         sorted_aa = sorted(list(freq.keys()), key=lambda aa: AA_WEIGHTS[aa])
         fig.update_xaxes(categoryorder="array", categoryarray=sorted_aa)
     else:
-        raise ValueError(
-            f"Unknown option for sorting amino acids: {order}. Please use 'alphabetical', 'classification' or an available feature."
-        )
+        raise ValueError(f"Unknown option for sorting amino acids: {order}.")
     return fig
 
 

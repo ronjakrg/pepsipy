@@ -35,7 +35,7 @@ def scatter_features(
         color="Group",
         color_discrete_sequence=COLORS,
         symbol="Group",
-        symbol_sequence=["square", "circle"],  # TODO Add more symbols for more groups
+        symbol_sequence=["square", "circle", "arrow-up", "star"],
         title="Comparison of peptide features across groups",
         hover_name=seq_col,
     )

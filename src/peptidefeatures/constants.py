@@ -125,7 +125,12 @@ HYDROPATHY_INDICES = {
 
 # <---- MISCELLANEOUS ---->
 
-COLORS = ["#CE5A5A", "#4A536A"]
+COLORS = [
+    "#4A536A",
+    "#CE5A5A",
+    "#87A8B9",
+    "#F1A765",
+]
 
 PROJECT_PATH = Path(__file__).resolve().parent.parent.parent
 EXTERNAL_PATH = PROJECT_PATH / "external"

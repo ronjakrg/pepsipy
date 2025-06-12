@@ -34,6 +34,7 @@ def compute_features(df: pd.DataFrame) -> pd.DataFrame:
 
     # TODO Accept parameters for choice of features and options
     isoelectric_point_option = "bjellqvist"
+    classification_option = "chemical"
 
     feature_to_func = {
         "Three Letter Code": three_letter_code,
@@ -46,6 +47,9 @@ def compute_features(df: pd.DataFrame) -> pd.DataFrame:
         "Frequency of AA": aa_frequency,
         "GRAVY": gravy,
         "Aromaticity": aromaticity,
+        "Classification": partial(
+            aa_classification, classify_by=classification_option
+        )
     }
     for feature, func in feature_to_func.items():
         sequences[feature] = sequences[seq_col_name].apply(func)

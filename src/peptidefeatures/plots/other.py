@@ -38,16 +38,10 @@ def aa_distribution(seq: str, order: str, show_all: bool) -> go.Figure:
         raise NotImplementedError
     elif order == "hydropathy":
         sorted_aa = sorted(list(freq.keys()), key=lambda aa: HYDROPATHY_INDICES[aa])
-        fig.update_xaxes(
-            categoryorder="array",
-            categoryarray=sorted_aa
-        )
+        fig.update_xaxes(categoryorder="array", categoryarray=sorted_aa)
     elif order == "weight":
         sorted_aa = sorted(list(freq.keys()), key=lambda aa: AA_WEIGHTS[aa])
-        fig.update_xaxes(
-            categoryorder="array",
-            categoryarray=sorted_aa
-        )
+        fig.update_xaxes(categoryorder="array", categoryarray=sorted_aa)
     else:
         raise ValueError(
             f"Unknown option for sorting amino acids: {order}. Please use 'alphabetical', 'classification' or an available feature."

@@ -123,6 +123,23 @@ HYDROPATHY_INDICES = {
     "Y": -1.3,
 }
 
+# Taken from Pommiè et al., 2004
+# https://doi.org/10.1002/jmr.647
+CHEMICAL_CLASS = {
+    "Aliphatic": ["I", "L", "V", "A"],
+    "Sulfur": ["M", "C"],
+    "Hydroxyl": ["T", "S"],
+    "Basic": ["K", "R", "H"],
+    "Acidic": ["E", "D"],
+    "Amide": ["Q", "N"],
+    "Other": ["F", "W", "Y", "P", "G"],
+}
+CHARGE_CLASS = {
+    "Non-polar": ["F", "W", "I", "L", "M", "V", "C", "P", "A", "G"],
+    "Uncharged": ["Y", "T", "S", "Q", "N"],
+    "Charged": ["K", "R", "H", "E", "D"],
+}
+
 # <---- MISCELLANEOUS ---->
 
 COLORS = [

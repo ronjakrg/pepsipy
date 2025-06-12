@@ -3,7 +3,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 
 from peptidefeatures.constants import AA_WEIGHTS, COLORS, HYDROPATHY_INDICES
-from peptidefeatures.features import aa_frequency
+from peptidefeatures.features import aa_frequency, aa_classification
 
 
 def aa_distribution(
@@ -75,5 +75,20 @@ def hydropathy_plot(seq: str) -> go.Figure:
     fig.add_hline(
         y=0,
         line_dash="dash",
+    )
+    return fig
+
+
+def classification_plot(seq: str, classify_by: str) -> go.Figure:
+    """ """
+    classification = aa_classification(seq, classify_by)
+    df = pd.DataFrame(
+        {"Class": classification.keys(), "Frequency": classification.values()}
+    )
+    fig = px.pie(
+        df,
+        names="Class",
+        values="Frequency",
+        title=f"Classification ({classify_by}) of {seq}",
     )
     return fig

@@ -200,3 +200,13 @@ def aromaticity(seq: str) -> float:
     seq_len = seq_length(seq)
     num_aromatic = freq["F"] + freq["Y"] + freq["W"]
     return round(num_aromatic / seq_len, 3)
+
+
+def aa_classification(seq: str, classify_by: str = "chemical") -> dict:
+    """ """
+    if classify_by == "chemical":
+        raise NotImplementedError
+    elif classify_by == "charge":
+        raise NotImplementedError
+    else:
+        raise ValueError(f"Unknown option: {classify_by}")

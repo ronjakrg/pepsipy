@@ -6,9 +6,9 @@
 |------------------------------------ | -------: | -------: | ------: | --------: |
 | src/peptidefeatures/\_\_init\_\_.py |        0 |        0 |    100% |           |
 | src/peptidefeatures/constants.py    |       11 |        0 |    100% |           |
-| src/peptidefeatures/features.py     |       93 |        1 |     99% |       171 |
-| src/peptidefeatures/utils.py        |       15 |        0 |    100% |           |
-|                           **TOTAL** |  **119** |    **1** | **99%** |           |
+| src/peptidefeatures/features.py     |       93 |        1 |     99% |       173 |
+| src/peptidefeatures/utils.py        |       17 |        0 |    100% |           |
+|                           **TOTAL** |  **121** |    **1** | **99%** |           |
 
 
 ## Setup coverage badge

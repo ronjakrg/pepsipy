@@ -1,3 +1,4 @@
+from functools import partial
 import os
 from pathlib import Path
 import pickle
@@ -6,6 +7,7 @@ import sys
 
 from Bio.SeqUtils import IsoelectricPoint
 import numpy as np
+import pandas as pd
 
 from peptidefeatures.constants import (
     AA_FORMULA,
@@ -16,12 +18,44 @@ from peptidefeatures.constants import (
     HYDROPATHY_INDICES,
     WATER,
 )
-from peptidefeatures.utils import sanitize_sequence
+from peptidefeatures.utils import sanitize_seq, get_distinct_seq, get_seq_column_name
 
 
-def aa_number(seq: str) -> int:
+def compute_features(df: pd.DataFrame) -> pd.DataFrame:
     """
-    Computes the number of amino acids in a given sequence.
+    Computes all selected features on a pd.DataFrame.
+    The column containing the peptide sequence must contain the
+    substring "sequence".
+    """
+    # TODO Accept parameters for choice of features and options
+    seq_col_name = get_seq_column_name(df)
+    sequences = get_distinct_seq(df)
+    isoelectric_point_option = "bjellqvist"
+    feature_to_func = {
+        "Three Letter Code": three_letter_code,
+        "Molecular formula": molecular_formula,
+        "Molecular weight": molecular_weight,
+        "Isoelectric point": partial(
+            isoelectric_point, option=isoelectric_point_option
+        ),
+        "Sequence length": seq_length,
+        "Frequency of AA": aa_frequency,
+        "GRAVY": gravy,
+    }
+    for feature, func in feature_to_func.items():
+        sequences[feature] = sequences[seq_col_name].apply(func)
+    merged = pd.merge(
+        df,
+        sequences,
+        on=seq_col_name,
+        how="left",
+    )
+    return merged
+
+
+def seq_length(seq: str) -> int:
+    """
+    Computes the length in a given sequence.
     Note: The input sequence must be pre-sanitized to compute only valid amino acids.
     """
     invalid = set(seq) - AA_LETTERS
@@ -49,7 +83,7 @@ def molecular_weight(seq: str) -> float:
     Computes the average molecular weight of a given sequence in Da.
     Note: The input sequence must be pre-sanitized to compute only valid amino acids.
     """
-    num = aa_number(seq)
+    num = seq_length(seq)
     weight = sum(AA_WEIGHTS[aa] for aa in seq) - (num - 1) * WATER
     return round(weight, 3)
 
@@ -89,7 +123,7 @@ def gravy(seq: str) -> float:
     Computes the GRAVY (grand average of hydropathy) score of a given sequence.
     Note: The input sequence must be pre-sanitized to compute only valid amino acids.
     """
-    num = aa_number(seq)
+    num = seq_length(seq)
     hydropathy_sum = sum(HYDROPATHY_INDICES[aa] for aa in seq)
     return round(hydropathy_sum / num, 3)
 
@@ -104,7 +138,7 @@ def molecular_formula(seq: str) -> str:
         for atom, count in AA_FORMULA[aa].items():
             total_atoms[atom] = total_atoms.get(atom, 0) + count
 
-    num_bindings = aa_number(seq) - 1
+    num_bindings = seq_length(seq) - 1
     total_atoms["H"] -= 2 * num_bindings
     total_atoms["O"] -= num_bindings
 
@@ -124,7 +158,7 @@ def isoelectric_point(seq: str, option: str) -> float:
     with the pretrained model IPC2.peptide.svr19.
     Option "bjellqvist" uses the biopython package (Bjellqvist, 1993).
     """
-    clean_seq = sanitize_sequence(seq)
+    clean_seq = sanitize_seq(seq)
 
     if option == "kozlowski":
         EXTERNAL_PATH = Path(__file__).resolve().parent / "external"

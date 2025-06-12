@@ -18,7 +18,7 @@ from peptidefeatures.constants import (
     HYDROPATHY_INDICES,
     WATER,
 )
-from peptidefeatures.utils import sanitize_seq, get_distinct_seq, get_seq_column_name
+from peptidefeatures.utils import sanitize_seq, get_distinct_seq, get_column_name
 
 
 def compute_features(df: pd.DataFrame) -> pd.DataFrame:
@@ -28,7 +28,7 @@ def compute_features(df: pd.DataFrame) -> pd.DataFrame:
     substring "sequence".
     """
     # TODO Accept parameters for choice of features and options
-    seq_col_name = get_seq_column_name(df)
+    seq_col_name = get_column_name(df, "sequence")
     sequences = get_distinct_seq(df)
     isoelectric_point_option = "bjellqvist"
     feature_to_func = {

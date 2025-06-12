@@ -27,10 +27,12 @@ def compute_features(df: pd.DataFrame) -> pd.DataFrame:
     The column containing the peptide sequence must contain the
     substring "sequence".
     """
-    # TODO Accept parameters for choice of features and options
     seq_col_name = get_column_name(df, "sequence")
     sequences = get_distinct_seq(df)
+
+    # TODO Accept parameters for choice of features and options
     isoelectric_point_option = "bjellqvist"
+
     feature_to_func = {
         "Three Letter Code": three_letter_code,
         "Molecular formula": molecular_formula,
@@ -152,7 +154,7 @@ def molecular_formula(seq: str) -> str:
     return "".join(formula_elems)
 
 
-def isoelectric_point(seq: str, option: str) -> float:
+def isoelectric_point(seq: str, option: str = "bjellqvist") -> float:
     """
     Computes the theoretical pI of a given sequence.
     Option "kozlowski" uses IPC 2.0 (Kozlowski, 2021) to predict the pI

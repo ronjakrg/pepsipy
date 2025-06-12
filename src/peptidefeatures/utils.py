@@ -17,6 +17,8 @@ def get_group(name: str, groups: list) -> str:
     Returns the group that is found in the prefix of the sample name.
     If no group was found, "None" will be returned.
     """
+    if groups is None:
+        return "None"
     return next((g for g in groups if name.startswith(g)), "None")
 
 

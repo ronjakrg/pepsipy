@@ -158,10 +158,10 @@ def molecular_formula(seq: str) -> str:
 
 def isoelectric_point(seq: str, option: str = "bjellqvist") -> float:
     """
-    Computes the theoretical pI of a given sequence.
-    Option "kozlowski" uses IPC 2.0 (Kozlowski, 2021) to predict the pI
-    with the pretrained model IPC2.peptide.svr19.
-    Option "bjellqvist" uses the biopython package (Bjellqvist, 1993).
+    Computes the theoretical pI of a given sequence. One can choose between IPC 2.0 (Kozlowski, 2021) to predict
+    the pI with the pretrained model IPC2.peptide.svr19 or biopython package based on (Bjellqvist, 1993)
+        seq: Given sequence
+        option: Specification of which approach to use, can be "bjellqvist" or "kozlowski"
     """
     clean_seq = sanitize_seq(seq)
 
@@ -205,7 +205,11 @@ def aromaticity(seq: str) -> float:
 
 
 def aa_classification(seq: str, classify_by: str = "chemical") -> dict:
-    """ """
+    """
+    Computes the absolute frequency of each class (Pommié et al., 2004).
+        seq: Given sequence
+        classify_by: Specification of how the amino acids should be classified, can be "chemical" or "charge".
+    """
     freq = aa_frequency(seq)
     if classify_by == "chemical":
         return {

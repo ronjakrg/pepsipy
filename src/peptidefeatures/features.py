@@ -208,8 +208,14 @@ def aa_classification(seq: str, classify_by: str = "chemical") -> dict:
     """ """
     freq = aa_frequency(seq)
     if classify_by == "chemical":
-        return {_class: sum(freq[aa] for aa in aminos) for _class, aminos in CHEMICAL_CLASS.items()}
+        return {
+            _class: sum(freq[aa] for aa in aminos)
+            for _class, aminos in CHEMICAL_CLASS.items()
+        }
     elif classify_by == "charge":
-        return {_class: sum(freq[aa] for aa in aminos) for _class, aminos in CHARGE_CLASS.items()}
+        return {
+            _class: sum(freq[aa] for aa in aminos)
+            for _class, aminos in CHARGE_CLASS.items()
+        }
     else:
         raise ValueError(f"Unknown option: {classify_by}")

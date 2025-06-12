@@ -12,6 +12,7 @@ from peptidefeatures.features import (
     one_letter_code,
     three_letter_code,
     compute_features,
+    aromaticity,
 )
 
 # Any function that calls one of these functions is already covered by a test for invalid amino acids.
@@ -126,3 +127,10 @@ def test_compute_features():
     assert "GRAVY" in res.columns
     res_grouped = res.groupby("Sequence")["GRAVY"].nunique()
     assert (res_grouped <= 1).all()
+
+
+def test_aromaticity():
+    assert pytest.approx(0.0) == aromaticity("PEPTIDE")
+    assert pytest.approx(0.08) == aromaticity(
+        "PKMMDHQPIKTYWCMIGKPNREEIEIAKKMMAEMTDNDWPLHQMPFCSKL"
+    )

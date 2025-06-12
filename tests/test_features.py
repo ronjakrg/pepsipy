@@ -139,19 +139,19 @@ def test_aromaticity():
 
 def test_aa_classification():
     assert {
-        "Aliphatic": 8,
+        "Aliphatic": 7,
         "Sulfur": 4,
         "Hydroxyl": 9,
         "Basic": 6,
         "Acidic": 2,
         "Amide": 4,
-        "Other": 16,
+        "Other": 18,
     } == aa_classification(
         "FIHIPNAWWGADCWCRTWRMQPKSWVFFSQTGAWTFPCPESIKTKTSWNP", "chemical"
     )
     assert {
         "Non-polar": 29,
-        "Uncharged": 12,
+        "Uncharged": 13,
         "Charged": 8,
     } == aa_classification(
         "FIHIPNAWWGADCWCRTWRMQPKSWVFFSQTGAWTFPCPESIKTKTSWNP", "charge"

@@ -17,6 +17,8 @@ from peptidefeatures.constants import (
     AA_WEIGHTS,
     HYDROPATHY_INDICES,
     WATER,
+    CHEMICAL_CLASS,
+    CHARGE_CLASS,
 )
 from peptidefeatures.utils import sanitize_seq, get_distinct_seq, get_column_name
 
@@ -198,15 +200,16 @@ def aromaticity(seq: str) -> float:
     """
     freq = aa_frequency(seq)
     seq_len = seq_length(seq)
-    num_aromatic = freq["F"] + freq["Y"] + freq["W"]
+    num_aromatic = sum(freq[aa] for aa in ["F", "Y", "W"])
     return round(num_aromatic / seq_len, 3)
 
 
 def aa_classification(seq: str, classify_by: str = "chemical") -> dict:
     """ """
+    freq = aa_frequency(seq)
     if classify_by == "chemical":
-        raise NotImplementedError
+        return {_class: sum(freq[aa] for aa in aminos) for _class, aminos in CHEMICAL_CLASS.items()}
     elif classify_by == "charge":
-        raise NotImplementedError
+        return {_class: sum(freq[aa] for aa in aminos) for _class, aminos in CHARGE_CLASS.items()}
     else:
         raise ValueError(f"Unknown option: {classify_by}")

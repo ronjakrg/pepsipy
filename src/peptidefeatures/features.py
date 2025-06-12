@@ -186,3 +186,7 @@ def isoelectric_point(seq: str, option: str) -> float:
 
     else:
         raise ValueError(f"Unknown option: {option}")
+
+
+def aromaticity(seq: str) -> float:
+    return -1.0

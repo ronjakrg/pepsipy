@@ -41,6 +41,7 @@ def compute_features(df: pd.DataFrame) -> pd.DataFrame:
         "Sequence length": seq_length,
         "Frequency of AA": aa_frequency,
         "GRAVY": gravy,
+        "Aromaticity": aromaticity,
     }
     for feature, func in feature_to_func.items():
         sequences[feature] = sequences[seq_col_name].apply(func)
@@ -189,7 +190,10 @@ def isoelectric_point(seq: str, option: str) -> float:
 
 
 def aromaticity(seq: str) -> float:
-    """ """
+    """
+    Computes the aromaticity of a given sequence by calculating the relative
+    frequency of amino acids F, Y, and W (Lobry and Gautier, 1994).
+    """
     freq = aa_frequency(seq)
     len = seq_length(seq)
     num_aromatic = freq["F"] + freq["Y"] + freq["W"]

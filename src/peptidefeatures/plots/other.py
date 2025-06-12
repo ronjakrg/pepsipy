@@ -8,7 +8,7 @@ from peptidefeatures.features import aa_frequency
 
 def aa_distribution(
     seq: str,
-    order: str = "category ascending",
+    order_by: str = "category ascending",
     show_all: bool = False,
 ) -> go.Figure:
     """
@@ -33,21 +33,21 @@ def aa_distribution(
     fig.update_yaxes(tickmode="linear", tick0=0, dtick=1)
 
     # Sort amino acids by given order specification
-    if order == "frequency":
+    if order_by == "frequency":
         fig.update_xaxes(categoryorder="total ascending")
-    elif order == "alphabetical":
+    elif order_by == "alphabetical":
         fig.update_xaxes(categoryorder="category ascending")
-    elif order == "classification":
+    elif order_by == "classification":
         # TODO Add when aa classification is implemented
         raise NotImplementedError
-    elif order == "hydropathy":
+    elif order_by == "hydropathy":
         sorted_aa = sorted(list(freq.keys()), key=lambda aa: HYDROPATHY_INDICES[aa])
         fig.update_xaxes(categoryorder="array", categoryarray=sorted_aa)
-    elif order == "weight":
+    elif order_by == "weight":
         sorted_aa = sorted(list(freq.keys()), key=lambda aa: AA_WEIGHTS[aa])
         fig.update_xaxes(categoryorder="array", categoryarray=sorted_aa)
     else:
-        raise ValueError(f"Unknown option for sorting amino acids: {order}.")
+        raise ValueError(f"Unknown option for sorting amino acids: {order_by}.")
     return fig
 
 

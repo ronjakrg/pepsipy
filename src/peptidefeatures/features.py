@@ -189,4 +189,8 @@ def isoelectric_point(seq: str, option: str) -> float:
 
 
 def aromaticity(seq: str) -> float:
-    return -1.0
+    """ """
+    freq = aa_frequency(seq)
+    len = seq_length(seq)
+    num_aromatic = freq["F"] + freq["Y"] + freq["W"]
+    return round(num_aromatic / len, 3)

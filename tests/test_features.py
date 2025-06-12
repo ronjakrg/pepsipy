@@ -128,6 +128,9 @@ def test_compute_features():
     res_grouped = res.groupby("Sequence")["GRAVY"].nunique()
     assert (res_grouped <= 1).all()
 
+
 def test_aromaticity():
     assert pytest.approx(0.0) == aromaticity("PEPTIDE")
-    assert pytest.approx(0.08) == aromaticity("PKMMDHQPIKTYWCMIGKPNREEIEIAKKMMAEMTDNDWPLHQMPFCSKL")
+    assert pytest.approx(0.08) == aromaticity(
+        "PKMMDHQPIKTYWCMIGKPNREEIEIAKKMMAEMTDNDWPLHQMPFCSKL"
+    )

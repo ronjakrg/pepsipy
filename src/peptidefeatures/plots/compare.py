@@ -11,6 +11,7 @@ def scatter_features(
     groups: list,
     feature_a: str,
     feature_b: str,
+    intensity_threshold: float,
 ) -> go.Figure:
     """
     Creates a scatter plot to compare two features across groups.
@@ -35,6 +36,7 @@ def box_feature(
     df: pd.DataFrame,
     groups: list,
     feature: str,
+    intensity_threshold: float,
 ) -> go.Figure:
     """
     Creates a box plot to compare a feature between groups.

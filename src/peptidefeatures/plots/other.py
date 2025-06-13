@@ -17,13 +17,13 @@ from peptidefeatures.features import aa_frequency, aa_classification
 
 def aa_distribution(
     seq: str,
-    order_by: str = "category ascending",
+    order_by: str = "frequency",
     show_all: bool = False,
 ) -> go.Figure:
     """
     Computes a bar plot showing the frequency distribution for a given sequence.
         seq: Given sequence
-        order: Specification of how the amino acids should be sorted, can be any of "frequency", "alphabetical", "classes chemical", "classes charge", "hydropathy" or "weight".
+        order_by: Specification of how the amino acids should be sorted, can be any of "frequency", "alphabetical", "classes chemical", "classes charge", "hydropathy" or "weight".
         show_all: Specification if all amino acids should be listed, even when not found in the sequence
     """
     freq = aa_frequency(seq)

@@ -13,6 +13,7 @@ from peptidefeatures.features import (
     three_letter_code,
     compute_features,
     aromaticity,
+    aa_classification,
 )
 
 # Any function that calls one of these functions is already covered by a test for invalid amino acids.
@@ -134,3 +135,27 @@ def test_aromaticity():
     assert pytest.approx(0.08) == aromaticity(
         "PKMMDHQPIKTYWCMIGKPNREEIEIAKKMMAEMTDNDWPLHQMPFCSKL"
     )
+
+
+def test_aa_classification():
+    assert {
+        "Aliphatic": 7,
+        "Sulfur": 4,
+        "Hydroxyl": 9,
+        "Basic": 6,
+        "Acidic": 2,
+        "Amide": 4,
+        "Other": 18,
+    } == aa_classification(
+        "FIHIPNAWWGADCWCRTWRMQPKSWVFFSQTGAWTFPCPESIKTKTSWNP", "chemical"
+    )
+    assert {
+        "Non-polar": 29,
+        "Uncharged": 13,
+        "Charged": 8,
+    } == aa_classification(
+        "FIHIPNAWWGADCWCRTWRMQPKSWVFFSQTGAWTFPCPESIKTKTSWNP", "charge"
+    )
+    with pytest.raises(ValueError) as e:
+        aa_classification("PEPTIDE", "foo")
+    assert "Unknown option" in str(e.value)

@@ -17,6 +17,8 @@ from peptidefeatures.constants import (
     AA_WEIGHTS,
     HYDROPATHY_INDICES,
     WATER,
+    CHEMICAL_CLASS,
+    CHARGE_CLASS,
 )
 from peptidefeatures.utils import sanitize_seq, get_distinct_seq, get_column_name
 
@@ -32,6 +34,7 @@ def compute_features(df: pd.DataFrame) -> pd.DataFrame:
 
     # TODO Accept parameters for choice of features and options
     isoelectric_point_option = "bjellqvist"
+    classification_option = "chemical"
 
     feature_to_func = {
         "Three Letter Code": three_letter_code,
@@ -44,6 +47,7 @@ def compute_features(df: pd.DataFrame) -> pd.DataFrame:
         "Frequency of AA": aa_frequency,
         "GRAVY": gravy,
         "Aromaticity": aromaticity,
+        "Classification": partial(aa_classification, classify_by=classification_option),
     }
     for feature, func in feature_to_func.items():
         sequences[feature] = sequences[seq_col_name].apply(func)
@@ -156,10 +160,10 @@ def molecular_formula(seq: str) -> str:
 
 def isoelectric_point(seq: str, option: str = "bjellqvist") -> float:
     """
-    Computes the theoretical pI of a given sequence.
-    Option "kozlowski" uses IPC 2.0 (Kozlowski, 2021) to predict the pI
-    with the pretrained model IPC2.peptide.svr19.
-    Option "bjellqvist" uses the biopython package (Bjellqvist, 1993).
+    Computes the theoretical pI of a given sequence. One can choose between IPC 2.0 (Kozlowski, 2021) to predict
+    the pI with the pretrained model IPC2.peptide.svr19 or biopython package based on (Bjellqvist, 1993)
+        seq: Given sequence
+        option: Specification of which approach to use, can be "bjellqvist" or "kozlowski"
     """
     clean_seq = sanitize_seq(seq)
 
@@ -198,5 +202,26 @@ def aromaticity(seq: str) -> float:
     """
     freq = aa_frequency(seq)
     seq_len = seq_length(seq)
-    num_aromatic = freq["F"] + freq["Y"] + freq["W"]
+    num_aromatic = sum(freq[aa] for aa in ["F", "Y", "W"])
     return round(num_aromatic / seq_len, 3)
+
+
+def aa_classification(seq: str, classify_by: str = "chemical") -> dict:
+    """
+    Computes the absolute frequency of each class (Pommié et al., 2004).
+        seq: Given sequence
+        classify_by: Specification of how the amino acids should be classified, can be "chemical" or "charge".
+    """
+    freq = aa_frequency(seq)
+    if classify_by == "chemical":
+        return {
+            _class: sum(freq[aa] for aa in aminos)
+            for _class, aminos in CHEMICAL_CLASS.items()
+        }
+    elif classify_by == "charge":
+        return {
+            _class: sum(freq[aa] for aa in aminos)
+            for _class, aminos in CHARGE_CLASS.items()
+        }
+    else:
+        raise ValueError(f"Unknown option: {classify_by}")

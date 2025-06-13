@@ -5,7 +5,7 @@ import pandas as pd
 from constants import TEST_DATA
 from peptidefeatures.utils import (
     sanitize_seq,
-    get_group,
+    find_group,
     get_column_name,
     get_distinct_seq,
 )
@@ -15,11 +15,11 @@ def test_sanitize_seq():
     assert "PEPTIDE" == sanitize_seq("pEPtiDe :)")
 
 
-def test_get_group():
+def test_find_group():
     groups = ["AD", "CTR"]
-    assert "AD" == get_group("AD01_C1_INSOLUBLE_01", groups)
-    assert "None" == get_group("AD01_C1_INSOLUBLE_01", None)
-    assert "None" == get_group(":)", groups)
+    assert "AD" == find_group("AD01_C1_INSOLUBLE_01", groups)
+    assert "None" == find_group("AD01_C1_INSOLUBLE_01", None)
+    assert "None" == find_group(":)", groups)
 
 
 def test_get_column_name():

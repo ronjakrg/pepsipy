@@ -123,13 +123,77 @@ HYDROPATHY_INDICES = {
     "Y": -1.3,
 }
 
+# Taken from Pommiè et al., 2004
+# https://doi.org/10.1002/jmr.647
+CHEMICAL_CLASS = {
+    "Aliphatic": ["I", "L", "V", "A"],
+    "Sulfur": ["M", "C"],
+    "Hydroxyl": ["T", "S"],
+    "Basic": ["K", "R", "H"],
+    "Acidic": ["E", "D"],
+    "Amide": ["Q", "N"],
+    "Other": ["F", "W", "Y", "P", "G"],
+}
+CHEMICAL_CLASS_PER_AA = {
+    "I": "Aliphatic",
+    "L": "Aliphatic",
+    "V": "Aliphatic",
+    "A": "Aliphatic",
+    "M": "Sulfur",
+    "C": "Sulfur",
+    "T": "Hydroxyl",
+    "S": "Hydroxyl",
+    "K": "Basic",
+    "R": "Basic",
+    "H": "Basic",
+    "E": "Acidic",
+    "D": "Acidic",
+    "Q": "Amide",
+    "N": "Amide",
+    "F": "Other",
+    "W": "Other",
+    "Y": "Other",
+    "P": "Other",
+    "G": "Other",
+}
+CHARGE_CLASS = {
+    "Non-polar": ["F", "W", "I", "L", "M", "V", "C", "P", "A", "G"],
+    "Uncharged": ["Y", "T", "S", "Q", "N"],
+    "Charged": ["K", "R", "H", "E", "D"],
+}
+CHARGE_CLASS_PER_AA = {
+    "F": "Non-polar",
+    "W": "Non-polar",
+    "I": "Non-polar",
+    "L": "Non-polar",
+    "M": "Non-polar",
+    "V": "Non-polar",
+    "C": "Non-polar",
+    "P": "Non-polar",
+    "A": "Non-polar",
+    "G": "Non-polar",
+    "Y": "Uncharged",
+    "T": "Uncharged",
+    "S": "Uncharged",
+    "Q": "Uncharged",
+    "N": "Uncharged",
+    "K": "Charged",
+    "R": "Charged",
+    "H": "Charged",
+    "E": "Charged",
+    "D": "Charged",
+}
+
 # <---- MISCELLANEOUS ---->
 
 COLORS = [
-    "#4A536A",
     "#CE5A5A",
+    "#4A536A",
     "#87A8B9",
     "#F1A765",
+    "#A7A1B2",
+    "#8E3F25",
+    "#511D43",
 ]
 
 PROJECT_PATH = Path(__file__).resolve().parent.parent.parent

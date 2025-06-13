@@ -1,6 +1,10 @@
 import pandas as pd
 
-from peptidefeatures.constants import AA_LETTERS
+from peptidefeatures.constants import (
+    AA_LETTERS,
+    CHEMICAL_CLASS_PER_AA,
+    CHARGE_CLASS_PER_AA,
+)
 
 
 def sanitize_seq(seq: str) -> str:
@@ -12,7 +16,7 @@ def sanitize_seq(seq: str) -> str:
     return "".join(res for res in seq if res in AA_LETTERS)
 
 
-def get_group(name: str, groups: list) -> str:
+def find_group(name: str, groups: list) -> str:
     """
     Returns the group that is found in the prefix of the sample name.
     If no group was found, "None" will be returned.

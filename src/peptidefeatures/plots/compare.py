@@ -3,7 +3,7 @@ import plotly.graph_objects as go
 import pandas as pd
 
 from peptidefeatures.constants import COLORS
-from peptidefeatures.utils import get_group, get_column_name
+from peptidefeatures.utils import find_group, get_column_name
 
 
 def scatter_features(
@@ -27,7 +27,7 @@ def scatter_features(
     if intensity_threshold is not None:
         peptides = peptides[peptides[intensity_col] > intensity_threshold]
     # TODO Generalize sample column
-    peptides["Group"] = peptides["Sample"].apply(lambda x: get_group(x, groups))
+    peptides["Group"] = peptides["Sample"].apply(lambda x: find_group(x, groups))
 
     fig = px.scatter(
         peptides,
@@ -62,7 +62,7 @@ def box_feature(
     seq_col = get_column_name(peptides, "sequence")
     if intensity_threshold is not None:
         peptides = peptides[peptides[intensity_col] > intensity_threshold]
-    peptides["Group"] = peptides["Sample"].apply(lambda x: get_group(x, groups))
+    peptides["Group"] = peptides["Sample"].apply(lambda x: find_group(x, groups))
 
     fig = px.box(
         peptides,

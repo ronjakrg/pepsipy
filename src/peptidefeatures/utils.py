@@ -1,6 +1,10 @@
 import pandas as pd
 
-from peptidefeatures.constants import AA_LETTERS
+from peptidefeatures.constants import (
+    AA_LETTERS,
+    CHEMICAL_CLASS_PER_AA,
+    CHARGE_CLASS_PER_AA,
+)
 
 
 def sanitize_seq(seq: str) -> str:

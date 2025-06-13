@@ -82,14 +82,17 @@ def hydropathy_plot(seq: str) -> go.Figure:
 def classification_plot(seq: str, classify_by: str) -> go.Figure:
     """ """
     classification = aa_classification(seq, classify_by)
-    df = pd.DataFrame(
-        {"Class": classification.keys(), "Frequency": classification.values()}
-    )
-    fig = px.pie(
+    df = pd.DataFrame({
+        "Class": classification.keys(),
+        "Frequency": classification.values()
+    })
+    fig = px.bar(
         df,
-        names="Class",
-        values="Frequency",
+        x="Class",
+        y="Frequency",
         title=f"Classification ({classify_by}) of {seq}",
+        color="Class",
         color_discrete_sequence=COLORS,
     )
+    fig.update_yaxes(tickmode="linear", tick0=0, dtick=1)
     return fig

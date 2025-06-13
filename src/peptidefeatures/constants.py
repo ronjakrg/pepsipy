@@ -143,10 +143,13 @@ CHARGE_CLASS = {
 # <---- MISCELLANEOUS ---->
 
 COLORS = [
-    "#4A536A",
     "#CE5A5A",
+    "#4A536A",
     "#87A8B9",
     "#F1A765",
+    "#A7A1B2",
+    "#8E3F25",
+    "#511D43",
 ]
 
 PROJECT_PATH = Path(__file__).resolve().parent.parent.parent

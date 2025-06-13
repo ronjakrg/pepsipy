@@ -57,9 +57,9 @@ def aa_distribution(
             [
                 {
                     "Amino Acid": aa,
-                    "Frequency": freq,
+                    "Frequency": count,
                 }
-                for aa, freq in freq.items()
+                for aa, count in freq.items()
             ]
         )
         if order_by == "classes chemical":

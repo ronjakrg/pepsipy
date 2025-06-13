@@ -90,5 +90,6 @@ def classification_plot(seq: str, classify_by: str) -> go.Figure:
         names="Class",
         values="Frequency",
         title=f"Classification ({classify_by}) of {seq}",
+        color_discrete_sequence=COLORS,
     )
     return fig

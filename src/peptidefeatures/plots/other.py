@@ -13,7 +13,7 @@ def aa_distribution(
 ) -> go.Figure:
     """
     Computes a bar plot showing the frequency distribution for a given sequence.
-        seq: Sequence which amino acids are analysed
+        seq: Given sequence
         order: Specification of how the amino acids should be sorted, can be any of "frequency", "alphabetical", "classification", "hydropathy" or "weight".
         show_all: Specification if all amino acids should be listed, even when not found in the sequence
     """
@@ -79,8 +79,12 @@ def hydropathy_plot(seq: str) -> go.Figure:
     return fig
 
 
-def classification_plot(seq: str, classify_by: str) -> go.Figure:
-    """ """
+def classification_plot(seq: str, classify_by: str = "chemical") -> go.Figure:
+    """
+    Computes a bar plot showing the frequency of each amino acid class based on (Pommié et al., 2004).
+        seq: Given sequence
+        classify_by: Specification of how the amino acids should be classified, can be "chemical" or "charge".
+    """
     classification = aa_classification(seq, classify_by)
     df = pd.DataFrame(
         {"Class": classification.keys(), "Frequency": classification.values()}

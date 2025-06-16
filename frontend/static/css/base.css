@@ -4,13 +4,43 @@
 .bg-primary {
   background-color: var(--bs-primary) !important;
 }
-.text-primary {
-  color: var(--bs-primary) !important;
+.btn-purple {
+  color: #ffffff;
+  background-color: #511D43;
+  border: none;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
-.btn-primary {
-  --bs-btn-bg: var(--bs-primary) !important;
-  --bs-btn-border-color: var(--bs-primary) !important;
+.btn-purple:hover,
+.btn-purple:focus {
+  color: #ffffff;
+  background-color: #33122b;
+  text-decoration: none;
+}
+.btn-gray {
+  font-size: 0.8rem;
+  color: #ffffff;
+  background-color: #999999;
+  border: none;
+  padding: 0.4rem 1rem;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  margin: 0 0 0.5rem 0;
+}
+.btn-gray:hover,
+.btn-gray:focus {
+  color: #ffffff;
+  background-color: #888888;
+  text-decoration: none;
 }
 .table th {
   font-weight: 400 !important;
+}
+.footer {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  background: #ffffff;
+  padding: 1rem;
+  text-align: left;
+  z-index: 1000;
 }

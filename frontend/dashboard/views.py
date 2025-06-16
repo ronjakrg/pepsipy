@@ -30,9 +30,10 @@ def overview(request):
             results = compute_features(df=df, options=options)
             # Get data for peptide of interest
             matched = results[results["Sequence"] == seq]
+            # TODO Try not to hardcode this and not include the data used for the plot
             matched = matched.drop(
                 columns=["Sample", "Protein ID", "Sequence", "Intensity", "PEP"]
-            )  # TODO Try not to hardcode this
+            )  
             if not matched.empty:
                 peptide_results = matched.iloc[0].to_dict()
             else:

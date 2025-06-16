@@ -1,4 +1,6 @@
-{% extends "base.html" %} {% load static %} {% block content %}
+{% extends "base.html" %} {% load static %} {% block js %}
+<script type="text/javascript" src="{% static 'js/overview.js' %}"></script>
+{% endblock %} {% block content %}
 <div class="container py-4">
   <form method="post" class="row g-4">
     {% csrf_token %}
@@ -14,6 +16,20 @@
       </div>
       {% endfor %}
       <h5>Select peptide features</h5>
+      <button
+        type="button"
+        class="btn btn-gray js-toggle-checkboxes"
+        data-checked="true"
+      >
+        Select all
+      </button>
+      <button
+        type="button"
+        class="btn btn-gray js-toggle-checkboxes"
+        data-checked="false"
+      >
+        Unselect all
+      </button>
       <!-- Feature selection -->
       {% for field in peptide_form %}
       <div class="form-group mb-2">
@@ -23,16 +39,18 @@
         </label>
         {% else %}
         <div class="ms-4">
-          <label for="{{ field.id_for_label }}">
-          {{ field.label }}
-        </label>
-        {{ field }}
+          <label for="{{ field.id_for_label }}"> {{ field.label }} </label>
+          {{ field }}
         </div>
         {% endif %}
       </div>
       {% endfor %}
-
-      <button type="submit" class="btn btn-primary">Calculate</button>
+      <div
+        class="position-sticky bg-white"
+        style="bottom: 0; padding: 1rem 1rem 1rem 0"
+      >
+        <button type="submit" class="btn btn-purple">Calculate</button>
+      </div>
     </div>
 
     <!-- DIVIDER -->

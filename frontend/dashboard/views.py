@@ -1,7 +1,6 @@
 from django.shortcuts import render
-import plotly
 
-from .forms import FeatureForm
+from .forms import GeneralForm, PeptideForm
 from peptidefeatures.features import molecular_formula
 from peptidefeatures.plots.other import aa_distribution
 
@@ -11,9 +10,10 @@ def overview(request):
     peptide_results = {}
     peptide_plots = []
     if request.method == "POST":
-        form = FeatureForm(request.POST)
-        if form.is_valid():
-            peptide_of_interest = form.cleaned_data["peptide_of_interest"]
+        general_form = GeneralForm(request.POST)
+        peptide_form = PeptideForm(request.POST)
+        if general_form.is_valid() and peptide_form.is_valid():
+            peptide_of_interest = general_form.cleaned_data["peptide_of_interest"]
             formula = molecular_formula(peptide_of_interest)
             peptide_results = {
                 "Three letter code": "",
@@ -27,15 +27,21 @@ def overview(request):
             plot = aa_distribution(peptide_of_interest, "classes chemical", True)
             peptide_plots.append(plot.to_html())
     else:
-        form = FeatureForm()
+        general_form = GeneralForm()
+        peptide_form = PeptideForm()
 
     return render(
         request,
         "overview.html",
         {
-            "form": form,
+            "general_form": general_form,
+            "peptide_form": peptide_form,
+            "dataset_form": "",
+
             "peptide_of_interest": peptide_of_interest,
             "peptide_results": peptide_results,
             "peptide_plots": peptide_plots,
+
+            "dataset_plots": "",
         },
     )

@@ -3,21 +3,31 @@
   <form method="post" class="row g-4">
     {% csrf_token %}
 
-    <!-- FORM -->
+    <!-- FORMS -->
     <div class="col-md-3">
-      <h4>Available Peptide Features</h4>
-
-      {% for field in form %}
+      <h5>Welcome to PEPSI Dashboard!</h5>
+      <!-- General info -->
+      {% for field in general_form %}
+      <div class="form-group mb-2">
+        <label for="{{ field.id_for_label }}"> {{ field.label }} </label>
+        {{ field }}
+      </div>
+      {% endfor %}
+      <h5>Select peptide features</h5>
+      <!-- Feature selection -->
+      {% for field in peptide_form %}
       <div class="form-group mb-2">
         {% if field.field.widget.input_type == "checkbox" %} {{ field }}
         <label class="form-check-label" for="{{ field.id_for_label }}">
           <b>{{ field.label }}</b>
         </label>
         {% else %}
-        <label for="{{ field.id_for_label }}">
+        <div class="ms-4">
+          <label for="{{ field.id_for_label }}">
           {{ field.label }}
         </label>
         {{ field }}
+        </div>
         {% endif %}
       </div>
       {% endfor %}
@@ -32,7 +42,7 @@
 
     <!-- RESULTS -->
     <div class="col-md-8">
-      <h4>Results for peptide of interest: {{ peptide_of_interest }}</h4>
+      <h5>Results for peptide of interest: {{ peptide_of_interest }}</h5>
       <table class="table mb-3 w-auto">
         <tbody>
           {% for label, value in peptide_results.items %}

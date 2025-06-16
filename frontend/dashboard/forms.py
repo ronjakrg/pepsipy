@@ -1,18 +1,20 @@
 from django import forms
 
 
-class FeatureForm(forms.Form):
-    dataset_name = forms.CharField(
+class GeneralForm(forms.Form):
+    data_name = forms.CharField(
         label="Name of dataset in /data (.csv)",
         max_length=100,
         widget=forms.TextInput(attrs={"class": "form-control"}),
     )
     peptide_of_interest = forms.CharField(
-        label="Peptide of interest",
+        label="Peptide sequence of interest",
         max_length=100,
         widget=forms.TextInput(attrs={"class": "form-control"}),
     )
-    # Features & Options
+
+
+class PeptideForm(forms.Form):
     three_letter_code = forms.BooleanField(
         label="Three letter code",
         required=False,
@@ -50,3 +52,38 @@ class FeatureForm(forms.Form):
         label="Aromaticity",
         required=False,
     )
+    aa_distribution = forms.BooleanField(
+        label="📈 Frequency of amino acids",
+        required=False,
+    )
+    aa_distribution_order = forms.ChoiceField(
+        label="Order of amino acids",
+        choices=(
+            ("frequency", "Frequency"),
+            ("alphabetical", "Alphabetically"),
+            ("classes chemical", "Chemical classes"),
+            ("classes charge", "Charge classes"),
+            ("hydropathy", "Hydropathy index"),
+            ("weight", "Molecular weight"),
+        ),
+        required=False,
+        widget=forms.Select(attrs={"class": "form-control"}),
+    )
+    hydropathy_profile = forms.BooleanField(
+        label="📈 Hydropathy profile",
+        required=False,
+    )
+    classification = forms.BooleanField(
+        label="📈 Classification",
+        required=False,
+    )
+    classification_class = forms.ChoiceField(
+        label="Class",
+        choices=(
+            ("chemical", "Chemical"),
+            ("charge", "Charge"),
+        ),
+        widget=forms.Select(attrs={"class": "form-control"}),
+    )
+
+# class DatasetForm(forms.Form):

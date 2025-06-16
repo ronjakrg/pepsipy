@@ -26,19 +26,19 @@ from peptidefeatures.utils import sanitize_seq, get_distinct_seq, get_column_nam
 
 @dataclass
 class FeatureOptions:
-    three_letter_code: bool = (False,)
-    molecular_formula: bool = (False,)
-    seq_length: bool = (False,)
-    molecular_weight: bool = (False,)
-    gravy: bool = (False,)
-    isoelectric_point: bool = (False,)
-    isoelectric_point_method: str = ("bjellqvist",)
-    aromaticity: bool = (False,)
-    aa_distribution: bool = (False,)
-    aa_distribution_order: str = ("frequency",)
-    hydropathy_profile: bool = (False,)
-    classification: bool = (False,)
-    classification_class: str = ("chemical",)
+    three_letter_code: bool = False
+    molecular_formula: bool = False
+    seq_length: bool = False
+    molecular_weight: bool = False
+    gravy: bool = False
+    isoelectric_point: bool = False
+    isoelectric_point_method: str = "bjellqvist"
+    aromaticity: bool = False
+    aa_distribution: bool = False
+    aa_distribution_order: str = "frequency"
+    hydropathy_profile: bool = False
+    classification: bool = False
+    classification_class: str = "chemical"
 
 
 def compute_features(df: pd.DataFrame, options: FeatureOptions) -> pd.DataFrame:
@@ -53,7 +53,7 @@ def compute_features(df: pd.DataFrame, options: FeatureOptions) -> pd.DataFrame:
 
     # Mapping from option param to (column name, function)
     feature_mapping = {
-        "three_letter_code": ("Three Letter Code", three_letter_code),
+        "three_letter_code": ("Three letter code", three_letter_code),
         "molecular_formula": ("Molecular formula", molecular_formula),
         "molecular_weight": ("Molecular weight", molecular_weight),
         "isoelectric_point": (

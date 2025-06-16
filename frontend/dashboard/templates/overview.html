@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% load static %}
+{# params: text #}
+
+{% block css %}
+{% endblock %}
+
+{% block js %}
+{% endblock %}
+
+{% block content %}
+    <div class="wrapper">
+        <div class="mb-3" id="text">
+            {{ text }}
+        </div>
+    </div>
+{% endblock %}

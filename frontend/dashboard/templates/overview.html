@@ -1,17 +1,39 @@
 {% extends "base.html" %}
 {% load static %}
-{# params: text #}
-
-{% block css %}
-{% endblock %}
-
-{% block js %}
-{% endblock %}
+{# params: form, results #}
 
 {% block content %}
-    <div class="wrapper">
-        <div class="mb-3" id="text">
-            {{ text }}
+<div class="container py-4">
+  <form method="post" class="row g-4">
+    {% csrf_token %}
+
+    <!-- FORM -->
+    <div class="col-md-3">
+        <h4>Available Peptide Features</h4>
+        <div class="mb-3">
+            {{ form.dataset_name.label_tag }}
+            {{ form.dataset_name }}
         </div>
+        <div class="mb-3">
+            {{ form.peptide_of_interest.label_tag }}
+            {{ form.peptide_of_interest }}
+        </div>
+        <button type="submit" class="btn btn-primary">Calculate</button>
     </div>
+
+    <!-- DIVIDER -->
+    <div class="col-md-1 d-flex justify-content-center">
+      <div style="border-left:1px solid #ccc; height:100%;"></div>
+    </div>
+
+    <!-- RESULTS -->
+    <div class="col-md-8">
+      <h4>Results</h4>
+      <div class="mb-3">
+        Peptide of interest was {{ results.peptide_of_interest }} <br>
+        Calculated molecular formula is {{ results.formula }}
+      </div>
+    </div>
+  </form>
+</div>
 {% endblock %}

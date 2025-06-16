@@ -1,3 +1,13 @@
-.pepsi-navbar {
-    background-color: #511D43;
+:root {
+  --bs-primary: #511D43;
+}
+.bg-primary {
+  background-color: var(--bs-primary) !important;
+}
+.text-primary {
+  color: var(--bs-primary) !important;
+}
+.btn-primary {
+  --bs-btn-bg: var(--bs-primary) !important;
+  --bs-btn-border-color: var(--bs-primary) !important;
 }

@@ -53,41 +53,20 @@ def compute_features(df: pd.DataFrame, options: FeatureOptions) -> pd.DataFrame:
 
     # Mapping from option param to (column name, function)
     feature_mapping = {
-        "three_letter_code": (
-            "Three Letter Code", 
-            three_letter_code
-        ),
-        "molecular_formula": (
-            "Molecular formula",
-            molecular_formula
-        ),
-        "molecular_weight": (
-            "Molecular weight",
-            molecular_weight
-        ),
+        "three_letter_code": ("Three Letter Code", three_letter_code),
+        "molecular_formula": ("Molecular formula", molecular_formula),
+        "molecular_weight": ("Molecular weight", molecular_weight),
         "isoelectric_point": (
             "Isoelectric point",
-            partial(isoelectric_point, option=options.isoelectric_point_method)
+            partial(isoelectric_point, option=options.isoelectric_point_method),
         ),
-        "seq_length": (
-            "Sequence length",
-            seq_length
-        ),
-        "aa_distribution": (
-            "Frequency of AA",
-            aa_frequency
-        ),
-        "gravy": (
-            "GRAVY",
-            gravy
-        ),
-        "aromaticity": (
-            "Aromaticity",
-            aromaticity
-        ),
+        "seq_length": ("Sequence length", seq_length),
+        "aa_distribution": ("Frequency of AA", aa_frequency),
+        "gravy": ("GRAVY", gravy),
+        "aromaticity": ("Aromaticity", aromaticity),
         "classification": (
             "Classification",
-            partial(aa_classification, classify_by=options.classification_class)
+            partial(aa_classification, classify_by=options.classification_class),
         ),
     }
     # Filter features that got True in given options

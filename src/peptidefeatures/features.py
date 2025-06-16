@@ -4,6 +4,7 @@ from pathlib import Path
 import pickle
 import string
 import sys
+from dataclasses import dataclass
 
 from Bio.SeqUtils import IsoelectricPoint
 import numpy as np
@@ -23,33 +24,80 @@ from peptidefeatures.constants import (
 from peptidefeatures.utils import sanitize_seq, get_distinct_seq, get_column_name
 
 
-def compute_features(df: pd.DataFrame) -> pd.DataFrame:
+@dataclass
+class FeatureOptions:
+    three_letter_code: bool = (False,)
+    molecular_formula: bool = (False,)
+    seq_length: bool = (False,)
+    molecular_weight: bool = (False,)
+    gravy: bool = (False,)
+    isoelectric_point: bool = (False,)
+    isoelectric_point_method: str = ("bjellqvist",)
+    aromaticity: bool = (False,)
+    aa_distribution: bool = (False,)
+    aa_distribution_order: str = ("frequency",)
+    hydropathy_profile: bool = (False,)
+    classification: bool = (False,)
+    classification_class: str = ("chemical",)
+
+
+def compute_features(df: pd.DataFrame, options: FeatureOptions) -> pd.DataFrame:
     """
     Computes all selected features on a pd.DataFrame.
     The column containing the peptide sequence must contain the
     substring "sequence".
     """
+    # TODO Adjust docstring
     seq_col_name = get_column_name(df, "sequence")
     sequences = get_distinct_seq(df)
 
-    # TODO Accept parameters for choice of features and options
-    isoelectric_point_option = "bjellqvist"
-    classification_option = "chemical"
-
-    feature_to_func = {
-        "Three Letter Code": three_letter_code,
-        "Molecular formula": molecular_formula,
-        "Molecular weight": molecular_weight,
-        "Isoelectric point": partial(
-            isoelectric_point, option=isoelectric_point_option
+    # Mapping from option param to (column name, function)
+    feature_mapping = {
+        "three_letter_code": (
+            "Three Letter Code", 
+            three_letter_code
         ),
-        "Sequence length": seq_length,
-        "Frequency of AA": aa_frequency,
-        "GRAVY": gravy,
-        "Aromaticity": aromaticity,
-        "Classification": partial(aa_classification, classify_by=classification_option),
+        "molecular_formula": (
+            "Molecular formula",
+            molecular_formula
+        ),
+        "molecular_weight": (
+            "Molecular weight",
+            molecular_weight
+        ),
+        "isoelectric_point": (
+            "Isoelectric point",
+            partial(isoelectric_point, option=options.isoelectric_point_method)
+        ),
+        "seq_length": (
+            "Sequence length",
+            seq_length
+        ),
+        "aa_distribution": (
+            "Frequency of AA",
+            aa_frequency
+        ),
+        "gravy": (
+            "GRAVY",
+            gravy
+        ),
+        "aromaticity": (
+            "Aromaticity",
+            aromaticity
+        ),
+        "classification": (
+            "Classification",
+            partial(aa_classification, classify_by=options.classification_class)
+        ),
     }
-    for feature, func in feature_to_func.items():
+    # Filter features that got True in given options
+    chosen_features = {
+        col: func
+        for feature, (col, func) in feature_mapping.items()
+        if getattr(options, feature)
+    }
+
+    for feature, func in chosen_features.items():
         sequences[feature] = sequences[seq_col_name].apply(func)
     merged = pd.merge(
         df,

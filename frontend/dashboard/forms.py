@@ -85,5 +85,3 @@ class PeptideForm(forms.Form):
         ),
         widget=forms.Select(attrs={"class": "form-control"}),
     )
-
-# class DatasetForm(forms.Form):

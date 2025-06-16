@@ -26,7 +26,6 @@ def overview(request):
             seq = general_form.cleaned_data["peptide_of_interest"]
             # Compute feature data
             params = peptide_form.cleaned_data
-            print(params)
             options = FeatureOptions(**params)
             results = compute_features(df=df, options=options)
             # Filter data for peptide of interest

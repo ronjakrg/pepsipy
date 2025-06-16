@@ -5,7 +5,7 @@ from pathlib import Path
 
 from .forms import GeneralForm, PeptideForm
 from peptidefeatures.features import compute_features, FeatureOptions
-from peptidefeatures.plots.other import aa_distribution
+from peptidefeatures.plots.other import aa_distribution, hydropathy_plot, classification_plot
 
 
 def overview(request):
@@ -26,21 +26,37 @@ def overview(request):
             seq = general_form.cleaned_data["peptide_of_interest"]
             # Compute feature data
             params = peptide_form.cleaned_data
+            print(params)
             options = FeatureOptions(**params)
             results = compute_features(df=df, options=options)
-            # Get data for peptide of interest
+            # Filter data for peptide of interest
             matched = results[results["Sequence"] == seq]
-            # TODO Try not to hardcode this and not include the data used for the plot
+            # TODO Try not to hardcode this
             matched = matched.drop(
-                columns=["Sample", "Protein ID", "Sequence", "Intensity", "PEP"]
+                columns=["Sample", "Protein ID", "Sequence", "Intensity", "PEP", "Frequency of AA", "Classification"],
+                errors="ignore",
             )  
             if not matched.empty:
                 peptide_results = matched.iloc[0].to_dict()
             else:
                 peptide_results = {}
-
-            plot = aa_distribution(seq, "classes chemical", True)
-            peptide_plots.append(plot.to_html())
+            # Generate plots
+            if params["aa_distribution"]:
+                plot = aa_distribution(
+                    seq=seq,
+                    order_by=params["aa_distribution_order"],
+                    show_all=params["aa_distribution_showall"]
+                )
+                peptide_plots.append(plot.to_html())
+            if params["hydropathy_profile"]:
+                plot = hydropathy_plot(seq)
+                peptide_plots.append(plot.to_html())
+            if params["classification"]:
+                plot = classification_plot(
+                    seq=seq,
+                    classify_by=params["classification_class"],
+                )
+                peptide_plots.append(plot.to_html())
     else:
         general_form = GeneralForm()
         peptide_form = PeptideForm()

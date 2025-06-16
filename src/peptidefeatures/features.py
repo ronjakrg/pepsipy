@@ -36,6 +36,7 @@ class FeatureOptions:
     aromaticity: bool = False
     aa_distribution: bool = False
     aa_distribution_order: str = "frequency"
+    aa_distribution_showall: bool = False
     hydropathy_profile: bool = False
     classification: bool = False
     classification_class: str = "chemical"

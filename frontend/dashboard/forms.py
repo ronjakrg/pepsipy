@@ -11,6 +11,7 @@ class GeneralForm(forms.Form):
         label="Peptide sequence of interest",
         max_length=100,
         widget=forms.TextInput(attrs={"class": "form-control"}),
+        required=False,
     )
 
 
@@ -69,6 +70,15 @@ class PeptideForm(forms.Form):
         required=False,
         widget=forms.Select(attrs={"class": "form-control"}),
     )
+    aa_distribution_showall = forms.ChoiceField(
+        label="Show all amino acids",
+        choices=(
+            (True, "Yes"),
+            (False, "No")
+        ),
+        required=False,
+        widget=forms.Select(attrs={"class": "form-control"}),
+    )
     hydropathy_profile = forms.BooleanField(
         label="📈 Hydropathy profile",
         required=False,
@@ -85,3 +95,16 @@ class PeptideForm(forms.Form):
         ),
         widget=forms.Select(attrs={"class": "form-control"}),
     )
+
+    feature_fields = [
+        'three_letter_code',
+        'molecular_formula',
+        'seq_length',
+        'molecular_weight',
+        'gravy',
+        'isoelectric_point',
+        'aromaticity',
+        'aa_distribution',
+        'hydropathy_profile',
+        'classification',
+    ]

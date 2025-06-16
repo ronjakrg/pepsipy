@@ -33,7 +33,7 @@
       <!-- Feature selection -->
       {% for field in peptide_form %}
       <div class="form-group mb-2">
-        {% if field.field.widget.input_type == "checkbox" %} {{ field }}
+        {% if field.name in peptide_form.feature_fields %} {{ field }}
         <label class="form-check-label" for="{{ field.id_for_label }}">
           <b>{{ field.label }}</b>
         </label>

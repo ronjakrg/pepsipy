@@ -11,3 +11,6 @@
   --bs-btn-bg: var(--bs-primary) !important;
   --bs-btn-border-color: var(--bs-primary) !important;
 }
+.table th {
+  font-weight: 400 !important;
+}

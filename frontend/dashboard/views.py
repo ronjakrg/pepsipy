@@ -5,7 +5,11 @@ from pathlib import Path
 
 from .forms import GeneralForm, PeptideForm
 from peptidefeatures.features import compute_features, FeatureOptions
-from peptidefeatures.plots.other import aa_distribution, hydropathy_plot, classification_plot
+from peptidefeatures.plots.other import (
+    aa_distribution,
+    hydropathy_plot,
+    classification_plot,
+)
 
 
 def overview(request):
@@ -32,9 +36,17 @@ def overview(request):
             matched = results[results["Sequence"] == seq]
             # TODO Try not to hardcode this
             matched = matched.drop(
-                columns=["Sample", "Protein ID", "Sequence", "Intensity", "PEP", "Frequency of AA", "Classification"],
+                columns=[
+                    "Sample",
+                    "Protein ID",
+                    "Sequence",
+                    "Intensity",
+                    "PEP",
+                    "Frequency of AA",
+                    "Classification",
+                ],
                 errors="ignore",
-            )  
+            )
             if not matched.empty:
                 peptide_results = matched.iloc[0].to_dict()
             else:

@@ -72,10 +72,7 @@ class PeptideForm(forms.Form):
     )
     aa_distribution_showall = forms.ChoiceField(
         label="Show all amino acids",
-        choices=(
-            (True, "Yes"),
-            (False, "No")
-        ),
+        choices=((True, "Yes"), (False, "No")),
         required=False,
         widget=forms.Select(attrs={"class": "form-control"}),
     )
@@ -97,14 +94,14 @@ class PeptideForm(forms.Form):
     )
 
     feature_fields = [
-        'three_letter_code',
-        'molecular_formula',
-        'seq_length',
-        'molecular_weight',
-        'gravy',
-        'isoelectric_point',
-        'aromaticity',
-        'aa_distribution',
-        'hydropathy_profile',
-        'classification',
+        "three_letter_code",
+        "molecular_formula",
+        "seq_length",
+        "molecular_weight",
+        "gravy",
+        "isoelectric_point",
+        "aromaticity",
+        "aa_distribution",
+        "hydropathy_profile",
+        "classification",
     ]

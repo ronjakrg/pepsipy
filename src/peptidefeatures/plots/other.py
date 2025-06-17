@@ -68,11 +68,10 @@ def aa_distribution(
             df["Class"] = df["Amino Acid"].map(CHARGE_CLASS_PER_AA)
             classes = list(CHARGE_CLASS.keys())
 
-        # Number of bars per column in subplots
-        col_widths = []
-        for cls in classes:
-            num_bars = df[df["Class"] == cls].shape[0]
-            col_widths.append(num_bars)
+        # Filter occuring classes
+        classes = [cls for cls in classes if (df["Class"] == cls).any()]
+        # Compute column widths by number of aa per class
+        col_widths = [df[df["Class"] == cls].shape[0] for cls in classes]
         rel_column_widths = [w / sum(col_widths) for w in col_widths]
 
         # Create plot
@@ -86,13 +85,12 @@ def aa_distribution(
         )
         # Create bar per class
         CLASS_TO_COLOR = dict(zip(classes, COLORS))
-        # TODO Sort amino acids per class alphabetically
         for i, cls in enumerate(classes):
-            sub_df = df[df["Class"] == cls]
+            class_df = df[df["Class"] == cls].sort_values("Amino Acid")
             fig.add_trace(
                 go.Bar(
-                    x=sub_df["Amino Acid"],
-                    y=sub_df["Frequency"],
+                    x=class_df["Amino Acid"],
+                    y=class_df["Frequency"],
                     marker_color=CLASS_TO_COLOR[cls],
                     showlegend=False,
                 ),

@@ -1,5 +1,29 @@
 from django import forms
 
+# TODO Rethink mapping feature field -> parameter fields (to collapse them if feature is unchecked)
+
+feature_choices = (
+    ("Molecular weight", "Molecular weight"),
+    ("Isoelectric point", "Isoelectric point"),
+    ("Sequence length", "Sequence length"),
+    ("GRAVY", "GRAVY"),
+    ("Aromaticity", "Aromaticity"),
+)
+feature_fields = [
+    "three_letter_code",
+    "molecular_formula",
+    "seq_length",
+    "molecular_weight",
+    "gravy",
+    "isoelectric_point",
+    "aromaticity",
+    "aa_distribution",
+    "hydropathy_profile",
+    "classification",
+    "scatter_features",
+    "box_feature",
+]
+
 
 class GeneralForm(forms.Form):
     data_name = forms.CharField(
@@ -93,15 +117,56 @@ class PeptideForm(forms.Form):
         widget=forms.Select(attrs={"class": "form-control"}),
     )
 
-    feature_fields = [
-        "three_letter_code",
-        "molecular_formula",
-        "seq_length",
-        "molecular_weight",
-        "gravy",
-        "isoelectric_point",
-        "aromaticity",
-        "aa_distribution",
-        "hydropathy_profile",
-        "classification",
-    ]
+
+class DatasetForm(forms.Form):
+    scatter_features = forms.BooleanField(
+        label="📈 Compare features across groups",
+        required=False,
+    )
+    scatter_features_a = forms.ChoiceField(
+        label="Feature on x-axis",
+        choices=feature_choices,
+        widget=forms.Select(attrs={"class": "form-control"}),
+    )
+    scatter_features_b = forms.ChoiceField(
+        label="Feature on y-axis",
+        choices=feature_choices,
+        initial=("Sequence length", "Sequence length"),
+        widget=forms.Select(attrs={"class": "form-control"}),
+    )
+    scatter_features_groups = forms.CharField(
+        label="Group prefixes, seperated by semicolons",
+        max_length=100,
+        required=False,
+        initial="AD; CTR",
+        widget=forms.TextInput(attrs={"class": "form-control"}),
+    )
+    scatter_features_intensity = forms.FloatField(
+        label="Intensity threshold",
+        required=False,
+        initial=0.01,
+        widget=forms.NumberInput(attrs={"class": "form-control"}),
+    )
+    box_feature = forms.BooleanField(
+        label="📈 Compare a feature across groups",
+        required=False,
+    )
+    box_feature_a = forms.ChoiceField(
+        label="Feature",
+        choices=feature_choices,
+        initial=("GRAVY", "GRAVY"),
+        widget=forms.Select(attrs={"class": "form-control"}),
+    )
+    box_feature_groups = forms.CharField(
+        label="Group prefixes, seperated by semicolons",
+        max_length=100,
+        required=False,
+        initial="AD; CTR",
+        widget=forms.TextInput(attrs={"class": "form-control"}),
+    )
+    box_feature_intensity = forms.FloatField(
+        label="Intensity threshold",
+        required=False,
+        initial=0.01,
+        widget=forms.NumberInput(attrs={"class": "form-control"}),
+    )

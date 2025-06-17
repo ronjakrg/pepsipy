@@ -3,34 +3,42 @@ from django.conf import settings
 import pandas as pd
 from pathlib import Path
 
-from .forms import GeneralForm, PeptideForm
+from .forms import GeneralForm, PeptideForm, DatasetForm, feature_fields
 from peptidefeatures.features import compute_features, FeatureOptions
 from peptidefeatures.plots.other import (
     aa_distribution,
     hydropathy_plot,
     classification_plot,
 )
+from peptidefeatures.plots.compare import scatter_features, box_feature
 
 
 def overview(request):
+    """
+    gen - General information
+    pep - Information / features on a specific peptide sequence of interest
+    data - Information / features on the whole dataset
+    """
     seq = ""
-    peptide_results = {}
-    peptide_plots = []
+    pep_results = {}
+    pep_plots = []
+    data_plots = []
     if request.method == "POST":
-        general_form = GeneralForm(request.POST)  # For general information
-        peptide_form = PeptideForm(request.POST)  # Relevant for peptide features
-        if general_form.is_valid() and peptide_form.is_valid():
+        gen_form = GeneralForm(request.POST)
+        pep_form = PeptideForm(request.POST)
+        data_form = DatasetForm(request.POST)
+        if gen_form.is_valid() and pep_form.is_valid() and data_form.is_valid():
             # Get data
             data_path = (
-                Path(settings.PROJECT_DIR)
-                / "data"
-                / general_form.cleaned_data["data_name"]
+                Path(settings.PROJECT_DIR) / "data" / gen_form.cleaned_data["data_name"]
             )
             df = pd.read_csv(data_path)
-            seq = general_form.cleaned_data["peptide_of_interest"]
+            seq = gen_form.cleaned_data["peptide_of_interest"]
+            pep_params = pep_form.cleaned_data
+            data_params = data_form.cleaned_data
+
             # Compute feature data
-            params = peptide_form.cleaned_data
-            options = FeatureOptions(**params)
+            options = FeatureOptions(**pep_params)
             results = compute_features(df=df, options=options)
             # Filter data for peptide of interest
             matched = results[results["Sequence"] == seq]
@@ -48,39 +56,67 @@ def overview(request):
                 errors="ignore",
             )
             if not matched.empty:
-                peptide_results = matched.iloc[0].to_dict()
+                pep_results = matched.iloc[0].to_dict()
             else:
-                peptide_results = {}
+                pep_results = {}
+
+            # TODO Rethink plot function calls
             # Generate plots
-            if params["aa_distribution"]:
+            if pep_params["aa_distribution"]:
                 plot = aa_distribution(
                     seq=seq,
-                    order_by=params["aa_distribution_order"],
-                    show_all=(params["aa_distribution_showall"] == "True"),
+                    order_by=pep_params["aa_distribution_order"],
+                    show_all=(pep_params["aa_distribution_showall"] == "True"),
                 )
-                peptide_plots.append(plot.to_html())
-            if params["hydropathy_profile"]:
+                pep_plots.append(plot.to_html())
+            if pep_params["hydropathy_profile"]:
                 plot = hydropathy_plot(seq)
-                peptide_plots.append(plot.to_html())
-            if params["classification"]:
+                pep_plots.append(plot.to_html())
+            if pep_params["classification"]:
                 plot = classification_plot(
                     seq=seq,
-                    classify_by=params["classification_class"],
+                    classify_by=pep_params["classification_class"],
                 )
-                peptide_plots.append(plot.to_html())
+                pep_plots.append(plot.to_html())
+            if data_params["scatter_features"]:
+                plot = scatter_features(
+                    df=results,
+                    groups=[
+                        grp.strip()
+                        for grp in data_params["scatter_features_groups"].split(";")
+                    ],
+                    feature_a=data_params["scatter_features_a"],
+                    feature_b=data_params["scatter_features_b"],
+                    intensity_threshold=data_params["scatter_features_intensity"],
+                )
+                data_plots.append(plot.to_html())
+            if data_params["box_feature"]:
+                plot = box_feature(
+                    df=results,
+                    groups=[
+                        grp.strip()
+                        for grp in data_params["box_feature_groups"].split(";")
+                    ],
+                    feature=data_params["box_feature_a"],
+                    intensity_threshold=data_params["box_feature_intensity"],
+                )
+                data_plots.append(plot.to_html())
     else:
-        general_form = GeneralForm()
-        peptide_form = PeptideForm()
+        gen_form = GeneralForm()
+        pep_form = PeptideForm()
+        data_form = DatasetForm()
 
+    fields = list(pep_form) + list(data_form)
     return render(
         request,
         "overview.html",
         {
-            "general_form": general_form,
-            "peptide_form": peptide_form,
-            "peptide_of_interest": seq,
-            "peptide_results": peptide_results,
-            "peptide_plots": peptide_plots,
-            "dataset_plots": "",
+            "gen_form": gen_form,
+            "fields": fields,
+            "seq": seq,
+            "peptide_results": pep_results,
+            "peptide_plots": pep_plots,
+            "dataset_plots": data_plots,
+            "feature_fields": feature_fields,
         },
     )

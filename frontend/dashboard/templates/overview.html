@@ -9,7 +9,7 @@
     <div class="col-md-3">
       <h5>Welcome to PEPSI Dashboard!</h5>
       <!-- General info -->
-      {% for field in general_form %}
+      {% for field in gen_form %}
       <div class="form-group mb-2">
         <label for="{{ field.id_for_label }}"> {{ field.label }} </label>
         {{ field }}
@@ -31,9 +31,9 @@
         Unselect all
       </button>
       <!-- Feature selection -->
-      {% for field in peptide_form %}
+      {% for field in fields %}
       <div class="form-group mb-2">
-        {% if field.name in peptide_form.feature_fields %} {{ field }}
+        {% if field.name in feature_fields %} {{ field }}
         <label class="form-check-label" for="{{ field.id_for_label }}">
           <b>{{ field.label }}</b>
         </label>
@@ -60,7 +60,7 @@
 
     <!-- RESULTS -->
     <div class="col-md-8">
-      <h5>Results for peptide of interest: {{ peptide_of_interest }}</h5>
+      <h5>Results for peptide of interest: {{ seq }}</h5>
       <table class="table mb-3 w-auto">
         <tbody>
           {% for label, value in peptide_results.items %}
@@ -72,6 +72,10 @@
         </tbody>
       </table>
       {% if peptide_plots %} {% for plot in peptide_plots %}
+      <div class="mb-3">{{ plot|safe }}</div>
+      {% endfor %} {% endif %}
+      <h5>Results for dataset</h5>
+      {% if dataset_plots %} {% for plot in dataset_plots %}
       <div class="mb-3">{{ plot|safe }}</div>
       {% endfor %} {% endif %}
     </div>

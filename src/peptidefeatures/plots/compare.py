@@ -5,6 +5,7 @@ import pandas as pd
 from peptidefeatures.constants import COLORS
 from peptidefeatures.utils import find_group, get_column_name
 
+# TODO Merge plot functions into one python file
 
 def scatter_features(
     df: pd.DataFrame,

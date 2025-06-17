@@ -29,7 +29,6 @@ def aa_distribution(
     freq = aa_frequency(seq)
     if not show_all:
         freq = {key: val for key, val in freq.items() if val > 0}
-
     if order_by in ["frequency", "alphabetical", "hydropathy", "weight"]:
         fig = px.bar(
             x=list(freq.keys()),

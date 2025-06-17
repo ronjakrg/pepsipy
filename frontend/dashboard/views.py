@@ -44,7 +44,7 @@ def overview(request):
                 plot = aa_distribution(
                     seq=seq,
                     order_by=params["aa_distribution_order"],
-                    show_all=params["aa_distribution_showall"]
+                    show_all=(params["aa_distribution_showall"] == "True"),
                 )
                 peptide_plots.append(plot.to_html())
             if params["hydropathy_profile"]:

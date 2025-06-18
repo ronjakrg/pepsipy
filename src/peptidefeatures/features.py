@@ -24,7 +24,7 @@ from peptidefeatures.constants import (
 from peptidefeatures.utils import sanitize_seq, get_distinct_seq, get_column_name
 
 
-@dataclass
+@dataclass  # TODO Rename to params?
 class FeatureOptions:
     three_letter_code: bool = False
     molecular_formula: bool = False
@@ -59,6 +59,7 @@ def compute_features(df: pd.DataFrame, params: FeatureOptions) -> pd.DataFrame:
         "gravy": ("GRAVY", gravy),
         "aromaticity": ("Aromaticity", aromaticity),
     }
+    # TODO Maybe move to utils because its useful for plots as well?
     # Filter features that got True in given options
     chosen_features = {
         col: func

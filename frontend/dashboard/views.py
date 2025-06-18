@@ -43,8 +43,8 @@ def overview(request):
 
         # Filter data for peptide of interest
         computed_peptide_features = get_features_for_seq(computed_features, seq)
-        
-        # Generate plots
+
+        # TODO Generate plots
         # for cls in PLOT_FORM_CLASSES:
         #     form = cls(data=request.POST or None)
         #     plot_forms.append(form)
@@ -52,7 +52,7 @@ def overview(request):
         #     if form.is_valid() and form.cleaned_data["select"]:
         #         params = {key: val for key, val in form.cleaned_data.items() if key != "select"}
         #         plot_params.append(params)
-        # plots = generate_plots(df=computed_features, seq=seq) # TODO Add params
+        # plots = generate_plots(df=computed_features, seq=seq)
     else:
         gen_form = GeneralForm()
 

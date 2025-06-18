@@ -17,7 +17,7 @@ from peptidefeatures.utils import find_group, get_column_name
 
 
 def generate_plots() -> list:
-    # TODO Generate all available plots
+    # TODO Generate all available plots, create PlotParams?
 
     # if pep_params["aa_distribution"]:
     #             plot = aa_distribution(
@@ -156,6 +156,7 @@ def aa_distribution(
     return fig
 
 
+# TODO Rename to profile?
 def hydropathy_plot(seq: str) -> go.Figure:
     """
     Computes a hydropathy profile plot for a given sequence.

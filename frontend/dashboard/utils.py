@@ -4,10 +4,9 @@ from django.conf import settings
 
 from .forms import FORM_TO_FUNCTION
 
+
 def load_data(name: str) -> pd.DataFrame:
-    data_path = (
-        Path(settings.PROJECT_DIR) / "data" / name
-    )
+    data_path = Path(settings.PROJECT_DIR) / "data" / name
     return pd.read_csv(data_path)
 
 
@@ -24,6 +23,7 @@ def get_params(forms: list) -> dict:
                 params.update({FORM_TO_FUNCTION[type(form)]: True})
                 result.update(params)
     return result
+
 
 def get_features_for_seq(data: pd.DataFrame, seq: str) -> dict:
     matched = data[data["Sequence"] == seq]

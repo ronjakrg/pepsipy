@@ -31,20 +31,23 @@
         Unselect all
       </button>
       <!-- Feature selection -->
-      {% for field in fields %}
+      {% for forms in forms_list %} {% for form in forms %} {% for field in form
+      %}
       <div class="form-group mb-2">
-        {% if field.name in feature_fields %} {{ field }}
-        <label class="form-check-label" for="{{ field.id_for_label }}">
+        {% if field.name == 'select' %}
+        <label class="form-check-label">
+          {{ field }}
           <b>{{ field.label }}</b>
         </label>
         {% else %}
         <div class="ms-4">
-          <label for="{{ field.id_for_label }}"> {{ field.label }} </label>
-          {{ field }}
+          <label class="form-check-label">
+            {{ field.label }} {{ field }}
+          </label>
         </div>
         {% endif %}
       </div>
-      {% endfor %}
+      {% endfor %} {% endfor %} {% endfor %}
       <div
         class="position-sticky bg-white"
         style="bottom: 0; padding: 1rem 1rem 1rem 0"
@@ -63,7 +66,7 @@
       <h5>Results for peptide of interest: {{ seq }}</h5>
       <table class="table mb-3 w-auto">
         <tbody>
-          {% for label, value in peptide_results.items %}
+          {% for label, value in computed_peptide_features.items %}
           <tr>
             <th scope="row">{{ label }}</th>
             <td>{{ value }}</td>
@@ -71,11 +74,8 @@
           {% endfor %}
         </tbody>
       </table>
-      {% if peptide_plots %} {% for plot in peptide_plots %}
-      <div class="mb-3">{{ plot|safe }}</div>
-      {% endfor %} {% endif %}
-      <h5>Results for dataset</h5>
-      {% if dataset_plots %} {% for plot in dataset_plots %}
+      <h5>Visualisations</h5>
+      {% if plots %} {% for plot in plots %}
       <div class="mb-3">{{ plot|safe }}</div>
       {% endfor %} {% endif %}
     </div>

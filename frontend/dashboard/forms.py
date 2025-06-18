@@ -1,6 +1,5 @@
 from django import forms
 
-# TODO Rethink mapping feature field -> parameter fields (to collapse them if feature is unchecked)
 
 feature_choices = (
     ("Molecular weight", "Molecular weight"),
@@ -9,20 +8,6 @@ feature_choices = (
     ("GRAVY", "GRAVY"),
     ("Aromaticity", "Aromaticity"),
 )
-feature_fields = [
-    "three_letter_code",
-    "molecular_formula",
-    "seq_length",
-    "molecular_weight",
-    "gravy",
-    "isoelectric_point",
-    "aromaticity",
-    "aa_distribution",
-    "hydropathy_profile",
-    "classification",
-    "scatter_features",
-    "box_feature",
-]
 
 
 class GeneralForm(forms.Form):
@@ -31,7 +16,7 @@ class GeneralForm(forms.Form):
         max_length=100,
         widget=forms.TextInput(attrs={"class": "form-control"}),
     )
-    peptide_of_interest = forms.CharField(
+    seq = forms.CharField(
         label="Peptide sequence of interest",
         max_length=100,
         widget=forms.TextInput(attrs={"class": "form-control"}),
@@ -39,33 +24,49 @@ class GeneralForm(forms.Form):
     )
 
 
-class PeptideForm(forms.Form):
-    three_letter_code = forms.BooleanField(
+class ThreeLetterCodeForm(forms.Form):
+    select = forms.BooleanField(
         label="Three letter code",
         required=False,
     )
-    molecular_formula = forms.BooleanField(
+    func = "three_letter_code"
+
+
+class MolecularFormulaForm(forms.Form):
+    select = forms.BooleanField(
         label="Molecular formula",
         required=False,
     )
-    seq_length = forms.BooleanField(
+
+
+class SeqLengthForm(forms.Form):
+    select = forms.BooleanField(
         label="Sequence length",
         required=False,
     )
-    molecular_weight = forms.BooleanField(
+
+
+class MolecularWeightForm(forms.Form):
+    select = forms.BooleanField(
         label="Molecular weight",
         required=False,
     )
-    gravy = forms.BooleanField(
+
+
+class GravyForm(forms.Form):
+    select = forms.BooleanField(
         label="GRAVY",
         required=False,
     )
-    isoelectric_point = forms.BooleanField(
+
+
+class IsoelectricPointForm(forms.Form):
+    select = forms.BooleanField(
         label="Isoelectric point",
         required=False,
     )
-    isoelectric_point_method = forms.ChoiceField(
-        label="Method",
+    isoelectric_point_option = forms.ChoiceField(
+        label="Option",
         choices=(
             ("bjellqvist", "Bjellqvist"),
             ("kozlowski", "IPC 2.0 by Kozlowski"),
@@ -73,15 +74,21 @@ class PeptideForm(forms.Form):
         required=False,
         widget=forms.Select(attrs={"class": "form-control"}),
     )
-    aromaticity = forms.BooleanField(
+
+
+class AromaticityForm(forms.Form):
+    select = forms.BooleanField(
         label="Aromaticity",
         required=False,
     )
-    aa_distribution = forms.BooleanField(
+
+
+class AaDistributionForm(forms.Form):
+    select = forms.BooleanField(
         label="📈 Frequency of amino acids",
         required=False,
     )
-    aa_distribution_order = forms.ChoiceField(
+    order_by = forms.ChoiceField(
         label="Order of amino acids",
         choices=(
             ("frequency", "Frequency"),
@@ -94,21 +101,27 @@ class PeptideForm(forms.Form):
         required=False,
         widget=forms.Select(attrs={"class": "form-control"}),
     )
-    aa_distribution_showall = forms.ChoiceField(
+    show_all = forms.ChoiceField(
         label="Show all amino acids",
         choices=((True, "Yes"), (False, "No")),
         required=False,
         widget=forms.Select(attrs={"class": "form-control"}),
     )
-    hydropathy_profile = forms.BooleanField(
+
+
+class HydropathyPlotForm(forms.Form):
+    select = forms.BooleanField(
         label="📈 Hydropathy profile",
         required=False,
     )
-    classification = forms.BooleanField(
+
+
+class ClassificationForm(forms.Form):
+    select = forms.BooleanField(
         label="📈 Classification",
         required=False,
     )
-    classification_class = forms.ChoiceField(
+    classify_by = forms.ChoiceField(
         label="Class",
         choices=(
             ("chemical", "Chemical"),
@@ -118,55 +131,75 @@ class PeptideForm(forms.Form):
     )
 
 
-class DatasetForm(forms.Form):
-    scatter_features = forms.BooleanField(
+class ScatterFeaturesForm(forms.Form):
+    select = forms.BooleanField(
         label="📈 Compare features across groups",
         required=False,
     )
-    scatter_features_a = forms.ChoiceField(
+    feature_a = forms.ChoiceField(
         label="Feature on x-axis",
         choices=feature_choices,
         widget=forms.Select(attrs={"class": "form-control"}),
     )
-    scatter_features_b = forms.ChoiceField(
+    feature_b = forms.ChoiceField(
         label="Feature on y-axis",
         choices=feature_choices,
         initial=("Sequence length", "Sequence length"),
         widget=forms.Select(attrs={"class": "form-control"}),
     )
-    scatter_features_groups = forms.CharField(
+    groups = forms.CharField(
         label="Group prefixes, seperated by semicolons",
         max_length=100,
         required=False,
         initial="AD; CTR",
         widget=forms.TextInput(attrs={"class": "form-control"}),
     )
-    scatter_features_intensity = forms.FloatField(
+    intensity_threshold = forms.FloatField(
         label="Intensity threshold",
         required=False,
         initial=0.01,
         widget=forms.NumberInput(attrs={"class": "form-control"}),
     )
-    box_feature = forms.BooleanField(
+
+
+class BoxFeatureForm(forms.Form):
+    select = forms.BooleanField(
         label="📈 Compare a feature across groups",
         required=False,
     )
-    box_feature_a = forms.ChoiceField(
+    feature = forms.ChoiceField(
         label="Feature",
         choices=feature_choices,
         initial=("GRAVY", "GRAVY"),
         widget=forms.Select(attrs={"class": "form-control"}),
     )
-    box_feature_groups = forms.CharField(
+    groups = forms.CharField(
         label="Group prefixes, seperated by semicolons",
         max_length=100,
         required=False,
         initial="AD; CTR",
         widget=forms.TextInput(attrs={"class": "form-control"}),
     )
-    box_feature_intensity = forms.FloatField(
+    intensity_threshold = forms.FloatField(
         label="Intensity threshold",
         required=False,
         initial=0.01,
         widget=forms.NumberInput(attrs={"class": "form-control"}),
     )
+
+
+FORM_TO_FUNCTION = {
+    ThreeLetterCodeForm: "three_letter_code",
+    MolecularFormulaForm: "seq_length",
+    MolecularWeightForm: "molecular_weight",
+    GravyForm: "gravy",
+    IsoelectricPointForm: "isoelectric_point",
+    AromaticityForm: "aromaticity",
+}
+PLOT_FORM_CLASSES = [
+    AaDistributionForm,
+    HydropathyPlotForm,
+    ClassificationForm,
+    ScatterFeaturesForm,
+    BoxFeatureForm,
+]

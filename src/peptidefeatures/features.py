@@ -32,17 +32,11 @@ class FeatureOptions:
     molecular_weight: bool = False
     gravy: bool = False
     isoelectric_point: bool = False
-    isoelectric_point_method: str = "bjellqvist"
+    isoelectric_point_option: str = "bjellqvist"
     aromaticity: bool = False
-    aa_distribution: bool = False
-    aa_distribution_order: str = "frequency"
-    aa_distribution_showall: bool = False
-    hydropathy_profile: bool = False
-    classification: bool = False
-    classification_class: str = "chemical"
 
 
-def compute_features(df: pd.DataFrame, options: FeatureOptions) -> pd.DataFrame:
+def compute_features(df: pd.DataFrame, params: FeatureOptions) -> pd.DataFrame:
     """
     Computes all selected features on a pd.DataFrame.
     The column containing the peptide sequence must contain the
@@ -59,22 +53,17 @@ def compute_features(df: pd.DataFrame, options: FeatureOptions) -> pd.DataFrame:
         "molecular_weight": ("Molecular weight", molecular_weight),
         "isoelectric_point": (
             "Isoelectric point",
-            partial(isoelectric_point, option=options.isoelectric_point_method),
+            partial(isoelectric_point, option=params.isoelectric_point_option),
         ),
         "seq_length": ("Sequence length", seq_length),
-        "aa_distribution": ("Frequency of AA", aa_frequency),
         "gravy": ("GRAVY", gravy),
         "aromaticity": ("Aromaticity", aromaticity),
-        "classification": (
-            "Classification",
-            partial(aa_classification, classify_by=options.classification_class),
-        ),
     }
     # Filter features that got True in given options
     chosen_features = {
         col: func
         for feature, (col, func) in feature_mapping.items()
-        if getattr(options, feature)
+        if getattr(params, feature)
     }
 
     for feature, func in chosen_features.items():

@@ -18,7 +18,48 @@ from peptidefeatures.utils import find_group, get_column_name
 
 def generate_plots() -> list:
     # TODO Generate all available plots
+
+    # if pep_params["aa_distribution"]:
+    #             plot = aa_distribution(
+    #                 seq=seq,
+    #                 order_by=pep_params["aa_distribution_order"],
+    #                 show_all=(pep_params["aa_distribution_showall"] == "True"),
+    #             )
+    #             pep_plots.append(plot.to_html())
+    #         if pep_params["hydropathy_profile"]:
+    #             plot = hydropathy_plot(seq)
+    #             pep_plots.append(plot.to_html())
+    #         if pep_params["classification"]:
+    #             plot = classification_plot(
+    #                 seq=seq,
+    #                 classify_by=pep_params["classification_class"],
+    #             )
+    #             pep_plots.append(plot.to_html())
+    #         if data_params["scatter_features"]:
+    #             plot = scatter_features(
+    #                 df=results,
+    #                 groups=[
+    #                     grp.strip()
+    #                     for grp in data_params["scatter_features_groups"].split(";")
+    #                 ],
+    #                 feature_a=data_params["scatter_features_a"],
+    #                 feature_b=data_params["scatter_features_b"],
+    #                 intensity_threshold=data_params["scatter_features_intensity"],
+    #             )
+    #             data_plots.append(plot.to_html())
+    #         if data_params["box_feature"]:
+    #             plot = box_feature(
+    #                 df=results,
+    #                 groups=[
+    #                     grp.strip()
+    #                     for grp in data_params["box_feature_groups"].split(";")
+    #                 ],
+    #                 feature=data_params["box_feature_a"],
+    #                 intensity_threshold=data_params["box_feature_intensity"],
+    #             )
+    #             data_plots.append(plot.to_html())
     pass
+
 
 def aa_distribution(
     seq: str,

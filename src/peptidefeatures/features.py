@@ -24,8 +24,8 @@ from peptidefeatures.constants import (
 from peptidefeatures.utils import sanitize_seq, get_distinct_seq, get_column_name
 
 
-@dataclass  # TODO Rename to params?
-class FeatureOptions:
+@dataclass
+class FeatureParams:
     three_letter_code: bool = False
     molecular_formula: bool = False
     seq_length: bool = False
@@ -36,7 +36,7 @@ class FeatureOptions:
     aromaticity: bool = False
 
 
-def compute_features(df: pd.DataFrame, params: FeatureOptions) -> pd.DataFrame:
+def compute_features(df: pd.DataFrame, params: FeatureParams) -> pd.DataFrame:
     """
     Computes all selected features on a pd.DataFrame.
     The column containing the peptide sequence must contain the

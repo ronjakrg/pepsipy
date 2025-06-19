@@ -3,7 +3,7 @@ from django.conf import settings
 import pandas as pd
 from pathlib import Path
 
-from peptidefeatures.features import compute_features, FeatureOptions
+from peptidefeatures.features import compute_features, FeatureParams
 from peptidefeatures.plots import generate_plots
 
 from .forms import *
@@ -38,7 +38,7 @@ def overview(request):
         # Compute features
         feature_params = get_params(feature_forms)
         computed_features = compute_features(
-            df=data, params=FeatureOptions(**feature_params)
+            df=data, params=FeatureParams(**feature_params)
         )
 
         # Filter data for peptide of interest

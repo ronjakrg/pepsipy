@@ -14,7 +14,7 @@ from peptidefeatures.features import (
     compute_features,
     aromaticity,
     aa_classification,
-    FeatureOptions,
+    FeatureParams,
 )
 
 # Any function that calls one of these functions is already covered by a test for invalid amino acids.
@@ -125,7 +125,7 @@ def test_external_ipc2_availability():
 
 
 def test_compute_features():
-    options = FeatureOptions(gravy=True)
+    options = FeatureParams(gravy=True)
     res = compute_features(df=TEST_DATA, params=options)
     assert "GRAVY" in res.columns
     assert "Molecular weight" not in res.columns

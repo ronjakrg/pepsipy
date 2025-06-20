@@ -11,7 +11,7 @@
 
     <!-- SIDEBAR CONTAINING FORMS -->
     <div class="col-md-3 border-end pe-4">
-      <h5>Welcome to PEPSI Dashboard!</h5>
+      <h5><b>Welcome to PEPSI Dashboard!</b></h5>
       <!-- General info -->
       {% for field in gen_form %}
       <div class="form-group mb-2">
@@ -61,39 +61,53 @@
 
     <!-- RESULTS -->
     <div class="col-md-9 ps-4">
-      <h5 class="title-with-icon">
-        <img src="{% static 'img/bookmark.svg' %}" alt="Bookmark Icon" class="me-1" width="20" height="20">
-        Results for peptide of interest: {{ seq }}
-      </h5>
-      <div class="row mb-3">
-        <div class="col">
-          <table class="table w-auto">
-            <tbody>
-              {% for label, value in computed_peptide_features.items %}
-              <tr>
-                <th scope="row">{{ label }}</th>
-                <td>{{ value }}</td>
-              </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-        </div>
-        <div class="col mt-2">
-          This peptide has X entries in the chosen datset.
-        </div>
-      </div>
-      
-      <h5 class="title-with-icon">
-        <img src="{% static 'img/bookmark.svg' %}" alt="Bookmark Icon" class="me-1" width="20" height="20">
-        Visualisations
-      </h5>
-      <div class="row row-cols-2">
-        {% for plot_html in plots %}
+      <!-- PEPTIDES -->
+      {% if gen_form.is_bound %}
+        {% if seq %}
+        <h5 class="title-with-icon">
+          <img src="{% static 'img/bookmark.svg' %}" class="me-1" width="18" height="18">
+          <b>Results for peptide of interest:</b>&nbsp; {{ seq }}
+        </h5>
+        <div class="row mb-3">
           <div class="col">
-            {{ plot_html|safe }}
+            <table class="table w-auto">
+              <tbody>
+                {% for label, value in computed_peptide_features.items %}
+                <tr>
+                  <th scope="row">{{ label }}</th>
+                  <td>{{ value }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
           </div>
-        {% endfor %}
-      </div>
+          <div class="col mt-2">
+            This peptide has X entries in selected dataset.
+          </div>
+        </div>
+        {% else %}
+        No peptide of interest selected.
+        {% endif %}
+        <!-- DATASET -->
+        <h5 class="title-with-icon">
+          <img src="{% static 'img/bookmark.svg' %}" class="me-1" width="18" height="18">
+          <b>Results for selected dataset</b>
+        </h5>
+        <div class="row row-cols-2">
+          {% for plot_html in plots %}
+            <div class="col">
+              {{ plot_html|safe }}
+            </div>
+          {% endfor %}
+        </div>
+
+      {% else %}
+      <!-- NO RESULTS SHOWN -->
+      <h5 class="title-with-icon">
+        <img src="{% static 'img/search.svg' %}" class="me-3" width="20" height="20">
+        No results available yet.
+      </h5>
+      {% endif %}
     </div>
   </form>
 </div>

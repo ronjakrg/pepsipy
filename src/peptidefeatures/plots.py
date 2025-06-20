@@ -1,3 +1,5 @@
+from dataclasses import dataclass
+from functools import partial
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
@@ -16,49 +18,66 @@ from peptidefeatures.features import aa_frequency, aa_classification
 from peptidefeatures.utils import find_group, get_column_name
 
 
-def generate_plots() -> list:
-    # TODO Generate all available plots, create PlotParams?
+@dataclass
+class PlotsParams:
+    # TODO Give default values for feature?
+    aa_distribution: bool = False
+    aa_distribution_order_by: str = "frequency"
+    aa_distribution_show_all: bool = False
+    hydropathy_profile: bool = False
+    classification: bool = False
+    classification_classify_by: str = "chemical"
+    compare_features: bool = False
+    compare_features_a: str = ""
+    compare_features_b: str = ""
+    compare_features_groups: list = None
+    compare_features_intensity_threshold: float = None
+    compare_feature: bool = False
+    compare_feature_a: str = ""
+    compare_feature_groups: list = None
+    compare_feature_intensity_threshold: float = None
 
-    # if pep_params["aa_distribution"]:
-    #             plot = aa_distribution(
-    #                 seq=seq,
-    #                 order_by=pep_params["aa_distribution_order"],
-    #                 show_all=(pep_params["aa_distribution_showall"] == "True"),
-    #             )
-    #             pep_plots.append(plot.to_html())
-    #         if pep_params["hydropathy_profile"]:
-    #             plot = hydropathy_plot(seq)
-    #             pep_plots.append(plot.to_html())
-    #         if pep_params["classification"]:
-    #             plot = classification_plot(
-    #                 seq=seq,
-    #                 classify_by=pep_params["classification_class"],
-    #             )
-    #             pep_plots.append(plot.to_html())
-    #         if data_params["scatter_features"]:
-    #             plot = scatter_features(
-    #                 df=results,
-    #                 groups=[
-    #                     grp.strip()
-    #                     for grp in data_params["scatter_features_groups"].split(";")
-    #                 ],
-    #                 feature_a=data_params["scatter_features_a"],
-    #                 feature_b=data_params["scatter_features_b"],
-    #                 intensity_threshold=data_params["scatter_features_intensity"],
-    #             )
-    #             data_plots.append(plot.to_html())
-    #         if data_params["box_feature"]:
-    #             plot = box_feature(
-    #                 df=results,
-    #                 groups=[
-    #                     grp.strip()
-    #                     for grp in data_params["box_feature_groups"].split(";")
-    #                 ],
-    #                 feature=data_params["box_feature_a"],
-    #                 intensity_threshold=data_params["box_feature_intensity"],
-    #             )
-    #             data_plots.append(plot.to_html())
-    pass
+
+def generate_plots(df: pd.DataFrame, seq: str, params: PlotsParams) -> list:
+    """
+    TODO
+    """
+    plots = []
+    if params.aa_distribution:
+        plot = aa_distribution(
+            seq=seq,
+            order_by=params.aa_distribution_order_by,
+            show_all=(params.aa_distribution_show_all == "True"),
+        )
+        plots.append(plot)
+    if params.hydropathy_profile:
+        plot = hydropathy_profile(seq)
+        plots.append(plot)
+    if params.classification:
+        plot = classification(
+            seq=seq,
+            classify_by=params.classification_classify_by,
+        )
+        plots.append(plot)
+    if params.compare_features:
+        plot = compare_features(
+            df=df,
+            # TODO Move to utils.py
+            groups=[grp.strip() for grp in params.compare_features_groups.split(";")],
+            feature_a=params.compare_features_a,
+            feature_b=params.compare_features_b,
+            intensity_threshold=params.compare_features_intensity_threshold,
+        )
+        plots.append(plot)
+    if params.compare_feature:
+        plot = compare_feature(
+            df=df,
+            groups=[grp.strip() for grp in params.compare_feature_groups.split(";")],
+            feature=params.compare_feature_a,
+            intensity_threshold=params.compare_feature_intensity_threshold,
+        )
+        plots.append(plot)
+    return plots
 
 
 def aa_distribution(
@@ -143,10 +162,11 @@ def aa_distribution(
                 row=1,
                 col=i + 1,
             )
-            fig.update_xaxes(title_text=None, row=1, col=i + 1)
+            fig.update_xaxes(title_text=None, row=1, col=i + 1, tickfont=dict(size=10))
         fig.update_layout(
             barmode="group",
             yaxis_title="Frequency",
+            annotations=[dict(font=dict(size=12)) for _ in fig.layout.annotations],
         )
 
     else:
@@ -156,8 +176,7 @@ def aa_distribution(
     return fig
 
 
-# TODO Rename to profile?
-def hydropathy_plot(seq: str) -> go.Figure:
+def hydropathy_profile(seq: str) -> go.Figure:
     """
     Computes a hydropathy profile plot for a given sequence.
     Note: The input sequence must be pre-sanitized to compute only valid amino acids.
@@ -185,7 +204,7 @@ def hydropathy_plot(seq: str) -> go.Figure:
     return fig
 
 
-def classification_plot(seq: str, classify_by: str = "chemical") -> go.Figure:
+def classification(seq: str, classify_by: str = "chemical") -> go.Figure:
     """
     Computes a bar plot showing the frequency of each amino acid class based on (Pommié et al., 2004).
         seq: Given sequence
@@ -204,10 +223,13 @@ def classification_plot(seq: str, classify_by: str = "chemical") -> go.Figure:
         color_discrete_sequence=COLORS,
     )
     fig.update_yaxes(tickmode="linear", tick0=0, dtick=1)
+    fig.update_traces(
+        showlegend=False,
+    )
     return fig
 
 
-def scatter_features(
+def compare_features(
     df: pd.DataFrame,
     feature_a: str,
     feature_b: str,
@@ -245,7 +267,7 @@ def scatter_features(
     return fig
 
 
-def box_feature(
+def compare_feature(
     df: pd.DataFrame,
     feature: str,
     groups: list = None,

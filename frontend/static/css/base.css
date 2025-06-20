@@ -43,3 +43,7 @@
 .form-check-label {
   display: block !important;
 }
+.title-with-icon {
+  display: flex;
+  align-items: center;
+}

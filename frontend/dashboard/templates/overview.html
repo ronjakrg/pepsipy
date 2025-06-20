@@ -61,7 +61,10 @@
 
     <!-- RESULTS -->
     <div class="col-md-9 ps-4">
-      <h5>Results for peptide of interest: {{ seq }}</h5>
+      <h5 class="title-with-icon">
+        <img src="{% static 'img/bookmark.svg' %}" alt="Bookmark Icon" class="me-1" width="20" height="20">
+        Results for peptide of interest: {{ seq }}
+      </h5>
       <div class="row mb-3">
         <div class="col">
           <table class="table w-auto">
@@ -80,7 +83,10 @@
         </div>
       </div>
       
-      <h5>Visualisations</h5>
+      <h5 class="title-with-icon">
+        <img src="{% static 'img/bookmark.svg' %}" alt="Bookmark Icon" class="me-1" width="20" height="20">
+        Visualisations
+      </h5>
       <div class="row row-cols-2">
         {% for plot_html in plots %}
           <div class="col">

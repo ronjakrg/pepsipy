@@ -88,7 +88,7 @@ class AaDistributionForm(forms.Form):
         label="📈 Frequency of amino acids",
         required=False,
     )
-    order_by = forms.ChoiceField(
+    aa_distribution_order_by = forms.ChoiceField(
         label="Order of amino acids",
         choices=(
             ("frequency", "Frequency"),
@@ -101,7 +101,7 @@ class AaDistributionForm(forms.Form):
         required=False,
         widget=forms.Select(attrs={"class": "form-control"}),
     )
-    show_all = forms.ChoiceField(
+    aa_distribution_show_all = forms.ChoiceField(
         label="Show all amino acids",
         choices=((True, "Yes"), (False, "No")),
         required=False,
@@ -109,7 +109,7 @@ class AaDistributionForm(forms.Form):
     )
 
 
-class HydropathyPlotForm(forms.Form):
+class HydropathyProfileForm(forms.Form):
     select = forms.BooleanField(
         label="📈 Hydropathy profile",
         required=False,
@@ -121,7 +121,7 @@ class ClassificationForm(forms.Form):
         label="📈 Classification",
         required=False,
     )
-    classify_by = forms.ChoiceField(
+    classification_classify_by = forms.ChoiceField(
         label="Class",
         choices=(
             ("chemical", "Chemical"),
@@ -131,30 +131,30 @@ class ClassificationForm(forms.Form):
     )
 
 
-class ScatterFeaturesForm(forms.Form):
+class CompareFeaturesForm(forms.Form):
     select = forms.BooleanField(
         label="📈 Compare features across groups",
         required=False,
     )
-    feature_a = forms.ChoiceField(
+    compare_features_a = forms.ChoiceField(
         label="Feature on x-axis",
         choices=feature_choices,
         widget=forms.Select(attrs={"class": "form-control"}),
     )
-    feature_b = forms.ChoiceField(
+    compare_features_b = forms.ChoiceField(
         label="Feature on y-axis",
         choices=feature_choices,
         initial=("Sequence length", "Sequence length"),
         widget=forms.Select(attrs={"class": "form-control"}),
     )
-    groups = forms.CharField(
+    compare_features_groups = forms.CharField(
         label="Group prefixes, seperated by semicolons",
         max_length=100,
         required=False,
         initial="AD; CTR",
         widget=forms.TextInput(attrs={"class": "form-control"}),
     )
-    intensity_threshold = forms.FloatField(
+    compare_features_intensity_threshold = forms.FloatField(
         label="Intensity threshold",
         required=False,
         initial=0.01,
@@ -162,25 +162,25 @@ class ScatterFeaturesForm(forms.Form):
     )
 
 
-class BoxFeatureForm(forms.Form):
+class CompareFeatureForm(forms.Form):
     select = forms.BooleanField(
         label="📈 Compare a feature across groups",
         required=False,
     )
-    feature = forms.ChoiceField(
+    compare_feature_a = forms.ChoiceField(
         label="Feature",
         choices=feature_choices,
         initial=("GRAVY", "GRAVY"),
         widget=forms.Select(attrs={"class": "form-control"}),
     )
-    groups = forms.CharField(
+    compare_feature_groups = forms.CharField(
         label="Group prefixes, seperated by semicolons",
         max_length=100,
         required=False,
         initial="AD; CTR",
         widget=forms.TextInput(attrs={"class": "form-control"}),
     )
-    intensity_threshold = forms.FloatField(
+    compare_feature_intensity_threshold = forms.FloatField(
         label="Intensity threshold",
         required=False,
         initial=0.01,
@@ -188,7 +188,7 @@ class BoxFeatureForm(forms.Form):
     )
 
 
-FORM_TO_FUNCTION = {
+FORM_TO_FEATURE_FUNCTION = {
     ThreeLetterCodeForm: "three_letter_code",
     MolecularFormulaForm: "seq_length",
     MolecularWeightForm: "molecular_weight",
@@ -196,10 +196,10 @@ FORM_TO_FUNCTION = {
     IsoelectricPointForm: "isoelectric_point",
     AromaticityForm: "aromaticity",
 }
-PLOT_FORM_CLASSES = [
-    AaDistributionForm,
-    HydropathyPlotForm,
-    ClassificationForm,
-    ScatterFeaturesForm,
-    BoxFeatureForm,
-]
+FORM_TO_PLOT_FUNCTION = {
+    AaDistributionForm: "aa_distribution",
+    HydropathyProfileForm: "hydropathy_profile",
+    ClassificationForm: "classification",
+    CompareFeaturesForm: "compare_features",
+    CompareFeatureForm: "compare_feature",
+}

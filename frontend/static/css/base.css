@@ -40,3 +40,6 @@
   text-align: left;
   z-index: 1000;
 }
+.form-check-label {
+  display: block !important;
+}

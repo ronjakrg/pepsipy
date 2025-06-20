@@ -36,7 +36,7 @@ jobs:
           coverage xml
 
       - name: Check code formatting with black
-        run: black --check --diff src tests setup.py
+        run: black --check --diff src tests setup.py frontend
 
       - name: Coverage comment
         uses: py-cov-action/python-coverage-comment-action@v3

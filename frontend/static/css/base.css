@@ -16,20 +16,16 @@
   background-color: #33122b;
   text-decoration: none;
 }
-.btn-gray {
+.btn-grey {
   font-size: 0.8rem;
-  color: #ffffff;
-  background-color: #999999;
-  border: none;
+  color: #000000;
+  background-color: #e8e8e8;
   padding: 0.4rem 1rem;
-  transition: background-color 0.2s ease, color 0.2s ease;
-  margin: 0 0 0.5rem 0;
+  margin: 0.5rem 0;
 }
-.btn-gray:hover,
-.btn-gray:focus {
-  color: #ffffff;
-  background-color: #888888;
-  text-decoration: none;
+.btn-grey:hover {
+  color: #000000;
+  background-color: #cccccc;
 }
 .table th {
   font-weight: 400 !important;

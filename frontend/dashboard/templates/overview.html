@@ -1,7 +1,10 @@
-{% extends "base.html" %} {% load static %} {% block js %}
-<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-<script type="text/javascript" src="{% static 'js/overview.js' %}"></script>
-{% endblock %} {% block content %}
+{% extends "base.html" %}
+{% load static %}
+{% block js %}
+  <script type="text/javascript" src="{% static 'js/plotly-3.0.1.min.js' %}"></script>
+  <script type="text/javascript" src="{% static 'js/overview.js' %}"></script>
+{% endblock %}
+{% block content %}
 <div class="container-fluid my-5 px-5">
   <form method="post" class="row">
     {% csrf_token %}

@@ -39,4 +39,10 @@ relative_files = true
 omit = [
   "**/__main__.py",
   "**/external/*",
+  "apps.py",
+  "manage.py",
+  "urls.py",
+  "settings.py",
+  "asgi.py",
+  "wsgi.py",
 ]

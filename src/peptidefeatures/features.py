@@ -46,7 +46,7 @@ def compute_features(df: pd.DataFrame, params: FeatureParams) -> pd.DataFrame:
     seq_col_name = get_column_name(df, "sequence")
     sequences = get_distinct_seq(df)
 
-    # Mapping from option param to (column name, function)
+    # Mapping from params to (column name, function)
     feature_mapping = {
         "three_letter_code": ("Three letter code", three_letter_code),
         "molecular_formula": ("Molecular formula", molecular_formula),
@@ -59,8 +59,7 @@ def compute_features(df: pd.DataFrame, params: FeatureParams) -> pd.DataFrame:
         "gravy": ("GRAVY", gravy),
         "aromaticity": ("Aromaticity", aromaticity),
     }
-    # TODO Maybe move to utils because its useful for plots as well?
-    # Filter features that got True in given options
+    # Filter features that got True in given params
     chosen_features = {
         col: func
         for feature, (col, func) in feature_mapping.items()

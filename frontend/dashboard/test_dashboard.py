@@ -9,13 +9,7 @@ from frontend.dashboard.forms import (
     GravyForm,
     IsoelectricPointForm,
     AromaticityForm,
-    AaDistributionForm,
     HydropathyProfileForm,
-    ClassificationForm,
-    CompareFeaturesForm,
-    CompareFeatureForm,
-    FORM_TO_FEATURE_FUNCTION,
-    FORM_TO_PLOT_FUNCTION,
 )
 
 
@@ -66,6 +60,9 @@ def test_isoelectric_point_form(data):
     assert form.is_valid()
     assert form.cleaned_data["select"] is True
     assert form.cleaned_data["isoelectric_point_option"] == "bjellqvist"
+
+def test_aa_distribution_form():
+    pass
 
 
 def test_utils():

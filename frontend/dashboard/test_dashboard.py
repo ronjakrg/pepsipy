@@ -25,6 +25,7 @@ def test_forms_general(data):
     form = GeneralForm(data=data)
     assert form.is_valid()
 
+# Testing forms that only contain checkboxes
 @pytest.mark.parametrize("FormClass", [
     ThreeLetterCodeForm,
     MolecularFormulaForm,
@@ -41,6 +42,18 @@ def test_forms_checkboxes(FormClass):
     form = FormClass(data={"select": "on"})
     assert form.is_valid()
     assert form.cleaned_data["select"] is True
+
+@pytest.mark.parametrize("data", [
+    {
+        "select": "on",
+        "isoelectric_point_option": "bjellqvist",
+    }
+])
+def test_isoelectric_point_form(data):
+    form = IsoelectricPointForm(data=data)
+    assert form.is_valid()
+    assert form.cleaned_data["select"] is True
+    assert form.cleaned_data["isoelectric_point_option"] == "bjellqvist"
 
 def test_utils():
     pass

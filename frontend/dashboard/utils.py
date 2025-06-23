@@ -9,7 +9,10 @@ def load_data(name: str) -> pd.DataFrame:
     returns its content as a pands Dataframe.
     """
     data_path = Path(settings.PROJECT_DIR) / "data" / name
-    return pd.read_csv(data_path)
+    try:
+        return pd.read_csv(data_path)
+    except FileNotFoundError as e:
+        raise FileNotFoundError(f"The file {name} could not be found at {data_path}.")
 
 
 def get_params(forms: list, mapping: dict) -> dict:

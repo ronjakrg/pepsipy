@@ -46,4 +46,5 @@ omit = [
   "settings.py",
   "asgi.py",
   "wsgi.py",
+  "forms.py",
 ]

@@ -1,6 +1,7 @@
 black
 numpy
 pytest
+coverage
 pandas
 plotly
 kaleido

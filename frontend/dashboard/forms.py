@@ -190,7 +190,8 @@ class CompareFeatureForm(forms.Form):
 
 FORM_TO_FEATURE_FUNCTION = {
     ThreeLetterCodeForm: "three_letter_code",
-    MolecularFormulaForm: "seq_length",
+    MolecularFormulaForm: "molecular_formula",
+    SeqLengthForm: "seq_length",
     MolecularWeightForm: "molecular_weight",
     GravyForm: "gravy",
     IsoelectricPointForm: "isoelectric_point",

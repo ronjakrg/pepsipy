@@ -85,6 +85,13 @@
             This peptide has X entries in selected dataset.
           </div>
         </div>
+        <div class="row row-cols-2">
+          {% for plot in peptide_plots %}
+            <div class="col">
+              {{ plot|safe }}
+            </div>
+          {% endfor %}
+        </div>
         {% else %}
         No peptide of interest selected.
         {% endif %}
@@ -94,9 +101,9 @@
           <b>Results for selected dataset</b>
         </h5>
         <div class="row row-cols-2">
-          {% for plot_html in plots %}
+          {% for plot in data_plots %}
             <div class="col">
-              {{ plot_html|safe }}
+              {{ plot|safe }}
             </div>
           {% endfor %}
         </div>

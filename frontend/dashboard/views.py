@@ -11,12 +11,14 @@ from .utils import load_data, get_params, get_features_for_seq
 
 def overview(request):
     seq = ""
+
     feature_params = {}
     computed_features = pd.DataFrame()
     computed_peptide_features = {}
 
     plot_params = []
-    html_plots = []
+    html_peptide_plots = []
+    html_data_plots = []
 
     # Get form data with prefixes
     feature_forms = []
@@ -48,12 +50,13 @@ def overview(request):
 
         # Generate plots
         plot_params = get_params(plot_forms, FORM_TO_PLOT_FUNCTION)
-        plots = generate_plots(
+        peptide_plots, data_plots = generate_plots(
             df=computed_features, seq=seq, params=PlotsParams(**plot_params)
         )
-        for plot in plots:
-            # plot.update_layout(width=600, height=450)
-            html_plots.append(plot.to_html(config={"responsive": True}))
+        for plot in peptide_plots:
+            html_peptide_plots.append(plot.to_html(config={"responsive": True}))
+        for plot in data_plots:
+            html_data_plots.append(plot.to_html(config={"responsive": True}))
     else:
         gen_form = GeneralForm()
 
@@ -68,6 +71,7 @@ def overview(request):
             "plot_forms": plot_forms,
             "computed_features": computed_features,
             "computed_peptide_features": computed_peptide_features,
-            "plots": html_plots,
+            "peptide_plots": html_peptide_plots,
+            "data_plots": html_data_plots,
         },
     )

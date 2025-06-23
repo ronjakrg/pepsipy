@@ -42,23 +42,24 @@ def generate_plots(df: pd.DataFrame, seq: str, params: PlotsParams) -> list:
     """
     TODO
     """
-    plots = []
+    peptide_plots = []
+    data_plots = []
     if params.aa_distribution:
         plot = aa_distribution(
             seq=seq,
             order_by=params.aa_distribution_order_by,
             show_all=(params.aa_distribution_show_all == "True"),
         )
-        plots.append(plot)
+        peptide_plots.append(plot)
     if params.hydropathy_profile:
         plot = hydropathy_profile(seq)
-        plots.append(plot)
+        peptide_plots.append(plot)
     if params.classification:
         plot = classification(
             seq=seq,
             classify_by=params.classification_classify_by,
         )
-        plots.append(plot)
+        peptide_plots.append(plot)
     if params.compare_features:
         plot = compare_features(
             df=df,
@@ -68,7 +69,7 @@ def generate_plots(df: pd.DataFrame, seq: str, params: PlotsParams) -> list:
             feature_b=params.compare_features_b,
             intensity_threshold=params.compare_features_intensity_threshold,
         )
-        plots.append(plot)
+        data_plots.append(plot)
     if params.compare_feature:
         plot = compare_feature(
             df=df,
@@ -76,8 +77,8 @@ def generate_plots(df: pd.DataFrame, seq: str, params: PlotsParams) -> list:
             feature=params.compare_feature_a,
             intensity_threshold=params.compare_feature_intensity_threshold,
         )
-        plots.append(plot)
-    return plots
+        data_plots.append(plot)
+    return peptide_plots, data_plots
 
 
 def aa_distribution(

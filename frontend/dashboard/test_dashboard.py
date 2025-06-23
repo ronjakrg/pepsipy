@@ -1,7 +1,6 @@
 import pytest
-from django import forms
 
-from frontend.dashboard.forms import (
+from .forms import (
     GeneralForm,
     ThreeLetterCodeForm,
     MolecularFormulaForm,
@@ -34,7 +33,6 @@ def test_forms_general(data):
     GravyForm,
     AromaticityForm,
     HydropathyProfileForm,
-    ClassificationForm,
 ])
 def test_forms_checkboxes(FormClass):
     form = FormClass(data={})

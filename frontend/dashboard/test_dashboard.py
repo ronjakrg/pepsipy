@@ -1,6 +1,6 @@
 import pytest
 
-from .forms import (
+from frontend.dashboard.forms import (
     GeneralForm,
     ThreeLetterCodeForm,
     MolecularFormulaForm,

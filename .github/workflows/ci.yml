@@ -20,10 +20,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Install dependencies
+      - name: Install basic dependencies
         run: |
           python -m pip install --upgrade pip
           pip install pytest coverage black
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          
+      - name: Install frontend dependencies
+        working-directory: frontend
+        run: |
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
       - name: Install package and download external data

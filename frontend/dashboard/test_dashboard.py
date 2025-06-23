@@ -10,6 +10,7 @@ from frontend.dashboard.forms import (
     IsoelectricPointForm,
     AromaticityForm,
     HydropathyProfileForm,
+    AaDistributionForm,
 )
 
 
@@ -40,10 +41,10 @@ def test_forms_general(data):
 def test_forms_checkboxes(FormClass):
     form = FormClass(data={})
     assert form.is_valid()
-    assert form.cleaned_data["select"] is False
+    assert not form.cleaned_data["select"]
     form = FormClass(data={"select": "on"})
     assert form.is_valid()
-    assert form.cleaned_data["select"] is True
+    assert form.cleaned_data["select"]
 
 
 @pytest.mark.parametrize(
@@ -58,11 +59,26 @@ def test_forms_checkboxes(FormClass):
 def test_isoelectric_point_form(data):
     form = IsoelectricPointForm(data=data)
     assert form.is_valid()
-    assert form.cleaned_data["select"] is True
+    assert form.cleaned_data["select"]
     assert form.cleaned_data["isoelectric_point_option"] == "bjellqvist"
 
-def test_aa_distribution_form():
-    pass
+
+@pytest.mark.parametrize(
+    "data",
+    [
+        {
+            "select": "on",
+            "aa_distribution_order_by": "frequency",
+            "aa_distribution_show_all": True,
+        }
+    ],
+)
+def test_aa_distribution_form(data):
+    form = AaDistributionForm(data=data)
+    assert form.is_valid()
+    assert form.cleaned_data["select"]
+    assert form.cleaned_data["aa_distribution_order_by"] == "frequency"
+    assert form.cleaned_data["aa_distribution_show_all"]
 
 
 def test_utils():

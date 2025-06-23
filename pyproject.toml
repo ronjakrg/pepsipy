@@ -38,6 +38,7 @@ relative_files = true
 [tool.coverage.report]
 omit = [
   "**/__main__.py",
+   "**/test_*.py",
   "**/external/*",
   "apps.py",
   "manage.py",

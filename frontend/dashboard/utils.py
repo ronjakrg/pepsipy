@@ -5,7 +5,8 @@ from django.conf import settings
 
 def load_data(name: str) -> pd.DataFrame:
     """
-    TODO
+    Loads a CSV file from the project's data folder and
+    returns its content as a pands Dataframe.
     """
     data_path = Path(settings.PROJECT_DIR) / "data" / name
     return pd.read_csv(data_path)
@@ -13,7 +14,9 @@ def load_data(name: str) -> pd.DataFrame:
 
 def get_params(forms: list, mapping: dict) -> dict:
     """
-    TODO
+    Extracts parameters from a list of forms.
+    If a feature was selected, a parameter mapping the
+    function name to True is added.
     """
     result = {}
     for form in forms:
@@ -33,7 +36,8 @@ def get_params(forms: list, mapping: dict) -> dict:
 
 def get_features_for_seq(data: pd.DataFrame, seq: str) -> dict:
     """
-    TODO
+    Matches the given sequence to a row of computed sequences and
+    returns the found features as dict.
     """
     matched = data[data["Sequence"] == seq]
     matched = matched.drop(

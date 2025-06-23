@@ -40,7 +40,9 @@ class PlotsParams:
 
 def generate_plots(df: pd.DataFrame, seq: str, params: PlotsParams) -> list:
     """
-    TODO
+    Computes all selected plots on a given pandas dataframe.
+    Returns a tuple of lists, containing the peptide-specific plots and the
+    plots describing the whole dataset.
     """
     peptide_plots = []
     data_plots = []
@@ -63,7 +65,7 @@ def generate_plots(df: pd.DataFrame, seq: str, params: PlotsParams) -> list:
     if params.compare_features:
         plot = compare_features(
             df=df,
-            # TODO Move to utils.py
+            # TODO Don't hardcode this, work with metadata
             groups=[grp.strip() for grp in params.compare_features_groups.split(";")],
             feature_a=params.compare_features_a,
             feature_b=params.compare_features_b,
@@ -250,7 +252,7 @@ def compare_features(
     seq_col = get_column_name(peptides, "sequence")
     if intensity_threshold is not None:
         peptides = peptides[peptides[intensity_col] > intensity_threshold]
-    # TODO Generalize sample column
+    # TODO Work with metadata
     peptides["Group"] = peptides["Sample"].apply(lambda x: find_group(x, groups))
 
     fig = px.scatter(

@@ -38,11 +38,9 @@ class FeatureParams:
 
 def compute_features(df: pd.DataFrame, params: FeatureParams) -> pd.DataFrame:
     """
-    Computes all selected features on a pd.DataFrame.
-    The column containing the peptide sequence must contain the
-    substring "sequence".
+    Computes all selected features on a pandas dataframe.
+    TODO Describe column naming & metadata file
     """
-    # TODO Adjust docstring
     seq_col_name = get_column_name(df, "sequence")
     sequences = get_distinct_seq(df)
 

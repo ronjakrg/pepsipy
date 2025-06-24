@@ -1,6 +1,9 @@
 import pytest
-from django.conf import settings
 import pandas as pd
+from pandas.testing import assert_frame_equal
+from django.conf import settings
+from django.urls import reverse
+from unittest.mock import patch, MagicMock
 
 from frontend.dashboard.utils import (
     load_data,
@@ -12,8 +15,8 @@ from frontend.dashboard.forms import (
     ThreeLetterCodeForm,
     MolecularFormulaForm,
     IsoelectricPointForm,
-    FORM_TO_FEATURE_FUNCTION,
 )
+from peptidefeatures.features import FeatureParams
 
 
 def test_load_data(tmp_path, settings):
@@ -72,8 +75,60 @@ def test_get_params():
 
 
 def test_get_features_for_seq():
+    # TODO Write test as soon as dynamic columns are implemented
     pass
 
+@patch('frontend.dashboard.views.load_data')
+@patch('frontend.dashboard.views.compute_features')
+@patch('frontend.dashboard.views.get_features_for_seq')
+@patch('frontend.dashboard.views.generate_plots')
+@patch('frontend.dashboard.views.get_params')
+def test_overview_valid_form(
+    mock_get_params,
+    mock_generate_plots,
+    mock_get_features_for_seq,
+    mock_compute_features,
+    mock_load_data,
+    client,
+):
+    # Setup
+    peptides = pd.DataFrame({"Sequence": ["PEPTIDE"]})
+    features = pd.DataFrame({
+        "Sequence": ["PEPTIDE"],
+        "Feature": [0.5],
+    })
+    mock_load_data.return_value = peptides
+    params = FeatureParams()
+    mock_compute_features.return_value = peptides
+    mock_get_features_for_seq.return_value = features
+    mock_get_params.side_effect = [{}, {}]
+    plot_a = MagicMock()
+    plot_a.to_html.return_value = "<div>plot_a</div>"
+    plot_b = MagicMock()
+    plot_b.to_html.return_value = "<div>plot_b</div>"
+    mock_generate_plots.return_value = ([plot_a], [plot_b])
 
-def test_overview():
-    pass
+    # Execute
+    url = reverse("overview")
+    response = client.post(
+        url,
+        data={
+            "data_name": "peptides.csv",
+            "seq": "PEPTIDE",
+        },
+    )
+
+    # Assert
+    assert response.status_code == 200
+    mock_load_data.assert_called_once_with("peptides.csv")
+    mock_compute_features.assert_called_once_with(
+        df=peptides,
+        params=params,
+    )
+    mock_get_features_for_seq.assert_called_once_with(peptides, "PEPTIDE")
+    mock_generate_plots.assert_called_once()
+    assert "<div>plot_a</div>" in response.context["peptide_plots"][0]
+    assert "<div>plot_b</div>" in response.context["data_plots"][0]
+    assert "PEPTIDE" == response.context["seq"]
+    assert False == response.context["computed_features"].empty
+    assert_frame_equal(features, response.context["computed_peptide_features"])

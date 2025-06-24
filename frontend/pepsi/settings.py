@@ -51,7 +51,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = "pepsi.urls"
+ROOT_URLCONF = "frontend.pepsi.urls"
 
 TEMPLATES = [
     {

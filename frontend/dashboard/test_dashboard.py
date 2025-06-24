@@ -78,11 +78,12 @@ def test_get_features_for_seq():
     # TODO Write test as soon as dynamic columns are implemented
     pass
 
-@patch('frontend.dashboard.views.load_data')
-@patch('frontend.dashboard.views.compute_features')
-@patch('frontend.dashboard.views.get_features_for_seq')
-@patch('frontend.dashboard.views.generate_plots')
-@patch('frontend.dashboard.views.get_params')
+
+@patch("frontend.dashboard.views.load_data")
+@patch("frontend.dashboard.views.compute_features")
+@patch("frontend.dashboard.views.get_features_for_seq")
+@patch("frontend.dashboard.views.generate_plots")
+@patch("frontend.dashboard.views.get_params")
 def test_overview_valid_form(
     mock_get_params,
     mock_generate_plots,
@@ -93,10 +94,12 @@ def test_overview_valid_form(
 ):
     # Setup
     peptides = pd.DataFrame({"Sequence": ["PEPTIDE"]})
-    features = pd.DataFrame({
-        "Sequence": ["PEPTIDE"],
-        "Feature": [0.5],
-    })
+    features = pd.DataFrame(
+        {
+            "Sequence": ["PEPTIDE"],
+            "Feature": [0.5],
+        }
+    )
     mock_load_data.return_value = peptides
     params = FeatureParams()
     mock_compute_features.return_value = peptides

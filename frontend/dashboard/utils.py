@@ -34,6 +34,8 @@ def get_params(forms: list, mapping: dict) -> dict:
                 # Add function name as param for (un)selecting
                 params.update({mapping[type(form)]: True})
                 result.update(params)
+            else:
+                result.update({mapping[type(form)]: False})
     return result
 
 

@@ -148,7 +148,7 @@ class CompareFeaturesForm(forms.Form):
         widget=forms.Select(attrs={"class": "form-control"}),
     )
     compare_features_groups = forms.CharField(
-        label="Group prefixes, seperated by semicolons",
+        label="Group prefixes, separated by semicolons",
         max_length=100,
         required=False,
         initial="AD; CTR",
@@ -174,7 +174,7 @@ class CompareFeatureForm(forms.Form):
         widget=forms.Select(attrs={"class": "form-control"}),
     )
     compare_feature_groups = forms.CharField(
-        label="Group prefixes, seperated by semicolons",
+        label="Group prefixes, separated by semicolons",
         max_length=100,
         required=False,
         initial="AD; CTR",

@@ -6,7 +6,7 @@ from django.conf import settings
 def load_data(name: str) -> pd.DataFrame:
     """
     Loads a CSV file from the project's data folder and
-    returns its content as a pands Dataframe.
+    returns its content as a pandas DataFrame.
     """
     data_path = Path(settings.PROJECT_DIR) / "data" / name
     try:

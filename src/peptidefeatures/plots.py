@@ -40,7 +40,7 @@ class PlotsParams:
 
 def generate_plots(df: pd.DataFrame, seq: str, params: PlotsParams) -> list:
     """
-    Computes all selected plots on a given pandas dataframe.
+    Computes all selected plots on a given pandas DataFrame.
     Returns a tuple of lists, containing the peptide-specific plots and the
     plots describing the whole dataset.
     """
@@ -50,6 +50,7 @@ def generate_plots(df: pd.DataFrame, seq: str, params: PlotsParams) -> list:
         plot = aa_distribution(
             seq=seq,
             order_by=params.aa_distribution_order_by,
+            # Comparison with string necessary because form.cleaned_data only offers strings
             show_all=(params.aa_distribution_show_all == "True"),
         )
         peptide_plots.append(plot)

@@ -42,7 +42,7 @@ def compute_features(
     seq: str = None,
 ) -> pd.DataFrame:
     """
-    Computes all selected features on a pandas dataframe.
+    Computes all selected features on a pandas DataFrame.
     TODO Describe column naming & metadata file
     """
     # On single sequence or dataset

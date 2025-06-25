@@ -6,7 +6,7 @@ from peptidefeatures.features import compute_features, FeatureParams
 from peptidefeatures.plots import generate_plots, PlotsParams
 
 from .forms import *
-from .utils import load_data, get_params, get_features_for_seq
+from .utils import load_data, get_params, get_match_for_seq
 
 
 def overview(request):
@@ -46,7 +46,9 @@ def overview(request):
         )
 
         # Filter data for peptide of interest
-        computed_peptide_features = get_features_for_seq(computed_features, seq)
+        num_matches, computed_peptide_features = get_match_for_seq(
+            computed_features, seq
+        )
 
         # Generate plots
         plot_params = get_params(plot_forms, FORM_TO_PLOT_FUNCTION)
@@ -71,6 +73,7 @@ def overview(request):
             "plot_forms": plot_forms,
             "computed_features": computed_features,
             "computed_peptide_features": computed_peptide_features,
+            "num_matches": num_matches,
             "peptide_plots": html_peptide_plots,
             "data_plots": html_data_plots,
         },

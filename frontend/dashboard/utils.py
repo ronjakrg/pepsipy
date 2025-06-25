@@ -39,12 +39,13 @@ def get_params(forms: list, mapping: dict) -> dict:
     return result
 
 
-def get_features_for_seq(data: pd.DataFrame, seq: str) -> dict:
+def get_match_for_seq(data: pd.DataFrame, seq: str) -> dict:
     """
-    Matches the given sequence to a row of computed sequences and
-    returns the found features as dict.
+    Matches the given sequence to a row of computed sequences.
+    Returns the number of matches and the found features as dict.
     """
     matched = data[data["Sequence"] == seq]
+    num_matches = len(matched)
     matched = matched.drop(
         columns=[
             "Sample",
@@ -56,6 +57,6 @@ def get_features_for_seq(data: pd.DataFrame, seq: str) -> dict:
         errors="ignore",
     )
     if not matched.empty:
-        return matched.iloc[0].to_dict()
+        return (num_matches, matched.iloc[0].to_dict())
     else:
-        return {}
+        return (0, {})

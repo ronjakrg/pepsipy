@@ -8,7 +8,7 @@ from unittest.mock import patch, MagicMock
 from frontend.dashboard.utils import (
     load_data,
     get_params,
-    get_features_for_seq,
+    get_match_for_seq,
 )
 from frontend.dashboard.views import overview
 from frontend.dashboard.forms import (
@@ -74,7 +74,7 @@ def test_get_params():
     assert expected == get_params(forms, mapping)
 
 
-def test_get_features_for_seq():
+def test_get_match_for_seq():
     # TODO Write test as soon as dynamic columns are implemented
     pass
 

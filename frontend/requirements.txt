@@ -1,0 +1,5 @@
+-e ../
+
+Django
+plotly
+pytest-django

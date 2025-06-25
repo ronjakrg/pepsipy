@@ -28,7 +28,7 @@ def find_group(name: str, groups: list) -> str:
 
 def get_column_name(df: pd.DataFrame, keyword: str) -> str:
     """
-    Finds the first column of a dataframe that contains a given keyword.
+    Finds the first column of a DataFrame that contains a given keyword.
     """
     col_name = next((col for col in df.columns if keyword.lower() in col.lower()), None)
     if col_name is None:
@@ -41,7 +41,7 @@ def get_column_name(df: pd.DataFrame, keyword: str) -> str:
 def get_distinct_seq(df: pd.DataFrame) -> pd.DataFrame:
     """
     Finds the first column containing "sequence" in its header and
-    returns a dataframe containing only unique sequences.
+    returns a DataFrame containing only unique sequences.
     """
     seq_col_name = get_column_name(df, "sequence")
     return df[[seq_col_name]].drop_duplicates(keep="first")

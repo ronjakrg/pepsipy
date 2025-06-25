@@ -32,11 +32,19 @@ Issues = "https://github.com/ronjakrg/thesis-peptide-features/issues"
 run = "peptidefeatures.__main__:main"
 
 [tool.coverage.run]
-source = ["src"]
+source = ["src", "frontend"]
 relative_files = true
 
 [tool.coverage.report]
 omit = [
   "**/__main__.py",
+   "**/test_*.py",
   "**/external/*",
+  "apps.py",
+  "manage.py",
+  "urls.py",
+  "settings.py",
+  "asgi.py",
+  "wsgi.py",
+  "forms.py",
 ]

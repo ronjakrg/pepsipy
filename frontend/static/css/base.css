@@ -1,0 +1,49 @@
+:root {
+  --bs-primary: #511D43;
+}
+.bg-primary {
+  background-color: var(--bs-primary) !important;
+}
+.btn-purple {
+  color: #ffffff;
+  background-color: #511D43;
+  border: none;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+.btn-purple:hover,
+.btn-purple:focus {
+  color: #ffffff;
+  background-color: #33122b;
+  text-decoration: none;
+}
+.btn-grey {
+  font-size: 0.8rem;
+  color: #000000;
+  background-color: #e8e8e8;
+  padding: 0.4rem 1rem;
+  margin: 0.5rem 0;
+}
+.btn-grey:hover {
+  color: #000000;
+  background-color: #cccccc;
+}
+.table th {
+  font-weight: 400 !important;
+}
+.footer {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  background: #ffffff;
+  padding: 1rem;
+  text-align: left;
+  z-index: 1000;
+}
+.form-check-label {
+  display: block !important;
+}
+.title-with-icon {
+  display: flex;
+  align-items: center;
+}

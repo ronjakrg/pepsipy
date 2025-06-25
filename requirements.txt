@@ -1,8 +1,10 @@
 black
 numpy
 pytest
+coverage
 pandas
 plotly
 kaleido
 scikit-learn
 biopython
+requests

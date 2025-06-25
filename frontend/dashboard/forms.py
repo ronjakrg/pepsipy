@@ -25,7 +25,7 @@ class GeneralForm(forms.Form):
 
 
 class ThreeLetterCodeForm(forms.Form):
-    select = forms.BooleanField(
+    selected = forms.BooleanField(
         label="Three letter code",
         required=False,
     )
@@ -33,35 +33,35 @@ class ThreeLetterCodeForm(forms.Form):
 
 
 class MolecularFormulaForm(forms.Form):
-    select = forms.BooleanField(
+    selected = forms.BooleanField(
         label="Molecular formula",
         required=False,
     )
 
 
 class SeqLengthForm(forms.Form):
-    select = forms.BooleanField(
+    selected = forms.BooleanField(
         label="Sequence length",
         required=False,
     )
 
 
 class MolecularWeightForm(forms.Form):
-    select = forms.BooleanField(
+    selected = forms.BooleanField(
         label="Molecular weight",
         required=False,
     )
 
 
 class GravyForm(forms.Form):
-    select = forms.BooleanField(
+    selected = forms.BooleanField(
         label="GRAVY",
         required=False,
     )
 
 
 class IsoelectricPointForm(forms.Form):
-    select = forms.BooleanField(
+    selected = forms.BooleanField(
         label="Isoelectric point",
         required=False,
     )
@@ -77,14 +77,14 @@ class IsoelectricPointForm(forms.Form):
 
 
 class AromaticityForm(forms.Form):
-    select = forms.BooleanField(
+    selected = forms.BooleanField(
         label="Aromaticity",
         required=False,
     )
 
 
 class AaDistributionForm(forms.Form):
-    select = forms.BooleanField(
+    selected = forms.BooleanField(
         label="📈 Frequency of amino acids",
         required=False,
     )
@@ -110,14 +110,14 @@ class AaDistributionForm(forms.Form):
 
 
 class HydropathyProfileForm(forms.Form):
-    select = forms.BooleanField(
+    selected = forms.BooleanField(
         label="📈 Hydropathy profile",
         required=False,
     )
 
 
 class ClassificationForm(forms.Form):
-    select = forms.BooleanField(
+    selected = forms.BooleanField(
         label="📈 Classification",
         required=False,
     )
@@ -132,7 +132,7 @@ class ClassificationForm(forms.Form):
 
 
 class CompareFeaturesForm(forms.Form):
-    select = forms.BooleanField(
+    selected = forms.BooleanField(
         label="📈 Compare features across groups",
         required=False,
     )
@@ -163,7 +163,7 @@ class CompareFeaturesForm(forms.Form):
 
 
 class CompareFeatureForm(forms.Form):
-    select = forms.BooleanField(
+    selected = forms.BooleanField(
         label="📈 Compare a feature across groups",
         required=False,
     )

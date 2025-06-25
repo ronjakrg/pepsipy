@@ -51,11 +51,11 @@ def test_load_data_wrong_name(tmp_path, settings):
 
 def test_get_params():
     forms = [
-        ThreeLetterCodeForm(data={"select": "on"}),
+        ThreeLetterCodeForm(data={"selected": "on"}),
         MolecularFormulaForm(data={}),
         IsoelectricPointForm(
             data={
-                "select": "on",
+                "selected": "on",
                 "isoelectric_point_option": "bjellqvist",
             }
         ),

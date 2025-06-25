@@ -24,12 +24,12 @@ def get_params(forms: list, mapping: dict) -> dict:
     result = {}
     for form in forms:
         if form.is_valid():
-            if form.cleaned_data["select"]:
+            if form.cleaned_data["selected"]:
                 # Get params from form
                 params = {
                     key: val
                     for key, val in form.cleaned_data.items()
-                    if key != "select"
+                    if key != "selected"
                 }
                 # Add function name as param for (un)selecting
                 params.update({mapping[type(form)]: True})

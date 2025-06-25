@@ -2,13 +2,20 @@
 
 [Full report](https://htmlpreview.github.io/?https://github.com/ronjakrg/thesis-peptide-features/blob/python-coverage-comment-action-data/htmlcov/index.html)
 
-| Name                                |    Stmts |     Miss |   Cover |   Missing |
-|------------------------------------ | -------: | -------: | ------: | --------: |
-| src/peptidefeatures/\_\_init\_\_.py |        0 |        0 |    100% |           |
-| src/peptidefeatures/constants.py    |       15 |        0 |    100% |           |
-| src/peptidefeatures/features.py     |      101 |        1 |     99% |       177 |
-| src/peptidefeatures/utils.py        |       17 |        0 |    100% |           |
-|                           **TOTAL** |  **133** |    **1** | **99%** |           |
+| Name                                          |    Stmts |     Miss |   Cover |   Missing |
+|---------------------------------------------- | -------: | -------: | ------: | --------: |
+| frontend/\_\_init\_\_.py                      |        0 |        0 |    100% |           |
+| frontend/dashboard/\_\_init\_\_.py            |        0 |        0 |    100% |           |
+| frontend/dashboard/migrations/\_\_init\_\_.py |        0 |        0 |    100% |           |
+| frontend/dashboard/utils.py                   |       26 |        6 |     77% |     47-61 |
+| frontend/dashboard/views.py                   |       42 |        2 |     95% |    55, 71 |
+| frontend/pepsi/\_\_init\_\_.py                |        0 |        0 |    100% |           |
+| src/peptidefeatures/\_\_init\_\_.py           |        0 |        0 |    100% |           |
+| src/peptidefeatures/constants.py              |       15 |        0 |    100% |           |
+| src/peptidefeatures/features.py               |      114 |        3 |     97% |50-55, 211 |
+| src/peptidefeatures/plots.py                  |      119 |       87 |     27% |47-84, 98-180, 188-208, 217-233, 251-271, 287-303 |
+| src/peptidefeatures/utils.py                  |       17 |        0 |    100% |           |
+|                                     **TOTAL** |  **333** |   **98** | **71%** |           |
 
 
 ## Setup coverage badge

@@ -81,13 +81,13 @@ def test_get_match_for_seq():
 
 @patch("frontend.dashboard.views.load_data")
 @patch("frontend.dashboard.views.compute_features")
-@patch("frontend.dashboard.views.get_features_for_seq")
+@patch("frontend.dashboard.views.get_match_for_seq")
 @patch("frontend.dashboard.views.generate_plots")
 @patch("frontend.dashboard.views.get_params")
 def test_overview_valid_form(
     mock_get_params,
     mock_generate_plots,
-    mock_get_features_for_seq,
+    mock_get_match_for_seq,
     mock_compute_features,
     mock_load_data,
     client,
@@ -103,7 +103,7 @@ def test_overview_valid_form(
     mock_load_data.return_value = peptides
     params = FeatureParams()
     mock_compute_features.return_value = peptides
-    mock_get_features_for_seq.return_value = features
+    mock_get_match_for_seq.return_value = (1, features)
     mock_get_params.side_effect = [{}, {}]
     plot_a = MagicMock()
     plot_a.to_html.return_value = "<div>plot_a</div>"
@@ -128,7 +128,7 @@ def test_overview_valid_form(
         df=peptides,
         params=params,
     )
-    mock_get_features_for_seq.assert_called_once_with(peptides, "PEPTIDE")
+    mock_get_match_for_seq.assert_called_once_with(peptides, "PEPTIDE")
     mock_generate_plots.assert_called_once()
     assert "<div>plot_a</div>" in response.context["peptide_plots"][0]
     assert "<div>plot_b</div>" in response.context["data_plots"][0]

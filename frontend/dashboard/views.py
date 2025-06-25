@@ -15,6 +15,7 @@ def overview(request):
     feature_params = {}
     computed_features = pd.DataFrame()
     computed_peptide_features = {}
+    num_matches = 0
 
     plot_params = []
     html_peptide_plots = []
@@ -49,6 +50,13 @@ def overview(request):
         num_matches, computed_peptide_features = get_match_for_seq(
             computed_features, seq
         )
+        # If peptide was not found in dataset
+        if num_matches == 0:
+            computed_peptide_features = (
+                compute_features(params=FeatureParams(**feature_params), seq=seq)
+                .iloc[0]
+                .to_dict()
+            )
 
         # Generate plots
         plot_params = get_params(plot_forms, FORM_TO_PLOT_FUNCTION)

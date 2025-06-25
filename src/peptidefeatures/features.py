@@ -36,13 +36,30 @@ class FeatureParams:
     aromaticity: bool = False
 
 
-def compute_features(df: pd.DataFrame, params: FeatureParams) -> pd.DataFrame:
+def compute_features(
+    params: FeatureParams,
+    df: pd.DataFrame = None,
+    seq: str = None,
+) -> pd.DataFrame:
     """
     Computes all selected features on a pandas dataframe.
     TODO Describe column naming & metadata file
     """
+    # On single sequence or dataset
+    if seq is not None:
+        df = pd.DataFrame(
+            {
+                "Sequence": [seq],
+            }
+        )
+        sequences = pd.DataFrame(
+            {
+                "Sequence": [seq],
+            }
+        )
+    else:
+        sequences = get_distinct_seq(df)
     seq_col_name = get_column_name(df, "sequence")
-    sequences = get_distinct_seq(df)
 
     # Mapping from params to (column name, function)
     feature_mapping = {
@@ -64,8 +81,10 @@ def compute_features(df: pd.DataFrame, params: FeatureParams) -> pd.DataFrame:
         if getattr(params, feature)
     }
 
+    # Compute features
     for feature, func in chosen_features.items():
         sequences[feature] = sequences[seq_col_name].apply(func)
+
     merged = pd.merge(
         df,
         sequences,

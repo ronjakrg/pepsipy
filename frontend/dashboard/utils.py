@@ -50,7 +50,6 @@ def get_match_for_seq(data: pd.DataFrame, seq: str) -> dict:
         columns=[
             "Sample",
             "Protein ID",
-            "Sequence",
             "Intensity",
             "PEP",
         ],

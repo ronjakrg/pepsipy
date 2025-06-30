@@ -47,7 +47,7 @@ class Calculator:
         self.feature_params = feature_params
         self.plot_params = plot_params
         self.computed_features = computed_features
-        
+
     # Setter
     def set_dataset(self, dataset: pd.DataFrame):
         self.dataset = dataset
@@ -98,12 +98,14 @@ class Calculator:
         if missing:
             msg = f"The following information is not available: {missing}. Please execute the corresponding set or get methods first."
             raise ValueError(msg)
-    
+
     # Features
     def get_features(self) -> pd.DataFrame:
         """TODO"""
         self._ensure_attrs("feature_params", "dataset")
-        self.computed_features = _compute_features(params=self.feature_params, df=self.dataset)
+        self.computed_features = _compute_features(
+            params=self.feature_params, df=self.dataset
+        )
         return self.computed_features
 
     def get_peptide_features(self) -> pd.DataFrame:

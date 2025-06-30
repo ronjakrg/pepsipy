@@ -28,9 +28,9 @@ def _generate_plots(df: pd.DataFrame, seq: str, params: dict) -> list:
         if params["aa_distribution"]:
             plot = _aa_distribution(
                 seq=seq,
-                order_by=params.aa_distribution_order_by,
+                order_by=params["aa_distribution_order_by"],
                 # Comparison with string necessary because form.cleaned_data only offers strings
-                show_all=(params.aa_distribution_show_all == "True"),
+                show_all=(params["aa_distribution_show_all"] == "True"),
             )
             peptide_plots.append(plot)
         if params["hydropathy_profile"]:
@@ -39,7 +39,7 @@ def _generate_plots(df: pd.DataFrame, seq: str, params: dict) -> list:
         if params["classification"]:
             plot = _classification(
                 seq=seq,
-                classify_by=params.classification_classify_by,
+                classify_by=params["classification_classify_by"],
             )
             peptide_plots.append(plot)
     if df is not None:
@@ -48,21 +48,21 @@ def _generate_plots(df: pd.DataFrame, seq: str, params: dict) -> list:
                 df=df,
                 # TODO Don't hardcode this, work with metadata
                 groups=[
-                    grp.strip() for grp in params.compare_features_groups.split(";")
+                    grp.strip() for grp in params["compare_features_groups"].split(";")
                 ],
-                feature_a=params.compare_features_a,
-                feature_b=params.compare_features_b,
-                intensity_threshold=params.compare_features_intensity_threshold,
+                feature_a=params["compare_features_a"],
+                feature_b=params["compare_features_b"],
+                intensity_threshold=params["compare_features_intensity_threshold"],
             )
             data_plots.append(plot)
         if params["compare_feature"]:
             plot = _compare_feature(
                 df=df,
                 groups=[
-                    grp.strip() for grp in params.compare_feature_groups.split(";")
+                    grp.strip() for grp in params["compare_feature_groups"].split(";")
                 ],
-                feature=params.compare_feature_a,
-                intensity_threshold=params.compare_feature_intensity_threshold,
+                feature=params["compare_feature_a"],
+                intensity_threshold=params["compare_feature_intensity_threshold"],
             )
             data_plots.append(plot)
     return peptide_plots, data_plots

@@ -36,7 +36,7 @@ def overview(request):
             calc.set_seq(gen_form.cleaned_data["seq"])
 
         # Compute features
-        calc.set_feature_params(get_params(feature_forms, FORM_TO_FEATURE_FUNCTION))
+        calc.set_feature_params(**get_params(feature_forms, FORM_TO_FEATURE_FUNCTION))
         computed_features = calc.get_features()
 
         # Filter data for peptide of interest
@@ -48,7 +48,7 @@ def overview(request):
             computed_peptide_features = calc.get_peptide_features().iloc[0].to_dict()
 
         # Generate plots
-        calc.set_plot_params(get_params(plot_forms, FORM_TO_PLOT_FUNCTION))
+        calc.set_plot_params(**get_params(plot_forms, FORM_TO_PLOT_FUNCTION))
         peptide_plots, data_plots = calc.get_plots()
         for plot in peptide_plots:
             html_peptide_plots.append(plot.to_html(config={"responsive": True}))

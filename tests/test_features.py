@@ -124,7 +124,16 @@ def test_external_ipc2_availability():
 
 
 def test_compute_features():
-    options = {"three_letter_code": False, "molecular_formula": False, "seq_length": False, "molecular_weight": False, "gravy": True, "isoelectric_point": False, "isoelectric_point_option": "bjellqvist", "aromaticity": False}
+    options = {
+        "three_letter_code": False,
+        "molecular_formula": False,
+        "seq_length": False,
+        "molecular_weight": False,
+        "gravy": True,
+        "isoelectric_point": False,
+        "isoelectric_point_option": "bjellqvist",
+        "aromaticity": False,
+    }
     res = _compute_features(df=TEST_DATA, params=options)
     assert "GRAVY" in res.columns
     assert "Molecular weight" not in res.columns

@@ -32,15 +32,22 @@ class Calculator:
     seq: str
     feature_params: dict
     plot_params: dict
+    computed_features: pd.DataFrame
 
     def __init__(
         self,
         dataset=None,
         seq=None,
+        feature_params=None,
+        plot_params=None,
+        computed_features=None,
     ):
         self.dataset = dataset
         self.seq = seq
-
+        self.feature_params = feature_params
+        self.plot_params = plot_params
+        self.computed_features = computed_features
+        
     # Setter
     def set_dataset(self, dataset: pd.DataFrame):
         self.dataset = dataset
@@ -85,21 +92,23 @@ class Calculator:
         params.pop("self")
         self.plot_params = params
 
+    # Utils
+    def _ensure_attrs(self, *attrs):
+        missing = [a for a in attrs if getattr(self, a) is None]
+        if missing:
+            msg = f"The following information is not available: {missing}. Please execute the corresponding set or get methods first."
+            raise ValueError(msg)
+    
     # Features
     def get_features(self) -> pd.DataFrame:
         """TODO"""
-        if self.dataset is None:
-            raise ValueError(
-                "No dataset loaded. Please choose a pd.DataFrame by using set_dataset() first."
-            )
-        return _compute_features(params=self.feature_params, df=self.dataset)
+        self._ensure_attrs("feature_params", "dataset")
+        self.computed_features = _compute_features(params=self.feature_params, df=self.dataset)
+        return self.computed_features
 
     def get_peptide_features(self) -> pd.DataFrame:
         """TODO"""
-        if self.seq is None:
-            raise ValueError(
-                "No sequence chosen. Please enter a sequence by using set_seq() first."
-            )
+        self._ensure_attrs("feature_params", "seq")
         return _compute_features(params=self.feature_params, seq=self.seq)
 
     seq_length = _seq_length
@@ -116,10 +125,7 @@ class Calculator:
     # Plots
     def get_peptide_plots(self) -> list[go.Figure]:
         """TODO"""
-        if self.seq is None:
-            raise ValueError(
-                "No sequence chosen. Please enter a sequence by using set_seq() first."
-            )
+        self._ensure_attrs("plot_params", "seq")
         return _generate_plots(
             seq=self.seq,
             params=self.plot_params,
@@ -127,27 +133,17 @@ class Calculator:
 
     def get_dataset_plots(self) -> list[go.Figure]:
         """TODO"""
-        if self.dataset is None:
-            raise ValueError(
-                "No dataset loaded. Please choose a pd.DataFrame by using set_dataset() first."
-            )
+        self._ensure_attrs("computed_features")
         return _generate_plots(
-            df=self.dataset,
+            df=self.computed_features,
             params=self.plot_params,
         )
 
-    def get_plots(self) -> list[go.Figure]:
+    def get_plots(self):
         """TODO"""
-        if self.dataset is None:
-            raise ValueError(
-                "No dataset loaded. Please choose a pd.DataFrame by using set_dataset() first."
-            )
-        if self.seq is None:
-            raise ValueError(
-                "No sequence chosen. Please enter a sequence by using set_seq() first."
-            )
+        self._ensure_attrs("computed_features", "seq")
         return _generate_plots(
-            df=self.set_dataset,
+            df=self.computed_features,
             seq=self.seq,
             params=self.plot_params,
         )

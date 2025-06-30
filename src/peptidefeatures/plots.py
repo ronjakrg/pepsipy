@@ -20,7 +20,6 @@ from peptidefeatures.utils import find_group, get_column_name
 
 @dataclass
 class PlotsParams:
-    # TODO Give default values for feature?
     aa_distribution: bool = False
     aa_distribution_order_by: str = "frequency"
     aa_distribution_show_all: bool = False
@@ -28,12 +27,12 @@ class PlotsParams:
     classification: bool = False
     classification_classify_by: str = "chemical"
     compare_features: bool = False
-    compare_features_a: str = ""
-    compare_features_b: str = ""
+    compare_features_a: str = "Sequence length"
+    compare_features_b: str = "Molecular weight"
     compare_features_groups: list = None
     compare_features_intensity_threshold: float = None
     compare_feature: bool = False
-    compare_feature_a: str = ""
+    compare_feature_a: str = "GRAVY"
     compare_feature_groups: list = None
     compare_feature_intensity_threshold: float = None
 

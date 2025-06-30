@@ -4,7 +4,6 @@ from pathlib import Path
 import pickle
 import string
 import sys
-from dataclasses import dataclass
 
 from Bio.SeqUtils import IsoelectricPoint
 import numpy as np
@@ -24,20 +23,8 @@ from peptidefeatures.constants import (
 from peptidefeatures.utils import sanitize_seq, get_distinct_seq, get_column_name
 
 
-@dataclass
-class FeatureParams:
-    three_letter_code: bool = False
-    molecular_formula: bool = False
-    seq_length: bool = False
-    molecular_weight: bool = False
-    gravy: bool = False
-    isoelectric_point: bool = False
-    isoelectric_point_option: str = "bjellqvist"
-    aromaticity: bool = False
-
-
 def compute_features(
-    params: FeatureParams,
+    params: dict,
     df: pd.DataFrame = None,
     seq: str = None,
 ) -> pd.DataFrame:
@@ -68,7 +55,7 @@ def compute_features(
         "molecular_weight": ("Molecular weight", molecular_weight),
         "isoelectric_point": (
             "Isoelectric point",
-            partial(isoelectric_point, option=params.isoelectric_point_option),
+            partial(isoelectric_point, option=params["isoelectric_point_option"]),
         ),
         "seq_length": ("Sequence length", seq_length),
         "gravy": ("GRAVY", gravy),
@@ -78,7 +65,7 @@ def compute_features(
     chosen_features = {
         col: func
         for feature, (col, func) in feature_mapping.items()
-        if getattr(params, feature)
+        if params.get(feature)
     }
 
     # Compute features

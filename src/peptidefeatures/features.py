@@ -23,7 +23,7 @@ from peptidefeatures.constants import (
 from peptidefeatures.utils import sanitize_seq, get_distinct_seq, get_column_name
 
 
-def compute_features(
+def _compute_features(
     params: dict,
     df: pd.DataFrame = None,
     seq: str = None,
@@ -50,16 +50,16 @@ def compute_features(
 
     # Mapping from params to (column name, function)
     feature_mapping = {
-        "three_letter_code": ("Three letter code", three_letter_code),
-        "molecular_formula": ("Molecular formula", molecular_formula),
-        "molecular_weight": ("Molecular weight", molecular_weight),
+        "three_letter_code": ("Three letter code", _three_letter_code),
+        "molecular_formula": ("Molecular formula", _molecular_formula),
+        "molecular_weight": ("Molecular weight", _molecular_weight),
         "isoelectric_point": (
             "Isoelectric point",
-            partial(isoelectric_point, option=params["isoelectric_point_option"]),
+            partial(_isoelectric_point, option=params["isoelectric_point_option"]),
         ),
-        "seq_length": ("Sequence length", seq_length),
-        "gravy": ("GRAVY", gravy),
-        "aromaticity": ("Aromaticity", aromaticity),
+        "seq_length": ("Sequence length", _seq_length),
+        "gravy": ("GRAVY", _gravy),
+        "aromaticity": ("Aromaticity", _aromaticity),
     }
     # Filter features that got True in given params
     chosen_features = {
@@ -81,7 +81,7 @@ def compute_features(
     return merged
 
 
-def seq_length(seq: str) -> int:
+def _seq_length(seq: str) -> int:
     """
     Computes the length in a given sequence.
     Note: The input sequence must be pre-sanitized to compute only valid amino acids.
@@ -92,7 +92,7 @@ def seq_length(seq: str) -> int:
     return len(seq)
 
 
-def aa_frequency(seq: str) -> dict[str, int]:
+def _aa_frequency(seq: str) -> dict[str, int]:
     """
     Computes the frequency of each amino acid in a given sequence.
     Note: The input sequence must be pre-sanitized to compute only valid amino acids.
@@ -106,17 +106,17 @@ def aa_frequency(seq: str) -> dict[str, int]:
         raise ValueError(f"Invalid amino acid symbol: '{e.args[0]}'") from None
 
 
-def molecular_weight(seq: str) -> float:
+def _molecular_weight(seq: str) -> float:
     """
     Computes the average molecular weight of a given sequence in Da.
     Note: The input sequence must be pre-sanitized to compute only valid amino acids.
     """
-    num = seq_length(seq)
+    num = _seq_length(seq)
     weight = sum(AA_WEIGHTS[aa] for aa in seq) - (num - 1) * WATER
     return round(weight, 3)
 
 
-def three_letter_code(seq: str) -> str:
+def _three_letter_code(seq: str) -> str:
     """
     Converts a sequence of amino acids into its representation in three letter code.
     Note: The input sequence must be pre-sanitized to compute only valid amino acids.
@@ -127,7 +127,7 @@ def three_letter_code(seq: str) -> str:
         raise ValueError(f"Invalid amino acid symbol: '{e.args[0]}'") from None
 
 
-def one_letter_code(codes: str) -> str:
+def _one_letter_code(codes: str) -> str:
     """
     Converts concatenated three-letter amino acid codes into their one-letter code representation.
     """
@@ -146,17 +146,17 @@ def one_letter_code(codes: str) -> str:
     return "".join(seq)
 
 
-def gravy(seq: str) -> float:
+def _gravy(seq: str) -> float:
     """
     Computes the GRAVY (grand average of hydropathy) score of a given sequence.
     Note: The input sequence must be pre-sanitized to compute only valid amino acids.
     """
-    num = seq_length(seq)
+    num = _seq_length(seq)
     hydropathy_sum = sum(HYDROPATHY_INDICES[aa] for aa in seq)
     return round(hydropathy_sum / num, 3)
 
 
-def molecular_formula(seq: str) -> str:
+def _molecular_formula(seq: str) -> str:
     """
     Computes the molecular formula of a given sequence.
     Note: The input sequence must be pre-sanitized to compute only valid amino acids.
@@ -166,7 +166,7 @@ def molecular_formula(seq: str) -> str:
         for atom, count in AA_FORMULA[aa].items():
             total_atoms[atom] = total_atoms.get(atom, 0) + count
 
-    num_bindings = seq_length(seq) - 1
+    num_bindings = _seq_length(seq) - 1
     total_atoms["H"] -= 2 * num_bindings
     total_atoms["O"] -= num_bindings
 
@@ -179,7 +179,7 @@ def molecular_formula(seq: str) -> str:
     return "".join(formula_elems)
 
 
-def isoelectric_point(seq: str, option: str = "bjellqvist") -> float:
+def _isoelectric_point(seq: str, option: str = "bjellqvist") -> float:
     """
     Computes the theoretical pI of a given sequence. One can choose between IPC 2.0 (Kozlowski, 2021) to predict
     the pI with the pretrained model IPC2.peptide.svr19 or biopython package based on (Bjellqvist, 1993)
@@ -216,24 +216,24 @@ def isoelectric_point(seq: str, option: str = "bjellqvist") -> float:
         raise ValueError(f"Unknown option: {option}")
 
 
-def aromaticity(seq: str) -> float:
+def _aromaticity(seq: str) -> float:
     """
     Computes the aromaticity of a given sequence by calculating the relative
     frequency of amino acids F, Y, and W (Lobry and Gautier, 1994).
     """
-    freq = aa_frequency(seq)
-    seq_len = seq_length(seq)
+    freq = _aa_frequency(seq)
+    seq_len = _seq_length(seq)
     num_aromatic = sum(freq[aa] for aa in ["F", "Y", "W"])
     return round(num_aromatic / seq_len, 3)
 
 
-def aa_classification(seq: str, classify_by: str = "chemical") -> dict:
+def _aa_classification(seq: str, classify_by: str = "chemical") -> dict:
     """
     Computes the absolute frequency of each class (Pommié et al., 2004).
         seq: Given sequence
         classify_by: Specification of how the amino acids should be classified, can be "chemical" or "charge".
     """
-    freq = aa_frequency(seq)
+    freq = _aa_frequency(seq)
     if classify_by == "chemical":
         return {
             _class: sum(freq[aa] for aa in aminos)

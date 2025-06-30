@@ -2,8 +2,8 @@ from django.shortcuts import render
 import pandas as pd
 import plotly.io as pio
 
-from peptidefeatures.features import compute_features, FeatureParams
-from peptidefeatures.plots import generate_plots, PlotsParams
+from peptidefeatures.features import _compute_features, FeatureParams
+from peptidefeatures.plots import _generate_plots, PlotsParams
 
 from .forms import *
 from .utils import load_data, get_params, get_match_for_seq
@@ -42,7 +42,7 @@ def overview(request):
 
         # Compute features
         feature_params = get_params(feature_forms, FORM_TO_FEATURE_FUNCTION)
-        computed_features = compute_features(
+        computed_features = _compute_features(
             df=data, params=FeatureParams(**feature_params)
         )
 
@@ -53,14 +53,14 @@ def overview(request):
         # If peptide was not found in dataset
         if num_matches == 0:
             computed_peptide_features = (
-                compute_features(params=FeatureParams(**feature_params), seq=seq)
+                _compute_features(params=FeatureParams(**feature_params), seq=seq)
                 .iloc[0]
                 .to_dict()
             )
 
         # Generate plots
         plot_params = get_params(plot_forms, FORM_TO_PLOT_FUNCTION)
-        peptide_plots, data_plots = generate_plots(
+        peptide_plots, data_plots = _generate_plots(
             df=computed_features, seq=seq, params=PlotsParams(**plot_params)
         )
         for plot in peptide_plots:

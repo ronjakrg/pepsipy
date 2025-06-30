@@ -26,7 +26,10 @@ from peptidefeatures.plots import (
 
 
 class Calculator:
-    """TODO"""
+    """
+    The central interface for using the PEPSI package.
+    Computes peptide-specific of dataset-specific features and plots based on defined parameters.
+    """
 
     dataset: pd.DataFrame
     seq: str
@@ -94,6 +97,9 @@ class Calculator:
 
     # Utils
     def _ensure_attrs(self, *attrs):
+        """
+        Raises an error if a given attribute wasn't defined before.
+        """
         missing = [a for a in attrs if getattr(self, a) is None]
         if missing:
             msg = f"The following information is not available: {missing}. Please execute the corresponding set or get methods first."
@@ -101,7 +107,9 @@ class Calculator:
 
     # Features
     def get_features(self) -> pd.DataFrame:
-        """TODO"""
+        """
+        Computes a pandas DataFrame with selected features for the entire dataset.
+        """
         self._ensure_attrs("feature_params", "dataset")
         self.computed_features = _compute_features(
             params=self.feature_params, df=self.dataset
@@ -109,7 +117,9 @@ class Calculator:
         return self.computed_features
 
     def get_peptide_features(self) -> pd.DataFrame:
-        """TODO"""
+        """
+        Computes a pandas DataFrame with selected features for a given peptide sequence.
+        """
         self._ensure_attrs("feature_params", "seq")
         return _compute_features(params=self.feature_params, seq=self.seq)
 
@@ -126,7 +136,9 @@ class Calculator:
 
     # Plots
     def get_peptide_plots(self) -> list[go.Figure]:
-        """TODO"""
+        """
+        Generates plots for the given peptide sequence.
+        """
         self._ensure_attrs("plot_params", "seq")
         return _generate_plots(
             seq=self.seq,
@@ -134,7 +146,9 @@ class Calculator:
         )
 
     def get_dataset_plots(self) -> list[go.Figure]:
-        """TODO"""
+        """
+        Generates plots for the entire dataset.
+        """
         self._ensure_attrs("computed_features")
         return _generate_plots(
             df=self.computed_features,
@@ -142,7 +156,10 @@ class Calculator:
         )
 
     def get_plots(self):
-        """TODO"""
+        """
+        Generates plots for the given peptide sequence and the entire dataset,
+        seperated into two lists of plots.
+        """
         self._ensure_attrs("computed_features", "seq")
         return _generate_plots(
             df=self.computed_features,

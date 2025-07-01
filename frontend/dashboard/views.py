@@ -2,22 +2,17 @@ from django.shortcuts import render
 import pandas as pd
 import plotly.io as pio
 
-from peptidefeatures.features import compute_features, FeatureParams
-from peptidefeatures.plots import generate_plots, PlotsParams
+from peptidefeatures.calculator import Calculator
 
 from .forms import *
 from .utils import load_data, get_params, get_match_for_seq
 
 
 def overview(request):
-    seq = ""
-
-    feature_params = {}
+    calc = Calculator()
     computed_features = pd.DataFrame()
     computed_peptide_features = {}
     num_matches = 0
-
-    plot_params = []
     html_peptide_plots = []
     html_data_plots = []
 
@@ -37,32 +32,24 @@ def overview(request):
         # Get data
         gen_form = GeneralForm(request.POST)
         if gen_form.is_valid():
-            data = load_data(gen_form.cleaned_data["data_name"])
-            seq = gen_form.cleaned_data["seq"]
+            calc.set_dataset(load_data(gen_form.cleaned_data["data_name"]))
+            calc.set_seq(gen_form.cleaned_data["seq"])
 
         # Compute features
-        feature_params = get_params(feature_forms, FORM_TO_FEATURE_FUNCTION)
-        computed_features = compute_features(
-            df=data, params=FeatureParams(**feature_params)
-        )
+        calc.set_feature_params(**get_params(feature_forms, FORM_TO_FEATURE_FUNCTION))
+        computed_features = calc.get_features()
 
         # Filter data for peptide of interest
         num_matches, computed_peptide_features = get_match_for_seq(
-            computed_features, seq
+            computed_features, calc.seq
         )
         # If peptide was not found in dataset
         if num_matches == 0:
-            computed_peptide_features = (
-                compute_features(params=FeatureParams(**feature_params), seq=seq)
-                .iloc[0]
-                .to_dict()
-            )
+            computed_peptide_features = calc.get_peptide_features().iloc[0].to_dict()
 
         # Generate plots
-        plot_params = get_params(plot_forms, FORM_TO_PLOT_FUNCTION)
-        peptide_plots, data_plots = generate_plots(
-            df=computed_features, seq=seq, params=PlotsParams(**plot_params)
-        )
+        calc.set_plot_params(**get_params(plot_forms, FORM_TO_PLOT_FUNCTION))
+        peptide_plots, data_plots = calc.get_plots()
         for plot in peptide_plots:
             html_peptide_plots.append(plot.to_html(config={"responsive": True}))
         for plot in data_plots:
@@ -75,7 +62,7 @@ def overview(request):
         "overview.html",
         {
             "gen_form": gen_form,
-            "seq": seq,
+            "seq": calc.seq,
             "forms_list": [feature_forms, plot_forms],
             "feature_forms": feature_forms,
             "plot_forms": plot_forms,

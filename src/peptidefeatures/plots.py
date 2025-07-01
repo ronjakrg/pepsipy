@@ -1,5 +1,3 @@
-from dataclasses import dataclass
-from functools import partial
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
@@ -14,31 +12,11 @@ from peptidefeatures.constants import (
     CHEMICAL_CLASS_PER_AA,
     CHARGE_CLASS_PER_AA,
 )
-from peptidefeatures.features import aa_frequency, aa_classification
+from peptidefeatures.features import _aa_frequency, _aa_classification
 from peptidefeatures.utils import find_group, get_column_name
 
 
-@dataclass
-class PlotsParams:
-    # TODO Give default values for feature?
-    aa_distribution: bool = False
-    aa_distribution_order_by: str = "frequency"
-    aa_distribution_show_all: bool = False
-    hydropathy_profile: bool = False
-    classification: bool = False
-    classification_classify_by: str = "chemical"
-    compare_features: bool = False
-    compare_features_a: str = ""
-    compare_features_b: str = ""
-    compare_features_groups: list = None
-    compare_features_intensity_threshold: float = None
-    compare_feature: bool = False
-    compare_feature_a: str = ""
-    compare_feature_groups: list = None
-    compare_feature_intensity_threshold: float = None
-
-
-def generate_plots(df: pd.DataFrame, seq: str, params: PlotsParams) -> list:
+def _generate_plots(df: pd.DataFrame, seq: str, params: dict) -> list:
     """
     Computes all selected plots on a given pandas DataFrame.
     Returns a tuple of lists, containing the peptide-specific plots and the
@@ -46,45 +24,51 @@ def generate_plots(df: pd.DataFrame, seq: str, params: PlotsParams) -> list:
     """
     peptide_plots = []
     data_plots = []
-    if params.aa_distribution:
-        plot = aa_distribution(
-            seq=seq,
-            order_by=params.aa_distribution_order_by,
-            # Comparison with string necessary because form.cleaned_data only offers strings
-            show_all=(params.aa_distribution_show_all == "True"),
-        )
-        peptide_plots.append(plot)
-    if params.hydropathy_profile:
-        plot = hydropathy_profile(seq)
-        peptide_plots.append(plot)
-    if params.classification:
-        plot = classification(
-            seq=seq,
-            classify_by=params.classification_classify_by,
-        )
-        peptide_plots.append(plot)
-    if params.compare_features:
-        plot = compare_features(
-            df=df,
-            # TODO Don't hardcode this, work with metadata
-            groups=[grp.strip() for grp in params.compare_features_groups.split(";")],
-            feature_a=params.compare_features_a,
-            feature_b=params.compare_features_b,
-            intensity_threshold=params.compare_features_intensity_threshold,
-        )
-        data_plots.append(plot)
-    if params.compare_feature:
-        plot = compare_feature(
-            df=df,
-            groups=[grp.strip() for grp in params.compare_feature_groups.split(";")],
-            feature=params.compare_feature_a,
-            intensity_threshold=params.compare_feature_intensity_threshold,
-        )
-        data_plots.append(plot)
+    if seq is not None:
+        if params["aa_distribution"]:
+            plot = _aa_distribution(
+                seq=seq,
+                order_by=params["aa_distribution_order_by"],
+                # Comparison with string necessary because form.cleaned_data only offers strings
+                show_all=(params["aa_distribution_show_all"] == "True"),
+            )
+            peptide_plots.append(plot)
+        if params["hydropathy_profile"]:
+            plot = _hydropathy_profile(seq)
+            peptide_plots.append(plot)
+        if params["classification"]:
+            plot = _classification(
+                seq=seq,
+                classify_by=params["classification_classify_by"],
+            )
+            peptide_plots.append(plot)
+    if df is not None:
+        if params["compare_features"]:
+            plot = _compare_features(
+                df=df,
+                # TODO Don't hardcode this, work with metadata
+                groups=[
+                    grp.strip() for grp in params["compare_features_groups"].split(";")
+                ],
+                feature_a=params["compare_features_a"],
+                feature_b=params["compare_features_b"],
+                intensity_threshold=params["compare_features_intensity_threshold"],
+            )
+            data_plots.append(plot)
+        if params["compare_feature"]:
+            plot = _compare_feature(
+                df=df,
+                groups=[
+                    grp.strip() for grp in params["compare_feature_groups"].split(";")
+                ],
+                feature=params["compare_feature_a"],
+                intensity_threshold=params["compare_feature_intensity_threshold"],
+            )
+            data_plots.append(plot)
     return peptide_plots, data_plots
 
 
-def aa_distribution(
+def _aa_distribution(
     seq: str,
     order_by: str = "frequency",
     show_all: bool = False,
@@ -95,7 +79,7 @@ def aa_distribution(
         order_by: Specification of how the amino acids should be sorted, can be any of "frequency", "alphabetical", "classes chemical", "classes charge", "hydropathy" or "weight".
         show_all: Specification if all amino acids should be listed, even when not found in the sequence
     """
-    freq = aa_frequency(seq)
+    freq = _aa_frequency(seq)
     if not show_all:
         freq = {key: val for key, val in freq.items() if val > 0}
     if order_by in ["frequency", "alphabetical", "hydropathy", "weight"]:
@@ -180,7 +164,7 @@ def aa_distribution(
     return fig
 
 
-def hydropathy_profile(seq: str) -> go.Figure:
+def _hydropathy_profile(seq: str) -> go.Figure:
     """
     Computes a hydropathy profile plot for a given sequence.
     Note: The input sequence must be pre-sanitized to compute only valid amino acids.
@@ -208,13 +192,13 @@ def hydropathy_profile(seq: str) -> go.Figure:
     return fig
 
 
-def classification(seq: str, classify_by: str = "chemical") -> go.Figure:
+def _classification(seq: str, classify_by: str = "chemical") -> go.Figure:
     """
     Computes a bar plot showing the frequency of each amino acid class based on (Pommié et al., 2004).
         seq: Given sequence
         classify_by: Specification of how the amino acids should be classified, can be "chemical" or "charge".
     """
-    classification = aa_classification(seq, classify_by)
+    classification = _aa_classification(seq, classify_by)
     df = pd.DataFrame(
         {"Class": classification.keys(), "Frequency": classification.values()}
     )
@@ -233,7 +217,7 @@ def classification(seq: str, classify_by: str = "chemical") -> go.Figure:
     return fig
 
 
-def compare_features(
+def _compare_features(
     df: pd.DataFrame,
     feature_a: str,
     feature_b: str,
@@ -271,7 +255,7 @@ def compare_features(
     return fig
 
 
-def compare_feature(
+def _compare_feature(
     df: pd.DataFrame,
     feature: str,
     groups: list = None,

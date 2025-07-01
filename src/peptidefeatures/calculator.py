@@ -123,16 +123,16 @@ class Calculator:
         self._ensure_attrs("feature_params", "seq")
         return _compute_features(params=self.feature_params, seq=self.seq)
 
-    seq_length = _seq_length
-    aa_frequency = _aa_frequency
-    molecular_weight = _molecular_weight
-    three_letter_code = _three_letter_code
-    one_letter_code = _one_letter_code
-    gravy = _gravy
-    molecular_formula = _molecular_formula
-    isoelectric_point = _isoelectric_point
-    aromaticity = _aromaticity
-    aa_classification = _aa_classification
+    seq_length = staticmethod(_seq_length)
+    aa_frequency = staticmethod(_aa_frequency)
+    molecular_weight = staticmethod(_molecular_weight)
+    three_letter_code = staticmethod(_three_letter_code)
+    one_letter_code = staticmethod(_one_letter_code)
+    gravy = staticmethod(_gravy)
+    molecular_formula = staticmethod(_molecular_formula)
+    isoelectric_point = staticmethod(_isoelectric_point)
+    aromaticity = staticmethod(_aromaticity)
+    aa_classification = staticmethod(_aa_classification)
 
     # Plots
     def get_peptide_plots(self) -> list[go.Figure]:
@@ -149,7 +149,7 @@ class Calculator:
         """
         Generates plots for the entire dataset.
         """
-        self._ensure_attrs("computed_features")
+        self._ensure_attrs("plot_params", "computed_features")
         return _generate_plots(
             df=self.computed_features,
             params=self.plot_params,
@@ -160,15 +160,15 @@ class Calculator:
         Generates plots for the given peptide sequence and the entire dataset,
         seperated into two lists of plots.
         """
-        self._ensure_attrs("computed_features", "seq")
+        self._ensure_attrs("plot_params", "computed_features", "seq")
         return _generate_plots(
             df=self.computed_features,
             seq=self.seq,
             params=self.plot_params,
         )
 
-    aa_distribution = _aa_distribution
-    hydropathy_profile = _hydropathy_profile
-    classification = _classification
-    compare_features = _compare_features
-    compare_feature = _compare_feature
+    aa_distribution = staticmethod(_aa_distribution)
+    hydropathy_profile = staticmethod(_hydropathy_profile)
+    classification = staticmethod(_classification)
+    compare_features = staticmethod(_compare_features)
+    compare_feature = staticmethod(_compare_feature)

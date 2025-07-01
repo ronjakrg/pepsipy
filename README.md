@@ -8,14 +8,15 @@
 | frontend/dashboard/\_\_init\_\_.py            |        0 |        0 |    100% |           |
 | frontend/dashboard/migrations/\_\_init\_\_.py |        0 |        0 |    100% |           |
 | frontend/dashboard/utils.py                   |       26 |        6 |     77% |     47-61 |
-| frontend/dashboard/views.py                   |       42 |        2 |     95% |    55, 71 |
+| frontend/dashboard/views.py                   |       39 |        2 |     95% |    48, 58 |
 | frontend/pepsi/\_\_init\_\_.py                |        0 |        0 |    100% |           |
 | src/peptidefeatures/\_\_init\_\_.py           |        0 |        0 |    100% |           |
+| src/peptidefeatures/calculator.py             |       64 |       28 |     56% |48-52, 56, 59, 72-74, 94-96, 103-106, 113-117, 123-124, 142-143, 152-153, 163-164 |
 | src/peptidefeatures/constants.py              |       15 |        0 |    100% |           |
-| src/peptidefeatures/features.py               |      114 |        3 |     97% |50-55, 211 |
-| src/peptidefeatures/plots.py                  |      119 |       87 |     27% |47-84, 98-180, 188-208, 217-233, 251-271, 287-303 |
+| src/peptidefeatures/features.py               |      103 |        3 |     97% |37-42, 198 |
+| src/peptidefeatures/plots.py                  |      102 |       89 |     13% |25-68, 82-164, 172-192, 201-217, 235-255, 271-287 |
 | src/peptidefeatures/utils.py                  |       17 |        0 |    100% |           |
-|                                     **TOTAL** |  **333** |   **98** | **71%** |           |
+|                                     **TOTAL** |  **366** |  **128** | **65%** |           |
 
 
 ## Setup coverage badge

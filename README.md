@@ -11,7 +11,7 @@ PEPSI is an open-source Python package that provides methods for computing a wid
 This work was conducted as part of the project 'Veni, Vidi, Visualization: Improving Analysis Communication for a Million-Dollar Machine' at the Data Analytics and Computational Statistics Chair, Hasso Plattner Institute.
 
 ## ⚙️ Setup & Installation
-### Using PEPSI in code
+### PEPSI Package
 
 1. Make sure to have pip installed (Tutorial available [here](https://pip.pypa.io/en/stable/installation/))
 2. Update pip in your console <br>
@@ -27,8 +27,10 @@ This work was conducted as part of the project 'Veni, Vidi, Visualization: Impro
    git clone https://github.com/ronjakrg/thesis-peptide-features.git
    cd thesis-peptide-features/frontend
    ```
-3. Install necessary requirements<br>
+3. Create a virtual environment and install necessary requirements<br>
    ```
+   conda create pepsi
+   conda activate pepsi
    pip install -r requirements.txt
    ```
 4. Start the server<br>
@@ -37,7 +39,7 @@ This work was conducted as part of the project 'Veni, Vidi, Visualization: Impro
    ```
 5. Open `http://127.0.0.1:8000/` in the browser of your choice to use the PEPSI Dashboard! ✨ For more details, see section **How to use PEPSI**
 
-## How to use PEPSI
+## 📌 How to use PEPSI
 (Coming soon!)
 
 

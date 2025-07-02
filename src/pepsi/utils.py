@@ -1,6 +1,6 @@
 import pandas as pd
 
-from peptidefeatures.constants import (
+from pepsi.constants import (
     AA_LETTERS,
     CHEMICAL_CLASS_PER_AA,
     CHARGE_CLASS_PER_AA,

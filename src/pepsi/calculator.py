@@ -2,7 +2,7 @@ import pandas as pd
 import plotly.graph_objects as go
 
 
-from peptidefeatures.features import (
+from pepsi.features import (
     _compute_features,
     _seq_length,
     _aa_frequency,
@@ -15,7 +15,7 @@ from peptidefeatures.features import (
     _aromaticity,
     _aa_classification,
 )
-from peptidefeatures.plots import (
+from pepsi.plots import (
     _generate_plots,
     _aa_distribution,
     _hydropathy_profile,

@@ -5,5 +5,3 @@
 #
 #   To run this code, execute python -m peptidefeatures.
 # ──────────────────────────────────────────────────────
-
-print("# Executing main code from peptidefeatures ... #")

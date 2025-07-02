@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 where = ["src"]
 
 [tool.setuptools.package-data]
-"peptidefeatures" = ["external/**"]
+"pepsi" = ["external/**"]
 
 [project]
 name = "thesis-peptide-features"
@@ -29,7 +29,7 @@ Repository = "https://github.com/ronjakrg/thesis-peptide-features"
 Issues = "https://github.com/ronjakrg/thesis-peptide-features/issues"
 
 [project.scripts]
-run = "peptidefeatures.__main__:main"
+run = "pepsi.__main__:main"
 
 [tool.coverage.run]
 source = ["src", "frontend"]

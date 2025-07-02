@@ -6,4 +6,5 @@ __pycache__/
 /build/*
 /results/*
 /external/*
-/src/peptidefeatures/external/*
+/src/pepsi/external/*
+/dist/*

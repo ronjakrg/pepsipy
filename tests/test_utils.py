@@ -3,7 +3,7 @@ import pytest
 import pandas as pd
 
 from constants import TEST_DATA
-from peptidefeatures.utils import (
+from pepsi.utils import (
     sanitize_seq,
     find_group,
     get_column_name,

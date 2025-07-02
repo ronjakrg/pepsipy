@@ -2,7 +2,7 @@ import pytest
 import requests
 
 from constants import TEST_DATA
-from peptidefeatures.features import (
+from pepsi.features import (
     _seq_length,
     _aa_frequency,
     _gravy,

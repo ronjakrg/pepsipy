@@ -9,7 +9,7 @@ where = ["src"]
 "pepsi" = ["external/**"]
 
 [project]
-name = "thesis-peptide-features"
+name = "thesis-pepsi-package"
 version = "0.1.0"
 authors = [
   { name="Ronja Krueger", email="ronja.krueger@student.hpi.de" }
@@ -25,8 +25,8 @@ license = "MIT"
 keywords = ["peptide", "proteomics"]
 
 [project.urls]
-Repository = "https://github.com/ronjakrg/thesis-peptide-features"
-Issues = "https://github.com/ronjakrg/thesis-peptide-features/issues"
+Repository = "https://github.com/ronjakrg/thesis-pepsi-package"
+Issues = "https://github.com/ronjakrg/thesis-pepsi-package/issues"
 
 [project.scripts]
 run = "pepsi.__main__:main"

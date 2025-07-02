@@ -1,7 +1,7 @@
 # PEPSI: **PEP**tide **S**equence **I**nformation
 
-[![CI](https://github.com/ronjakrg/thesis-peptide-features/actions/workflows/ci.yml/badge.svg)](https://github.com/ronjakrg/thesis-peptide-features/actions/workflows/ci.yml)
-[![Coverage badge](https://github.com/ronjakrg/thesis-peptide-features/raw/python-coverage-comment-action-data/badge.svg)](https://github.com/ronjakrg/thesis-peptide-features/tree/python-coverage-comment-action-data/)
+[![CI](https://github.com/ronjakrg/thesis-pepsi-package/actions/workflows/ci.yml/badge.svg)](https://github.com/ronjakrg/thesis-pepsi-package/actions/workflows/ci.yml)
+[![Coverage badge](https://github.com/ronjakrg/thesis-pepsi-package/raw/python-coverage-comment-action-data/badge.svg)](https://github.com/ronjakrg/thesis-pepsi-package/tree/python-coverage-comment-action-data/)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 > [!NOTE]
@@ -24,8 +24,8 @@ This work was conducted as part of the project 'Veni, Vidi, Visualization: Impro
 1. Make sure to have conda installed (Tutorial available [here](https://www.anaconda.com/docs/getting-started/miniconda/install/)
 2. Clone this repository and enter the frontend folder<br>
    ```
-   git clone https://github.com/ronjakrg/thesis-peptide-features.git
-   cd thesis-peptide-features/frontend
+   git clone https://github.com/ronjakrg/thesis-pepsi-package.git
+   cd thesis-pepsi-package/frontend
    ```
 3. Create a virtual environment and install necessary requirements<br>
    ```

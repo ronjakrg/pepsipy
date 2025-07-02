@@ -9,7 +9,7 @@ where = ["src"]
 "pepsi" = ["external/**"]
 
 [project]
-name = "thesis-pepsi-package"
+name = "pepsi"
 version = "0.1.0"
 authors = [
   { name="Ronja Krueger", email="ronja.krueger@student.hpi.de" }

@@ -12,6 +12,10 @@ def install_ipc():
     """
     Downloads and installs IPC 2.0 in /external/ipc-2.0.1 if it doesn't exist yet.
     """
+
+    print("Warning: This script is currently disabled to decrease the project's size.")
+    return
+
     EXTERNAL_PATH = Path(__file__).resolve().parent / "src" / "pepsi" / "external"
     ipc_path = EXTERNAL_PATH / "ipc-2.0.1"
 

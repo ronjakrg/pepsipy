@@ -3,7 +3,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
-from peptidefeatures.constants import (
+from pepsi.constants import (
     AA_WEIGHTS,
     COLORS,
     HYDROPATHY_INDICES,
@@ -12,8 +12,8 @@ from peptidefeatures.constants import (
     CHEMICAL_CLASS_PER_AA,
     CHARGE_CLASS_PER_AA,
 )
-from peptidefeatures.features import _aa_frequency, _aa_classification
-from peptidefeatures.utils import find_group, get_column_name
+from pepsi.features import _aa_frequency, _aa_classification
+from pepsi.utils import find_group, get_column_name
 
 
 def _generate_plots(df: pd.DataFrame, seq: str, params: dict) -> list:

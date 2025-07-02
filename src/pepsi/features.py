@@ -9,7 +9,7 @@ from Bio.SeqUtils import IsoelectricPoint
 import numpy as np
 import pandas as pd
 
-from peptidefeatures.constants import (
+from pepsi.constants import (
     AA_FORMULA,
     AA_LETTERS,
     AA_THREE_LETTER_CODE,
@@ -20,7 +20,7 @@ from peptidefeatures.constants import (
     CHEMICAL_CLASS,
     CHARGE_CLASS,
 )
-from peptidefeatures.utils import sanitize_seq, get_distinct_seq, get_column_name
+from pepsi.utils import sanitize_seq, get_distinct_seq, get_column_name
 
 
 def _compute_features(

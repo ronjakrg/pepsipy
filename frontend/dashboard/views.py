@@ -2,7 +2,7 @@ from django.shortcuts import render
 import pandas as pd
 import plotly.io as pio
 
-from peptidefeatures.calculator import Calculator
+from pepsi.calculator import Calculator
 
 from .forms import *
 from .utils import load_data, get_params, get_match_for_seq

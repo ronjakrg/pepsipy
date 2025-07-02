@@ -13,7 +13,7 @@ def install_ipc():
     Downloads and installs IPC 2.0 in /external/ipc-2.0.1 if it doesn't exist yet.
     """
     EXTERNAL_PATH = (
-        Path(__file__).resolve().parent / "src" / "peptidefeatures" / "external"
+        Path(__file__).resolve().parent / "src" / "pepsi" / "external"
     )
     ipc_path = EXTERNAL_PATH / "ipc-2.0.1"
 

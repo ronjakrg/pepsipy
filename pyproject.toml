@@ -1,0 +1,50 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+"pepsi" = ["external/**"]
+
+[project]
+name = "thesis-peptide-features"
+version = "0.1.0"
+authors = [
+  { name="Ronja Krueger", email="ronja.krueger@student.hpi.de" }
+]
+description = "A package to calculate peptide features."
+readme = "README.md"
+requires-python = ">=3.11"
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Operating System :: OS Independent",
+]
+license = "MIT"
+keywords = ["peptide", "proteomics"]
+
+[project.urls]
+Repository = "https://github.com/ronjakrg/thesis-peptide-features"
+Issues = "https://github.com/ronjakrg/thesis-peptide-features/issues"
+
+[project.scripts]
+run = "pepsi.__main__:main"
+
+[tool.coverage.run]
+source = ["src", "frontend"]
+relative_files = true
+
+[tool.coverage.report]
+omit = [
+  "**/__main__.py",
+   "**/test_*.py",
+  "**/external/*",
+  "apps.py",
+  "manage.py",
+  "urls.py",
+  "settings.py",
+  "asgi.py",
+  "wsgi.py",
+  "forms.py",
+]

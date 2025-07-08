@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 import plotly.express as px
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
@@ -66,6 +67,9 @@ def _generate_plots(df: pd.DataFrame, seq: str, params: dict) -> list:
             )
             data_plots.append(plot)
     return peptide_plots, data_plots
+
+
+# Peptide-specific plots
 
 
 def _aa_distribution(
@@ -217,6 +221,9 @@ def _classification(seq: str, classify_by: str = "chemical") -> go.Figure:
     return fig
 
 
+# Dataset-specific plots
+
+
 def _compare_features(
     df: pd.DataFrame,
     feature_a: str,
@@ -283,5 +290,65 @@ def _compare_feature(
         color_discrete_sequence=COLORS,
         title=f"Distribution of {feature} across groups",
         hover_name=seq_col,
+    )
+    return fig
+
+
+def _raincloud(df: pd.DataFrame) -> go.Figure:
+    """TODO"""
+    peptides = df.copy()
+    intensity_col = get_column_name(peptides, "intensity")
+    intensities = peptides[intensity_col]
+    #intensities_log = np.log10(intensities[intensities>0])
+
+    violin_width = 0.5
+    box_width = 0.1
+    violin_y = np.zeros(len(intensities))
+    box_y = np.full(len(intensities), -0.1)
+    scatter_y = np.random.uniform(-0.3, -0.1, size=len(intensities))
+
+    
+    violin = go.Violin(
+        x=intensities,
+        y=violin_y,
+        orientation="h",
+        side="positive",
+        width=violin_width,
+        box_visible=False,
+        points=False,
+        showlegend=False,
+        fillcolor=COLORS[0],
+        line=dict(color=COLORS[0]),
+    )
+    scatter = go.Scatter(
+        x=intensities,
+        y=scatter_y,
+        mode="markers",
+        marker=dict(size=5, color=COLORS[0]),
+        showlegend=False,
+    )
+    box = go.Box(
+        x=intensities,
+        y=box_y,
+        orientation="h",
+        whiskerwidth=0.3,
+        width=box_width,
+        boxpoints=False,
+        showlegend=False,
+        fillcolor="rgba(0,0,0,0)",
+        line=dict(color="rgba(70,70,70,1)"),
+    )
+    fig = go.Figure()
+    fig.add_traces([violin, scatter, box])
+
+    fig.update_layout(
+        title="Work in progress Title",
+        xaxis=dict(
+            title="Intensity (log)",
+            type="linear",
+        ),
+        yaxis=dict(
+            title="", range=[-0.5, violin_width], showticklabels=False, zeroline=False
+        ),
     )
     return fig

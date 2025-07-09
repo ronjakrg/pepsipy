@@ -75,6 +75,7 @@ def overview(request):
         },
     )
 
+
 def download_data(request):
     buffer = io.BytesIO()
     df = pd.read_csv("/home/ronja/git/thesis-pepsi-package/data/peptides.csv")

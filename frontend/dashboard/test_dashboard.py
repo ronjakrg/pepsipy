@@ -123,6 +123,7 @@ def test_overview_valid_form(
         url,
         data={
             "data_name": "peptides.csv",
+            "aspects_name": "aspects.csv",
             "seq": "PEPTIDE",
         },
     )

@@ -1,7 +1,8 @@
-import io
+import zipfile
 import pandas as pd
 from django.shortcuts import render
 from django.http import FileResponse
+from pathlib import Path
 
 from frontend.project import settings
 from pepsi.calculator import Calculator
@@ -42,22 +43,33 @@ def overview(request):
         computed_features = calc.get_features()
         computed_features.to_csv(settings.TMP_DIR / "features.csv", index=False)
 
-        if (calc.seq != ""):
+        if calc.seq != "":
             # Filter data for peptide of interest
             num_matches, computed_peptide_features = get_match_for_seq(
                 computed_features, calc.seq
             )
             # If peptide was not found in dataset
             if num_matches == 0:
-                computed_peptide_features = calc.get_peptide_features().iloc[0].to_dict()
+                computed_peptide_features = (
+                    calc.get_peptide_features().iloc[0].to_dict()
+                )
 
         # Generate plots
         calc.set_plot_params(**get_params(plot_forms, FORM_TO_PLOT_FUNCTION))
         peptide_plots, data_plots = calc.get_plots()
+        i = 1
         for plot in peptide_plots:
+            plot.write_image(
+                settings.TMP_DIR / "plots" / f"plot_{i}.png", format="png", scale=3
+            )
             html_peptide_plots.append(plot.to_html(config={"responsive": True}))
+            i += 1
         for plot in data_plots:
+            plot.write_image(
+                settings.TMP_DIR / "plots" / f"plot_{i}.png", format="png", scale=3
+            )
             html_data_plots.append(plot.to_html(config={"responsive": True}))
+            i += 1
     else:
         gen_form = GeneralForm()
 
@@ -83,8 +95,15 @@ def download_data(request):
     return FileResponse(
         open(settings.TMP_DIR / "features.csv", "rb"),
         content_type="text/csv",
-        filename="features.csv"
+        filename="features.csv",
     )
 
-def download_plots():
-    return
+
+def download_plots(request):
+    path = settings.TMP_DIR / "plots.zip"
+    with zipfile.ZipFile(path, "w") as zipf:
+        for file in Path(settings.TMP_DIR / "plots").glob("*"):
+            zipf.write(file, arcname=file.name)
+    return FileResponse(
+        open(path, "rb"), content_type="application/zip", filename="plots.zip"
+    )

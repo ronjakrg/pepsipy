@@ -8,7 +8,7 @@ from frontend.project import settings
 from pepsi.calculator import Calculator
 
 from .forms import *
-from .utils import load_data, get_params, get_match_for_seq
+from .utils import load_data, get_params, get_match_for_seq, clear_tmp
 
 
 def overview(request):
@@ -32,6 +32,9 @@ def overview(request):
         form = cls(data=request.POST or None)
         plot_forms.append(form)
     if request.method == "POST":
+        # Clear tmp directory
+        clear_tmp()
+
         # Get data
         gen_form = GeneralForm(request.POST)
         if gen_form.is_valid():
@@ -50,9 +53,9 @@ def overview(request):
             )
             # If peptide was not found in dataset
             if num_matches == 0:
-                computed_peptide_features = (
-                    calc.get_peptide_features().iloc[0].to_dict()
-                )
+                res = calc.get_peptide_features()
+                res.to_csv(settings.TMP_DIR / "peptide_features.csv", index=False)
+                computed_peptide_features = res.iloc[0].to_dict()
 
         # Generate plots
         calc.set_plot_params(**get_params(plot_forms, FORM_TO_PLOT_FUNCTION))
@@ -92,8 +95,9 @@ def overview(request):
 
 
 def download_data(request):
+    filename = request.GET.get("filename")
     return FileResponse(
-        open(settings.TMP_DIR / "features.csv", "rb"),
+        open(settings.TMP_DIR / f"{filename}.csv", "rb"),
         content_type="text/csv",
         filename="features.csv",
     )

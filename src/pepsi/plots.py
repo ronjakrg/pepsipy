@@ -299,7 +299,7 @@ def _raincloud(df: pd.DataFrame) -> go.Figure:
     peptides = df.copy()
     intensity_col = get_column_name(peptides, "intensity")
     intensities = peptides[intensity_col]
-    #intensities_log = np.log10(intensities[intensities>0])
+    # intensities_log = np.log10(intensities[intensities>0])
 
     violin_width = 0.5
     box_width = 0.1
@@ -307,7 +307,6 @@ def _raincloud(df: pd.DataFrame) -> go.Figure:
     box_y = np.full(len(intensities), -0.1)
     scatter_y = np.random.uniform(-0.3, -0.1, size=len(intensities))
 
-    
     violin = go.Violin(
         x=intensities,
         y=violin_y,

@@ -1,5 +1,6 @@
 import pandas as pd
 from pathlib import Path
+import os
 from django.conf import settings
 
 
@@ -59,3 +60,16 @@ def get_match_for_seq(data: pd.DataFrame, seq: str) -> dict:
         return (num_matches, matched.iloc[0].to_dict())
     else:
         return (0, {})
+
+
+def clear_tmp():
+    path = settings.TMP_DIR
+    if os.path.exists(path):
+        for item in path.iterdir():
+            if item.name == "plots":
+                continue
+            else:
+                item.unlink()
+        if os.path.exists(path / "plots"):
+            for item in (path / "plots").iterdir():
+                item.unlink()

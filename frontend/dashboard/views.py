@@ -3,6 +3,7 @@ import pandas as pd
 from django.shortcuts import render
 from django.http import FileResponse
 
+from frontend.project import settings
 from pepsi.calculator import Calculator
 
 from .forms import *
@@ -39,6 +40,7 @@ def overview(request):
         # Compute features
         calc.set_feature_params(**get_params(feature_forms, FORM_TO_FEATURE_FUNCTION))
         computed_features = calc.get_features()
+        computed_features.to_csv(settings.TMP_DIR / "features.csv", index=False)
 
         # Filter data for peptide of interest
         num_matches, computed_peptide_features = get_match_for_seq(
@@ -77,9 +79,8 @@ def overview(request):
 
 
 def download_data(request):
-    buffer = io.BytesIO()
-    df = pd.read_csv("/home/ronja/git/thesis-pepsi-package/data/peptides.csv")
-    df.to_csv(buffer, index=False)
-    buffer.seek(0)
-    csv_bytes = buffer.getvalue()
-    return FileResponse(csv_bytes, content_type="text/csv", filename="results.csv")
+    return FileResponse(
+        open(settings.TMP_DIR / "features.csv", "rb"),
+        content_type="text/csv",
+        filename="features.csv"
+    )

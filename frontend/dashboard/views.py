@@ -42,13 +42,14 @@ def overview(request):
         computed_features = calc.get_features()
         computed_features.to_csv(settings.TMP_DIR / "features.csv", index=False)
 
-        # Filter data for peptide of interest
-        num_matches, computed_peptide_features = get_match_for_seq(
-            computed_features, calc.seq
-        )
-        # If peptide was not found in dataset
-        if num_matches == 0:
-            computed_peptide_features = calc.get_peptide_features().iloc[0].to_dict()
+        if (calc.seq != ""):
+            # Filter data for peptide of interest
+            num_matches, computed_peptide_features = get_match_for_seq(
+                computed_features, calc.seq
+            )
+            # If peptide was not found in dataset
+            if num_matches == 0:
+                computed_peptide_features = calc.get_peptide_features().iloc[0].to_dict()
 
         # Generate plots
         calc.set_plot_params(**get_params(plot_forms, FORM_TO_PLOT_FUNCTION))
@@ -84,3 +85,6 @@ def download_data(request):
         content_type="text/csv",
         filename="features.csv"
     )
+
+def download_plots():
+    return

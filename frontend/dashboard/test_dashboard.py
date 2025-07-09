@@ -82,7 +82,13 @@ def test_get_match_for_seq():
 @patch("frontend.dashboard.views.get_match_for_seq")
 @patch("frontend.dashboard.views.get_params")
 @patch("frontend.dashboard.views.Calculator")
+@patch("frontend.dashboard.views.Path.mkdir")
+@patch("frontend.dashboard.views.pd.DataFrame.to_csv")
+@patch("frontend.dashboard.views.Path.write_bytes")
 def test_overview_valid_form(
+    mock_write_bytes,
+    mock_to_csv,
+    mock_mkdir,
     mock_calculator,
     mock_get_params,
     mock_get_match_for_seq,
@@ -123,6 +129,12 @@ def test_overview_valid_form(
 
     # Assert
     assert response.status_code == 200
+    assert "<div>plot_a</div>" in response.context["peptide_plots"][0]
+    assert "<div>plot_b</div>" in response.context["data_plots"][0]
+    assert "PEPTIDE" == response.context["seq"]
+    assert False == response.context["computed_features"].empty
+    assert_frame_equal(features, response.context["computed_peptide_features"])
+
     mock_load_data.assert_called_once_with("peptides.csv")
     mock_get_match_for_seq.assert_called_once_with(peptides, "PEPTIDE")
 
@@ -130,12 +142,6 @@ def test_overview_valid_form(
     mock_calc.set_seq.assert_called_once_with("PEPTIDE")
     mock_calc.set_feature_params.assert_called_once()
     mock_calc.get_features.assert_called_once()
-
     mock_calc.set_plot_params.assert_called_once()
     mock_calc.get_plots.assert_called_once()
-
-    assert "<div>plot_a</div>" in response.context["peptide_plots"][0]
-    assert "<div>plot_b</div>" in response.context["data_plots"][0]
-    assert "PEPTIDE" == response.context["seq"]
-    assert False == response.context["computed_features"].empty
-    assert_frame_equal(features, response.context["computed_peptide_features"])
+    mock_to_csv.assert_called()

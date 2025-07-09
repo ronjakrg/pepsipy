@@ -156,7 +156,7 @@ class CompareFeaturesForm(forms.Form):
     )
     compare_features_aspect = forms.ChoiceField(
         label="Group by aspect",
-        choices=(), # Changes dynamically
+        choices=(),  # Changes dynamically
         initial=("", ""),
         widget=forms.Select(attrs={"class": "form-control"}),
     )
@@ -181,7 +181,7 @@ class CompareFeatureForm(forms.Form):
     )
     compare_feature_aspect = forms.ChoiceField(
         label="Group by aspect",
-        choices=(), # Changes dynamically
+        choices=(),  # Changes dynamically
         initial=("", ""),
         widget=forms.Select(attrs={"class": "form-control"}),
     )

@@ -54,10 +54,12 @@ class Calculator:
         self.feature_params = feature_params
         self.plot_params = plot_params
         self.computed_features = computed_features
-        self.aspects = aspects # TODO: Add list & key to constructor?
+        self.aspects = aspects  # TODO: Add list & key to constructor?
 
     # Setter
-    def set_dataset(self, dataset: pd.DataFrame): # TODO Convert to one setup method with flexible params
+    def set_dataset(
+        self, dataset: pd.DataFrame
+    ):  # TODO Convert to one setup method with flexible params
         self.dataset = dataset
 
     def set_seq(self, seq: str):
@@ -99,7 +101,7 @@ class Calculator:
         params = locals().copy()
         params.pop("self")
         self.plot_params = params
-    
+
     def set_aspects(self, aspects: pd.DataFrame):
         self.aspects = aspects
         self.aspects_list = list(self.aspects.columns)
@@ -114,10 +116,12 @@ class Calculator:
         if missing:
             msg = f"The following information is not available: {missing}. Please execute the corresponding set or get methods first."
             raise ValueError(msg)
-    
+
     def get_aspects_list(self):
         if self.aspects is None:
-            raise ValueError("No aspect pd.DataFrame found. Please execute set_aspects first.")
+            raise ValueError(
+                "No aspect pd.DataFrame found. Please execute set_aspects first."
+            )
         else:
             return self.aspects_list
 
@@ -167,12 +171,9 @@ class Calculator:
         Generates plots for the entire dataset.
         """
         self._ensure_attrs("plot_params", "computed_features")
-        
+
         enriched_features = pd.merge(
-            self.computed_features,
-            self.aspects,
-            on=self.key_aspect,
-            how="left"
+            self.computed_features, self.aspects, on=self.key_aspect, how="left"
         )
         return _generate_plots(
             seq=None,

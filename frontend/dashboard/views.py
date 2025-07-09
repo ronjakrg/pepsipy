@@ -1,7 +1,7 @@
 import zipfile
 import pandas as pd
 from django.shortcuts import render
-from django.http import FileResponse
+from django.http import FileResponse, JsonResponse
 from pathlib import Path
 
 from frontend.project import settings
@@ -92,6 +92,15 @@ def overview(request):
             "data_plots": html_data_plots,
         },
     )
+
+def fill_aspects(request):
+    if request.method == "POST":
+        gen_form = GeneralForm(request.POST)
+        if gen_form.is_valid():
+            aspects = load_data(gen_form.cleaned_data["aspects_name"])
+            aspects_list = list(aspects.columns)
+            return JsonResponse({"aspects": aspects_list})
+    return JsonResponse({"aspects": []})
 
 
 def download_data(request):

@@ -89,11 +89,11 @@ class Calculator:
         compare_features: bool = False,
         compare_features_a: str = "Sequence length",
         compare_features_b: str = "Molecular weight",
-        compare_features_groups: list = None,
+        compare_features_aspect: list = None,
         compare_features_intensity_threshold: float = None,
         compare_feature: bool = False,
         compare_feature_a: str = "GRAVY",
-        compare_feature_groups: list = None,
+        compare_feature_aspect: list = None,
         compare_feature_intensity_threshold: float = None,
     ):
         params = locals().copy()

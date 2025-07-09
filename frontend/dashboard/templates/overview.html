@@ -19,22 +19,21 @@
         {{ field }}
       </div>
       {% endfor %}
-      <h5>Select peptide features</h5>
-      <button
-        type="button"
-        class="btn btn-grey js-toggle-checkboxes"
-        data-checked="true"
-      >
-        Select all
-      </button>
-      <button
-        type="button"
-        class="btn btn-grey js-toggle-checkboxes"
-        data-checked="false"
-      >
-        Unselect all
-      </button>
+      <button type="button" id="btn-aspects" class="btn btn-purple">Text</button>
+
       <!-- Feature selection -->
+      <div id="forms">
+        <div class="flex-between">
+          <span><b>Feature selection</b></span>
+          <div style="display: inline-flex">
+            <button type="button" class="btn btn-grey js-toggle-checkboxes me-1" data-checked="true">
+              Select all
+            </button>
+            <button type="button" class="btn btn-grey js-toggle-checkboxes" data-checked="false">
+              Unselect all
+            </button>
+          </div>
+        </div>
       {% for forms in forms_list %} {% for form in forms %} {% for field in form %}
       <div class="form-group mb-2">
         {% if field.name == 'selected' %}
@@ -56,6 +55,7 @@
         style="bottom: 0; padding: 1rem 1rem 1rem 0"
       >
         <button type="submit" class="btn btn-purple">Calculate</button>
+        </div>
       </div>
     </div>
 

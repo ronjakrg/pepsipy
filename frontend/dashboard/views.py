@@ -1,6 +1,7 @@
-from django.shortcuts import render
+import io
 import pandas as pd
-import plotly.io as pio
+from django.shortcuts import render
+from django.http import FileResponse
 
 from pepsi.calculator import Calculator
 
@@ -73,3 +74,11 @@ def overview(request):
             "data_plots": html_data_plots,
         },
     )
+
+def download_data(request):
+    buffer = io.BytesIO()
+    df = pd.read_csv("/home/ronja/git/thesis-pepsi-package/data/peptides.csv")
+    df.to_csv(buffer, index=False)
+    buffer.seek(0)
+    csv_bytes = buffer.getvalue()
+    return FileResponse(csv_bytes, content_type="text/csv", filename="results.csv")

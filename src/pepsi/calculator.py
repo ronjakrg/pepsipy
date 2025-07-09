@@ -36,6 +36,9 @@ class Calculator:
     feature_params: dict
     plot_params: dict
     computed_features: pd.DataFrame
+    aspects: pd.DataFrame
+    aspects_list: list[str]
+    key_aspect: str
 
     def __init__(
         self,
@@ -44,15 +47,17 @@ class Calculator:
         feature_params=None,
         plot_params=None,
         computed_features=None,
+        aspects=None,
     ):
         self.dataset = dataset
         self.seq = seq
         self.feature_params = feature_params
         self.plot_params = plot_params
         self.computed_features = computed_features
+        self.aspects = aspects # TODO: Add list & key to constructor?
 
     # Setter
-    def set_dataset(self, dataset: pd.DataFrame):
+    def set_dataset(self, dataset: pd.DataFrame): # TODO Convert to one setup method with flexible params
         self.dataset = dataset
 
     def set_seq(self, seq: str):
@@ -94,6 +99,11 @@ class Calculator:
         params = locals().copy()
         params.pop("self")
         self.plot_params = params
+    
+    def set_aspects(self, aspects: pd.DataFrame):
+        self.aspects = aspects
+        self.aspects_list = list(self.aspects.columns)
+        self.key_aspect = self.aspects_list[0]
 
     # Utils
     def _ensure_attrs(self, *attrs):
@@ -104,6 +114,12 @@ class Calculator:
         if missing:
             msg = f"The following information is not available: {missing}. Please execute the corresponding set or get methods first."
             raise ValueError(msg)
+    
+    def get_aspects_list(self):
+        if self.aspects is None:
+            raise ValueError("No aspect pd.DataFrame found. Please execute set_aspects first.")
+        else:
+            return self.aspects_list
 
     # Features
     def get_features(self) -> pd.DataFrame:
@@ -142,18 +158,27 @@ class Calculator:
         self._ensure_attrs("plot_params", "seq")
         return _generate_plots(
             seq=self.seq,
+            df=None,
             params=self.plot_params,
-        )
+        )[0]
 
     def get_dataset_plots(self) -> list[go.Figure]:
         """
         Generates plots for the entire dataset.
         """
         self._ensure_attrs("plot_params", "computed_features")
-        return _generate_plots(
-            df=self.computed_features,
-            params=self.plot_params,
+        
+        enriched_features = pd.merge(
+            self.computed_features,
+            self.aspects,
+            on=self.key_aspect,
+            how="left"
         )
+        return _generate_plots(
+            seq=None,
+            df=enriched_features,
+            params=self.plot_params,
+        )[1]
 
     def get_plots(self):
         """

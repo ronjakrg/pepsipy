@@ -51,7 +51,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = "frontend.pepsi.urls"
+ROOT_URLCONF = "frontend.project.urls"
 
 TEMPLATES = [
     {
@@ -70,7 +70,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "pepsi.wsgi.application"
+WSGI_APPLICATION = "project.wsgi.application"
 
 
 # Database

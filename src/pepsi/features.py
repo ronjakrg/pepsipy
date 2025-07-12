@@ -6,6 +6,7 @@ import string
 import sys
 
 from Bio.SeqUtils import IsoelectricPoint
+from modlamp.descriptors import GlobalDescriptor
 import numpy as np
 import pandas as pd
 
@@ -246,3 +247,14 @@ def _aa_classification(seq: str, classify_by: str = "chemical") -> dict:
         }
     else:
         raise ValueError(f"Unknown option: {classify_by}")
+
+
+def _charge_for_ph(seq: str, ph: float) -> float:
+    """
+    Computes the net charge of a given sequence at a given pH level.
+        seq: Given sequence
+        ph: Given ph level.
+    """
+    desc = GlobalDescriptor([seq])
+    desc.calculate_charge(ph=ph, amide=False)
+    return float(round(desc.descriptor[0][0], 2))

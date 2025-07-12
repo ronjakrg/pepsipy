@@ -43,6 +43,9 @@ def _generate_plots(df: pd.DataFrame, seq: str, params: dict) -> list:
                 classify_by=params["classification_classify_by"],
             )
             peptide_plots.append(plot)
+        if params["titration_curve"]:
+            plot = _titration_curve(seq)
+            peptide_plots.append(plot)
     if df is not None:
         if params["compare_features"]:
             plot = _compare_features(

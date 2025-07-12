@@ -179,3 +179,7 @@ def test_aa_classification():
 
 def test_charge_at_ph():
     assert type(_charge_at_ph("PEPTIDE", 7.0)) is float
+
+
+def test_charge_density():
+    assert pytest.approx(-0.00375) == _charge_density("PEPTIDE", 7.0)

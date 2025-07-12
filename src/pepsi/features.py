@@ -262,3 +262,12 @@ def _charge_at_ph(seq: str, ph: float) -> float:
     desc = GlobalDescriptor([seq])
     desc.calculate_charge(ph=ph, amide=False)
     return float(round(desc.descriptor[0][0], 2))
+
+
+def _charge_density(seq: str, ph: float) -> float:
+    """
+    Computes the charge density (charge / molecular weight) of a given sequence at a given pH level.
+        seq: Given sequence
+        ph: Given ph level.
+    """
+    return round(_charge_at_ph(seq, ph) / _molecular_weight(seq), 5)

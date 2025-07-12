@@ -20,7 +20,7 @@ class GeneralForm(forms.Form):
     metadata_name = forms.CharField(
         label="Name of metadata file in /data (.csv)",
         max_length=100,
-        initial="meta.csv",
+        initial="metadata.csv",
         widget=forms.TextInput(attrs={"class": "form-control"}),
     )
     seq = forms.CharField(
@@ -140,7 +140,7 @@ class ClassificationForm(forms.Form):
 
 class CompareFeaturesForm(forms.Form):
     selected = forms.BooleanField(
-        label="📈 Compare features across an metadata aspect",
+        label="📈 Compare features across a metadata aspect",
         required=False,
     )
     compare_features_a = forms.ChoiceField(
@@ -170,7 +170,7 @@ class CompareFeaturesForm(forms.Form):
 
 class CompareFeatureForm(forms.Form):
     selected = forms.BooleanField(
-        label="📈 Compare a feature across an metadata aspect",
+        label="📈 Compare a feature across a metadata aspect",
         required=False,
     )
     compare_feature_a = forms.ChoiceField(

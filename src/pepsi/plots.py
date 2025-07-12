@@ -220,7 +220,7 @@ def _compare_features(
     intensity_threshold: float = None,
 ) -> go.Figure:
     """
-    Creates a scatter plot to compare two features across an metadata aspect.
+    Creates a scatter plot to compare two features across a metadata aspect.
         df: Dataframe that contains the features
         metadata: Metadata aspect (e.g. Group, Batch, ...) that peptides get grouped by
         feature_a: Feature shown on x-axis

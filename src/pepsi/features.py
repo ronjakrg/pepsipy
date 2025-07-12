@@ -218,8 +218,9 @@ def _isoelectric_point(seq: str, option: str = "bjellqvist") -> float:
         return float(model.predict(X)[0])
 
     elif option == "bjellqvist":
-        calc = IsoelectricPoint.IsoelectricPoint(clean_seq)
-        return round(calc.pi(), 3)
+        desc = GlobalDescriptor(seq)
+        desc.isoelectric_point(amide=False)
+        return float(round(desc.descriptor[0][0], 2))
 
     else:
         raise ValueError(f"Unknown option: {option}")

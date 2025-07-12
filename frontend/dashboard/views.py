@@ -1,7 +1,7 @@
 import zipfile
 import pandas as pd
 from django.shortcuts import render
-from django.http import FileResponse
+from django.http import FileResponse, JsonResponse
 from pathlib import Path
 
 from frontend.project import settings
@@ -92,6 +92,16 @@ def overview(request):
             "data_plots": html_data_plots,
         },
     )
+
+
+def fill_metadata_options(request):
+    if request.method == "POST":
+        gen_form = GeneralForm(request.POST)
+        if gen_form.is_valid():
+            metadata = load_data(gen_form.cleaned_data["metadata_name"])
+            metadata_list = list(metadata.columns)
+            return JsonResponse({"metadata": metadata_list})
+    return JsonResponse({"metadata": []})
 
 
 def download_data(request):

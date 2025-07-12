@@ -1,10 +1,6 @@
 import pandas as pd
 
-from pepsi.constants import (
-    AA_LETTERS,
-    CHEMICAL_CLASS_PER_AA,
-    CHARGE_CLASS_PER_AA,
-)
+from pepsi.constants import AA_LETTERS
 
 
 def sanitize_seq(seq: str) -> str:
@@ -14,16 +10,6 @@ def sanitize_seq(seq: str) -> str:
     """
     seq = seq.upper()
     return "".join(res for res in seq if res in AA_LETTERS)
-
-
-def find_group(name: str, groups: list) -> str:
-    """
-    Returns the group that is found in the prefix of the sample name.
-    If no group was found, "None" will be returned.
-    """
-    if groups is None:
-        return "None"
-    return next((g for g in groups if name.startswith(g)), "None")
 
 
 def get_column_name(df: pd.DataFrame, keyword: str) -> str:

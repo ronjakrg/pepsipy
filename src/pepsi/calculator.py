@@ -36,6 +36,9 @@ class Calculator:
     feature_params: dict
     plot_params: dict
     computed_features: pd.DataFrame
+    metadata: pd.DataFrame
+    metadata_list: list[str]
+    key_metadata: str
 
     def __init__(
         self,
@@ -44,15 +47,19 @@ class Calculator:
         feature_params=None,
         plot_params=None,
         computed_features=None,
+        metadata=None,
     ):
         self.dataset = dataset
         self.seq = seq
         self.feature_params = feature_params
         self.plot_params = plot_params
         self.computed_features = computed_features
+        self.metadata = metadata
 
     # Setter
-    def set_dataset(self, dataset: pd.DataFrame):
+    def set_dataset(
+        self, dataset: pd.DataFrame
+    ):  # TODO Convert to one setup method with flexible params
         self.dataset = dataset
 
     def set_seq(self, seq: str):
@@ -84,16 +91,21 @@ class Calculator:
         compare_features: bool = False,
         compare_features_a: str = "Sequence length",
         compare_features_b: str = "Molecular weight",
-        compare_features_groups: list = None,
+        compare_features_metadata: str = None,
         compare_features_intensity_threshold: float = None,
         compare_feature: bool = False,
         compare_feature_a: str = "GRAVY",
-        compare_feature_groups: list = None,
+        compare_feature_metadata: str = None,
         compare_feature_intensity_threshold: float = None,
     ):
         params = locals().copy()
         params.pop("self")
         self.plot_params = params
+
+    def set_metadata(self, metadata: pd.DataFrame):
+        self.metadata = metadata
+        self.metadata_list = list(self.metadata.columns)
+        self.key_metadata = self.metadata_list[0]
 
     # Utils
     def _ensure_attrs(self, *attrs):
@@ -104,6 +116,14 @@ class Calculator:
         if missing:
             msg = f"The following information is not available: {missing}. Please execute the corresponding set or get methods first."
             raise ValueError(msg)
+
+    def get_metadata_list(self):
+        if self.metadata is None:
+            raise ValueError(
+                "No metadata pd.DataFrame found. Please execute set_metadata first."
+            )
+        else:
+            return self.metadata_list
 
     # Features
     def get_features(self) -> pd.DataFrame:
@@ -142,18 +162,24 @@ class Calculator:
         self._ensure_attrs("plot_params", "seq")
         return _generate_plots(
             seq=self.seq,
+            df=None,
             params=self.plot_params,
-        )
+        )[0]
 
     def get_dataset_plots(self) -> list[go.Figure]:
         """
         Generates plots for the entire dataset.
         """
         self._ensure_attrs("plot_params", "computed_features")
-        return _generate_plots(
-            df=self.computed_features,
-            params=self.plot_params,
+
+        enriched_features = pd.merge(
+            self.computed_features, self.metadata, on=self.key_metadata, how="left"
         )
+        return _generate_plots(
+            seq=None,
+            df=enriched_features,
+            params=self.plot_params,
+        )[1]
 
     def get_plots(self):
         """

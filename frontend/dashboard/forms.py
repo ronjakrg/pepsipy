@@ -14,6 +14,13 @@ class GeneralForm(forms.Form):
     data_name = forms.CharField(
         label="Name of dataset in /data (.csv)",
         max_length=100,
+        initial="peptides.csv",
+        widget=forms.TextInput(attrs={"class": "form-control"}),
+    )
+    metadata_name = forms.CharField(
+        label="Name of metadata file in /data (.csv)",
+        max_length=100,
+        initial="metadata.csv",
         widget=forms.TextInput(attrs={"class": "form-control"}),
     )
     seq = forms.CharField(
@@ -133,7 +140,7 @@ class ClassificationForm(forms.Form):
 
 class CompareFeaturesForm(forms.Form):
     selected = forms.BooleanField(
-        label="📈 Compare features across groups",
+        label="📈 Compare features across a metadata aspect",
         required=False,
     )
     compare_features_a = forms.ChoiceField(
@@ -147,12 +154,11 @@ class CompareFeaturesForm(forms.Form):
         initial=("Sequence length", "Sequence length"),
         widget=forms.Select(attrs={"class": "form-control"}),
     )
-    compare_features_groups = forms.CharField(
-        label="Group prefixes, separated by semicolons",
-        max_length=100,
-        required=False,
-        initial="AD; CTR",
-        widget=forms.TextInput(attrs={"class": "form-control"}),
+    compare_features_metadata = forms.ChoiceField(
+        label="Group by metadata aspect",
+        choices=(),  # Changes dynamically
+        initial=("", ""),
+        widget=forms.Select(attrs={"class": "form-control"}),
     )
     compare_features_intensity_threshold = forms.FloatField(
         label="Intensity threshold",
@@ -164,7 +170,7 @@ class CompareFeaturesForm(forms.Form):
 
 class CompareFeatureForm(forms.Form):
     selected = forms.BooleanField(
-        label="📈 Compare a feature across groups",
+        label="📈 Compare a feature across a metadata aspect",
         required=False,
     )
     compare_feature_a = forms.ChoiceField(
@@ -173,12 +179,11 @@ class CompareFeatureForm(forms.Form):
         initial=("GRAVY", "GRAVY"),
         widget=forms.Select(attrs={"class": "form-control"}),
     )
-    compare_feature_groups = forms.CharField(
-        label="Group prefixes, separated by semicolons",
-        max_length=100,
-        required=False,
-        initial="AD; CTR",
-        widget=forms.TextInput(attrs={"class": "form-control"}),
+    compare_feature_metadata = forms.ChoiceField(
+        label="Group by metadata aspect",
+        choices=(),  # Changes dynamically
+        initial=("", ""),
+        widget=forms.Select(attrs={"class": "form-control"}),
     )
     compare_feature_intensity_threshold = forms.FloatField(
         label="Intensity threshold",

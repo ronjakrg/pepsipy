@@ -5,7 +5,6 @@ import pickle
 import string
 import sys
 
-from Bio.SeqUtils import IsoelectricPoint
 from modlamp.descriptors import GlobalDescriptor
 import numpy as np
 import pandas as pd

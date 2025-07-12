@@ -14,12 +14,15 @@ from pepsi.features import (
     _isoelectric_point,
     _aromaticity,
     _aa_classification,
+    _charge_at_ph,
+    _charge_density,
 )
 from pepsi.plots import (
     _generate_plots,
     _aa_distribution,
     _hydropathy_profile,
     _classification,
+    _titration_curve,
     _compare_features,
     _compare_feature,
 )
@@ -75,6 +78,10 @@ class Calculator:
         isoelectric_point: bool = False,
         isoelectric_point_option: str = "bjellqvist",
         aromaticity: bool = False,
+        charge_at_ph: bool = False,
+        charge_at_ph_level: float = 7.0,
+        charge_density: bool = False,
+        charge_density_level: float = 7.0,
     ):
         params = locals().copy()
         params.pop("self")
@@ -88,6 +95,7 @@ class Calculator:
         hydropathy_profile: bool = False,
         classification: bool = False,
         classification_classify_by: str = "chemical",
+        titration_curve: bool = False,
         compare_features: bool = False,
         compare_features_a: str = "Sequence length",
         compare_features_b: str = "Molecular weight",
@@ -153,6 +161,8 @@ class Calculator:
     isoelectric_point = staticmethod(_isoelectric_point)
     aromaticity = staticmethod(_aromaticity)
     aa_classification = staticmethod(_aa_classification)
+    charge_at_ph = staticmethod(_charge_at_ph)
+    charge_density = staticmethod(_charge_density)
 
     # Plots
     def get_peptide_plots(self) -> list[go.Figure]:
@@ -196,5 +206,6 @@ class Calculator:
     aa_distribution = staticmethod(_aa_distribution)
     hydropathy_profile = staticmethod(_hydropathy_profile)
     classification = staticmethod(_classification)
+    titration_curve = staticmethod(_titration_curve)
     compare_features = staticmethod(_compare_features)
     compare_feature = staticmethod(_compare_feature)

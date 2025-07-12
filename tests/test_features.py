@@ -14,6 +14,8 @@ from pepsi.features import (
     _compute_features,
     _aromaticity,
     _aa_classification,
+    _charge_at_ph,
+    _charge_density,
 )
 
 # Any function that calls one of these functions is already covered by a test for invalid amino acids.
@@ -134,6 +136,10 @@ def test_compute_features():
         "isoelectric_point": False,
         "isoelectric_point_option": "bjellqvist",
         "aromaticity": False,
+        "charge_at_ph": False,
+        "charge_at_ph_level": 7.0,
+        "charge_density": False,
+        "charge_density_level": 7.0,
     }
     res = _compute_features(df=TEST_DATA, params=options)
     assert "GRAVY" in res.columns
@@ -171,3 +177,11 @@ def test_aa_classification():
     with pytest.raises(ValueError) as e:
         _aa_classification("PEPTIDE", "foo")
     assert "Unknown option" in str(e.value)
+
+
+def test_charge_at_ph():
+    assert type(_charge_at_ph("PEPTIDE", 7.0)) is float
+
+
+def test_charge_density():
+    assert pytest.approx(-0.00375) == _charge_density("PEPTIDE", 7.0)

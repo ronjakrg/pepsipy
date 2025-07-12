@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 import plotly.express as px
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
@@ -12,7 +13,7 @@ from pepsi.constants import (
     CHEMICAL_CLASS_PER_AA,
     CHARGE_CLASS_PER_AA,
 )
-from pepsi.features import _aa_frequency, _aa_classification
+from pepsi.features import _aa_frequency, _aa_classification, _charge_at_ph
 from pepsi.utils import get_column_name
 
 
@@ -41,6 +42,9 @@ def _generate_plots(df: pd.DataFrame, seq: str, params: dict) -> list:
                 seq=seq,
                 classify_by=params["classification_classify_by"],
             )
+            peptide_plots.append(plot)
+        if params["titration_curve"]:
+            plot = _titration_curve(seq)
             peptide_plots.append(plot)
     if df is not None:
         if params["compare_features"]:
@@ -209,6 +213,25 @@ def _classification(seq: str, classify_by: str = "chemical") -> go.Figure:
     fig.update_traces(
         showlegend=False,
     )
+    return fig
+
+
+def _titration_curve(seq: str) -> go.Figure:
+    """
+    Computes a graph showing the net charge of a given sequence per pH level.
+        seq: Given sequence
+    """
+    ph_vals = np.arange(0.0, 14.0 + 0.1, 0.1)
+    df = pd.DataFrame({"pH": ph_vals})
+    df["Charge"] = df["pH"].apply(lambda ph: _charge_at_ph(seq, ph))
+    fig = px.line(
+        df,
+        x="pH",
+        y="Charge",
+        title="Titration curve (charge vs. pH)",
+        color_discrete_sequence=COLORS,
+    )
+    fig.add_hline(y=0, line_dash="dash")
     return fig
 
 

@@ -83,6 +83,32 @@ class IsoelectricPointForm(forms.Form):
     )
 
 
+class ChargeForm(forms.Form):
+    selected = forms.BooleanField(
+        label="Charge",
+        required=False,
+    )
+    charge_at_ph_level = forms.FloatField(
+        label="pH level",
+        required=False,
+        initial=7.0,
+        widget=forms.NumberInput(attrs={"class": "form-control"}),
+    )
+
+
+class ChargeDensityForm(forms.Form):
+    selected = forms.BooleanField(
+        label="Charge density",
+        required=False,
+    )
+    charge_density_level = forms.FloatField(
+        label="pH level",
+        required=False,
+        initial=7.0,
+        widget=forms.NumberInput(attrs={"class": "form-control"}),
+    )
+
+
 class AromaticityForm(forms.Form):
     selected = forms.BooleanField(
         label="Aromaticity",
@@ -135,6 +161,13 @@ class ClassificationForm(forms.Form):
             ("charge", "Charge"),
         ),
         widget=forms.Select(attrs={"class": "form-control"}),
+    )
+
+
+class TitrationCurveForm(forms.Form):
+    selected = forms.BooleanField(
+        label="📈 Titration curve (charge vs. pH)",
+        required=False,
     )
 
 
@@ -201,11 +234,14 @@ FORM_TO_FEATURE_FUNCTION = {
     GravyForm: "gravy",
     IsoelectricPointForm: "isoelectric_point",
     AromaticityForm: "aromaticity",
+    ChargeForm: "charge_at_ph",
+    ChargeDensityForm: "charge_density",
 }
 FORM_TO_PLOT_FUNCTION = {
     AaDistributionForm: "aa_distribution",
     HydropathyProfileForm: "hydropathy_profile",
     ClassificationForm: "classification",
+    TitrationCurveForm: "titration_curve",
     CompareFeaturesForm: "compare_features",
     CompareFeatureForm: "compare_feature",
 }

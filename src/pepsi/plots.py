@@ -217,6 +217,10 @@ def _classification(seq: str, classify_by: str = "chemical") -> go.Figure:
 
 
 def _titration_curve(seq: str) -> go.Figure:
+    """
+    Computes a graph showing the net charge of a given sequence per pH level.
+        seq: Given sequence
+    """
     ph_vals = np.arange(0.0, 14.0 + 0.1, 0.1)
     df = pd.DataFrame({"pH": ph_vals})
     df["Charge"] = df["pH"].apply(lambda ph: _charge_at_ph(seq, ph))

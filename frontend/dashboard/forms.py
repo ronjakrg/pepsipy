@@ -17,10 +17,10 @@ class GeneralForm(forms.Form):
         initial="peptides.csv",
         widget=forms.TextInput(attrs={"class": "form-control"}),
     )
-    aspects_name = forms.CharField(
-        label="Name of aspect file in /data (.csv)",
+    metadata_name = forms.CharField(
+        label="Name of metadata file in /data (.csv)",
         max_length=100,
-        initial="aspects.csv",
+        initial="meta.csv",
         widget=forms.TextInput(attrs={"class": "form-control"}),
     )
     seq = forms.CharField(
@@ -140,7 +140,7 @@ class ClassificationForm(forms.Form):
 
 class CompareFeaturesForm(forms.Form):
     selected = forms.BooleanField(
-        label="📈 Compare features across an aspect",
+        label="📈 Compare features across an metadata aspect",
         required=False,
     )
     compare_features_a = forms.ChoiceField(
@@ -154,8 +154,8 @@ class CompareFeaturesForm(forms.Form):
         initial=("Sequence length", "Sequence length"),
         widget=forms.Select(attrs={"class": "form-control"}),
     )
-    compare_features_aspect = forms.ChoiceField(
-        label="Group by aspect",
+    compare_features_metadata = forms.ChoiceField(
+        label="Group by metadata aspect",
         choices=(),  # Changes dynamically
         initial=("", ""),
         widget=forms.Select(attrs={"class": "form-control"}),
@@ -170,7 +170,7 @@ class CompareFeaturesForm(forms.Form):
 
 class CompareFeatureForm(forms.Form):
     selected = forms.BooleanField(
-        label="📈 Compare a feature across an aspect",
+        label="📈 Compare a feature across an metadata aspect",
         required=False,
     )
     compare_feature_a = forms.ChoiceField(
@@ -179,8 +179,8 @@ class CompareFeatureForm(forms.Form):
         initial=("GRAVY", "GRAVY"),
         widget=forms.Select(attrs={"class": "form-control"}),
     )
-    compare_feature_aspect = forms.ChoiceField(
-        label="Group by aspect",
+    compare_feature_metadata = forms.ChoiceField(
+        label="Group by metadata aspect",
         choices=(),  # Changes dynamically
         initial=("", ""),
         widget=forms.Select(attrs={"class": "form-control"}),

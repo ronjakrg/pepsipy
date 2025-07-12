@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
-  // For submitting aspects and filling them into choice field
+  // For submitting metadata aspects and filling them into choice field
   const features = document.getElementById("forms");
-  const btn = document.getElementById("btn-aspects");
+  const btn = document.getElementById("btn-metadata");
   if (!sessionStorage.getItem("first_loaded")) {
     features.classList.add("invisible");
   }

@@ -36,9 +36,9 @@ class Calculator:
     feature_params: dict
     plot_params: dict
     computed_features: pd.DataFrame
-    aspects: pd.DataFrame
-    aspects_list: list[str]
-    key_aspect: str
+    metadata: pd.DataFrame
+    metadata_list: list[str]
+    key_metadata: str
 
     def __init__(
         self,
@@ -47,14 +47,14 @@ class Calculator:
         feature_params=None,
         plot_params=None,
         computed_features=None,
-        aspects=None,
+        metadata=None,
     ):
         self.dataset = dataset
         self.seq = seq
         self.feature_params = feature_params
         self.plot_params = plot_params
         self.computed_features = computed_features
-        self.aspects = aspects  # TODO: Add list & key to constructor?
+        self.metadata = metadata
 
     # Setter
     def set_dataset(
@@ -91,21 +91,21 @@ class Calculator:
         compare_features: bool = False,
         compare_features_a: str = "Sequence length",
         compare_features_b: str = "Molecular weight",
-        compare_features_aspect: list = None,
+        compare_features_metadata: str = None,
         compare_features_intensity_threshold: float = None,
         compare_feature: bool = False,
         compare_feature_a: str = "GRAVY",
-        compare_feature_aspect: list = None,
+        compare_feature_metadata: str = None,
         compare_feature_intensity_threshold: float = None,
     ):
         params = locals().copy()
         params.pop("self")
         self.plot_params = params
 
-    def set_aspects(self, aspects: pd.DataFrame):
-        self.aspects = aspects
-        self.aspects_list = list(self.aspects.columns)
-        self.key_aspect = self.aspects_list[0]
+    def set_metadata(self, metadata: pd.DataFrame):
+        self.metadata = metadata
+        self.metadata_list = list(self.metadata.columns)
+        self.key_metadata = self.metadata_list[0]
 
     # Utils
     def _ensure_attrs(self, *attrs):
@@ -117,13 +117,13 @@ class Calculator:
             msg = f"The following information is not available: {missing}. Please execute the corresponding set or get methods first."
             raise ValueError(msg)
 
-    def get_aspects_list(self):
-        if self.aspects is None:
+    def get_metadata_list(self):
+        if self.metadata is None:
             raise ValueError(
-                "No aspect pd.DataFrame found. Please execute set_aspects first."
+                "No metadata pd.DataFrame found. Please execute set_metadata first."
             )
         else:
-            return self.aspects_list
+            return self.metadata_list
 
     # Features
     def get_features(self) -> pd.DataFrame:
@@ -173,7 +173,7 @@ class Calculator:
         self._ensure_attrs("plot_params", "computed_features")
 
         enriched_features = pd.merge(
-            self.computed_features, self.aspects, on=self.key_aspect, how="left"
+            self.computed_features, self.metadata, on=self.key_metadata, how="left"
         )
         return _generate_plots(
             seq=None,

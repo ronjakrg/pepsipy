@@ -94,14 +94,14 @@ def overview(request):
     )
 
 
-def fill_aspects(request):
+def fill_metadata_options(request):
     if request.method == "POST":
         gen_form = GeneralForm(request.POST)
         if gen_form.is_valid():
-            aspects = load_data(gen_form.cleaned_data["aspects_name"])
-            aspects_list = list(aspects.columns)
-            return JsonResponse({"aspects": aspects_list})
-    return JsonResponse({"aspects": []})
+            metadata = load_data(gen_form.cleaned_data["metadata_name"])
+            metadata_list = list(metadata.columns)
+            return JsonResponse({"metadata": metadata_list})
+    return JsonResponse({"metadata": []})
 
 
 def download_data(request):

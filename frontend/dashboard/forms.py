@@ -83,6 +83,19 @@ class IsoelectricPointForm(forms.Form):
     )
 
 
+class ChargeForm(forms.Form):
+    selected = forms.BooleanField(
+        label="Charge",
+        required=False,
+    )
+    charge_at_ph_level = forms.FloatField(
+        label="pH level",
+        required=False,
+        initial=7.0,
+        widget=forms.NumberInput(attrs={"class": "form-control"}),
+    )
+
+
 class AromaticityForm(forms.Form):
     selected = forms.BooleanField(
         label="Aromaticity",
@@ -201,6 +214,7 @@ FORM_TO_FEATURE_FUNCTION = {
     GravyForm: "gravy",
     IsoelectricPointForm: "isoelectric_point",
     AromaticityForm: "aromaticity",
+    ChargeForm: "charge_at_ph",
 }
 FORM_TO_PLOT_FUNCTION = {
     AaDistributionForm: "aa_distribution",

@@ -61,6 +61,10 @@ def _compute_features(
         "seq_length": ("Sequence length", _seq_length),
         "gravy": ("GRAVY", _gravy),
         "aromaticity": ("Aromaticity", _aromaticity),
+        "charge_at_ph": (
+            "Charge",
+            partial(_charge_at_ph, ph=params["charge_at_ph_level"]),
+        ),
     }
     # Filter features that got True in given params
     chosen_features = {
@@ -249,9 +253,9 @@ def _aa_classification(seq: str, classify_by: str = "chemical") -> dict:
         raise ValueError(f"Unknown option: {classify_by}")
 
 
-def _charge_for_ph(seq: str, ph: float) -> float:
+def _charge_at_ph(seq: str, ph: float) -> float:
     """
-    Computes the net charge of a given sequence at a given pH level.
+    Computes the charge of a given sequence at a given pH level.
         seq: Given sequence
         ph: Given ph level.
     """

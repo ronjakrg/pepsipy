@@ -14,7 +14,7 @@ from pepsi.features import (
     _compute_features,
     _aromaticity,
     _aa_classification,
-    _charge_for_ph,
+    _charge_at_ph,
 )
 
 # Any function that calls one of these functions is already covered by a test for invalid amino acids.
@@ -175,4 +175,4 @@ def test_aa_classification():
 
 
 def test_charge_at_ph():
-    assert type(_charge_for_ph("PEPTIDE", 7.0)) is float
+    assert type(_charge_at_ph("PEPTIDE", 7.0)) is float

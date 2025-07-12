@@ -14,6 +14,7 @@ from pepsi.features import (
     _isoelectric_point,
     _aromaticity,
     _aa_classification,
+    _charge_at_ph,
 )
 from pepsi.plots import (
     _generate_plots,
@@ -75,6 +76,8 @@ class Calculator:
         isoelectric_point: bool = False,
         isoelectric_point_option: str = "bjellqvist",
         aromaticity: bool = False,
+        charge_at_ph: bool = False,
+        charge_at_ph_level: float = 7.0,
     ):
         params = locals().copy()
         params.pop("self")
@@ -153,6 +156,7 @@ class Calculator:
     isoelectric_point = staticmethod(_isoelectric_point)
     aromaticity = staticmethod(_aromaticity)
     aa_classification = staticmethod(_aa_classification)
+    charge_at_ph = staticmethod(_charge_at_ph)
 
     # Plots
     def get_peptide_plots(self) -> list[go.Figure]:

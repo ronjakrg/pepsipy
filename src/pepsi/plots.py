@@ -55,7 +55,7 @@ def _generate_plots(df: pd.DataFrame, seq: str, params: dict) -> list:
         if params["compare_feature"]:
             plot = _compare_feature(
                 df=df,
-                metadata=params["compare_features_metadata"],
+                metadata=params["compare_feature_metadata"],
                 feature=params["compare_feature_a"],
                 intensity_threshold=params["compare_feature_intensity_threshold"],
             )

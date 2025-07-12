@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   btn.addEventListener("click", function() {
     const data = new FormData(document.querySelector("form"));
-    fetch("fill_aspects", {
+    fetch("fill_metadata_options", {
       method: "POST",
       headers: {
         "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]").value,
@@ -18,14 +18,14 @@ document.addEventListener('DOMContentLoaded', () => {
       .then((response) => response.json())
       .then((data) => {
         const fields = document.querySelectorAll(
-          "select[name$='compare_features_aspect'], select[name$='compare_feature_aspect']"
+          "select[name$='compare_features_metadata'], select[name$='compare_feature_metadata']"
         );
         fields.forEach((field) => {
           field.innerHTML = "";
-          data.aspects.forEach((aspect) => {
+          data.metadata.forEach((elem) => {
             const option = document.createElement("option");
-            option.value = aspect;
-            option.textContent = aspect;
+            option.value = elem;
+            option.textContent = elem;
             field.appendChild(option);
           });
         });

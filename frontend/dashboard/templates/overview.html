@@ -75,7 +75,11 @@
                 {% for label, value in computed_peptide_features.items %}
                 <tr>
                   <th scope="row">{{ label }}</th>
-                  <td>{{ value }}</td>
+                  <td>{{ value }}
+                    {% if label == "Molecular weight" %}
+                    <span> Da</span>
+                    {% endif %}
+                  </td>
                 </tr>
                 {% endfor %}
               </tbody>

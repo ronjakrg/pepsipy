@@ -136,8 +136,9 @@ def test_compute_features():
         "isoelectric_point": False,
         "isoelectric_point_option": "bjellqvist",
         "aromaticity": False,
-        "charge_at_ph_level": False,
+        "charge_at_ph": False,
         "charge_at_ph_level": 7.0,
+        "charge_density": False,
         "charge_density_level": 7.0,
     }
     res = _compute_features(df=TEST_DATA, params=options)

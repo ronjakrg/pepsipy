@@ -69,6 +69,7 @@ def _compute_features(
             "Charge density",
             partial(_charge_density, ph=params["charge_density_level"]),
         ),
+        "boman_index": ("Boman index", _boman_index),
     }
     # Filter features that got True in given params
     chosen_features = {

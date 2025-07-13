@@ -1,12 +1,14 @@
 from django import forms
 
 
-feature_choices = (
+numeric_feature_choices = (
     ("Molecular weight", "Molecular weight"),
     ("Isoelectric point", "Isoelectric point"),
     ("Sequence length", "Sequence length"),
     ("GRAVY", "GRAVY"),
     ("Aromaticity", "Aromaticity"),
+    # TODO Add other numeric choices
+    ("Boman index", "Boman index"),
 )
 
 
@@ -109,6 +111,13 @@ class ChargeDensityForm(forms.Form):
     )
 
 
+class BomanIndexForm(forms.Form):
+    selected = forms.BooleanField(
+        label="Boman index",
+        required=False,
+    )
+
+
 class AromaticityForm(forms.Form):
     selected = forms.BooleanField(
         label="Aromaticity",
@@ -130,6 +139,8 @@ class AaDistributionForm(forms.Form):
             ("classes charge", "Charge classes"),
             ("hydropathy", "Hydropathy index"),
             ("weight", "Molecular weight"),
+            # TODO Add other numeric choices
+            # Change to union with numeric_feature_options?
         ),
         required=False,
         widget=forms.Select(attrs={"class": "form-control"}),
@@ -178,12 +189,12 @@ class CompareFeaturesForm(forms.Form):
     )
     compare_features_a = forms.ChoiceField(
         label="Feature on x-axis",
-        choices=feature_choices,
+        choices=numeric_feature_choices,
         widget=forms.Select(attrs={"class": "form-control"}),
     )
     compare_features_b = forms.ChoiceField(
         label="Feature on y-axis",
-        choices=feature_choices,
+        choices=numeric_feature_choices,
         initial=("Sequence length", "Sequence length"),
         widget=forms.Select(attrs={"class": "form-control"}),
     )
@@ -208,7 +219,7 @@ class CompareFeatureForm(forms.Form):
     )
     compare_feature_a = forms.ChoiceField(
         label="Feature",
-        choices=feature_choices,
+        choices=numeric_feature_choices,
         initial=("GRAVY", "GRAVY"),
         widget=forms.Select(attrs={"class": "form-control"}),
     )
@@ -236,6 +247,7 @@ FORM_TO_FEATURE_FUNCTION = {
     AromaticityForm: "aromaticity",
     ChargeForm: "charge_at_ph",
     ChargeDensityForm: "charge_density",
+    BomanIndexForm: "boman_index",
 }
 FORM_TO_PLOT_FUNCTION = {
     AaDistributionForm: "aa_distribution",

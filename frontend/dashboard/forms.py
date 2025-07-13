@@ -1,13 +1,14 @@
 from django import forms
 
-
+# Numeric features available for comparision
 numeric_feature_choices = (
     ("Molecular weight", "Molecular weight"),
     ("Isoelectric point", "Isoelectric point"),
     ("Sequence length", "Sequence length"),
     ("GRAVY", "GRAVY"),
     ("Aromaticity", "Aromaticity"),
-    # TODO Add other numeric choices
+    ("Charge", "Charge"),
+    ("Charge density", "Charge density"),
     ("Boman index", "Boman index"),
 )
 
@@ -139,8 +140,6 @@ class AaDistributionForm(forms.Form):
             ("classes charge", "Charge classes"),
             ("hydropathy", "Hydropathy index"),
             ("weight", "Molecular weight"),
-            # TODO Add other numeric choices
-            # Change to union with numeric_feature_options?
         ),
         required=False,
         widget=forms.Select(attrs={"class": "form-control"}),

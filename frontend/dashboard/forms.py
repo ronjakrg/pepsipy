@@ -10,6 +10,7 @@ numeric_feature_choices = (
     ("Charge", "Charge"),
     ("Charge density", "Charge density"),
     ("Boman index", "Boman index"),
+    ("Aliphatic index", "Aliphatic index"),
 )
 
 
@@ -122,6 +123,13 @@ class BomanIndexForm(forms.Form):
 class AromaticityForm(forms.Form):
     selected = forms.BooleanField(
         label="Aromaticity",
+        required=False,
+    )
+
+
+class AliphaticIndexForm(forms.Form):
+    selected = forms.BooleanField(
+        label="Aliphatic index",
         required=False,
     )
 
@@ -247,6 +255,7 @@ FORM_TO_FEATURE_FUNCTION = {
     ChargeForm: "charge_at_ph",
     ChargeDensityForm: "charge_density",
     BomanIndexForm: "boman_index",
+    AliphaticIndexForm: "aliphatic_index",
 }
 FORM_TO_PLOT_FUNCTION = {
     AaDistributionForm: "aa_distribution",

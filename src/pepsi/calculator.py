@@ -17,6 +17,7 @@ from pepsi.features import (
     _charge_at_ph,
     _charge_density,
     _boman_index,
+    _aliphatic_index,
 )
 from pepsi.plots import (
     _generate_plots,
@@ -84,6 +85,7 @@ class Calculator:
         charge_density: bool = False,
         charge_density_level: float = 7.0,
         boman_index: bool = False,
+        aliphatic_index: bool = False,
     ):
         params = locals().copy()
         params.pop("self")
@@ -166,6 +168,7 @@ class Calculator:
     charge_at_ph = staticmethod(_charge_at_ph)
     charge_density = staticmethod(_charge_density)
     boman_index = staticmethod(_boman_index)
+    aliphatic_index = staticmethod(_aliphatic_index)
 
     # Plots
     def get_peptide_plots(self) -> list[go.Figure]:

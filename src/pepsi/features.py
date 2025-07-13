@@ -69,6 +69,7 @@ def _compute_features(
             "Charge density",
             partial(_charge_density, ph=params["charge_density_level"]),
         ),
+        "boman_index": ("Boman index", _boman_index),
     }
     # Filter features that got True in given params
     chosen_features = {
@@ -240,7 +241,7 @@ def _aa_classification(seq: str, classify_by: str = "chemical") -> dict:
     """
     Computes the absolute frequency of each class (Pommié et al., 2004).
         seq: Given sequence
-        classify_by: Specification of how the amino acids should be classified, can be "chemical" or "charge".
+        classify_by: Specification of how the amino acids should be classified, can be "chemical" or "charge"
     """
     freq = _aa_frequency(seq)
     if classify_by == "chemical":
@@ -261,7 +262,7 @@ def _charge_at_ph(seq: str, ph: float) -> float:
     """
     Computes the charge of a given sequence at a given pH level.
         seq: Given sequence
-        ph: Given ph level.
+        ph: Given ph level
     """
     desc = GlobalDescriptor(seq)
     desc.calculate_charge(ph=ph, amide=False)
@@ -272,6 +273,16 @@ def _charge_density(seq: str, ph: float) -> float:
     """
     Computes the charge density (charge / molecular weight) of a given sequence at a given pH level.
         seq: Given sequence
-        ph: Given ph level.
+        ph: Given ph level
     """
     return round(_charge_at_ph(seq, ph) / _molecular_weight(seq), 5)
+
+
+def _boman_index(seq: str) -> float:
+    """
+    Computes the boman index of a given sequence (Boman, 2003).
+        seq: Given sequence
+    """
+    desc = GlobalDescriptor(seq)
+    desc.boman_index()
+    return float(round(desc.descriptor[0][0], 2))

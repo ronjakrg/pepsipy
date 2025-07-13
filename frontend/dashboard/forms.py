@@ -1,12 +1,15 @@
 from django import forms
 
-
-feature_choices = (
+# Numeric features available for comparison
+numeric_feature_choices = (
     ("Molecular weight", "Molecular weight"),
     ("Isoelectric point", "Isoelectric point"),
     ("Sequence length", "Sequence length"),
     ("GRAVY", "GRAVY"),
     ("Aromaticity", "Aromaticity"),
+    ("Charge", "Charge"),
+    ("Charge density", "Charge density"),
+    ("Boman index", "Boman index"),
 )
 
 
@@ -109,6 +112,13 @@ class ChargeDensityForm(forms.Form):
     )
 
 
+class BomanIndexForm(forms.Form):
+    selected = forms.BooleanField(
+        label="Boman index",
+        required=False,
+    )
+
+
 class AromaticityForm(forms.Form):
     selected = forms.BooleanField(
         label="Aromaticity",
@@ -178,12 +188,12 @@ class CompareFeaturesForm(forms.Form):
     )
     compare_features_a = forms.ChoiceField(
         label="Feature on x-axis",
-        choices=feature_choices,
+        choices=numeric_feature_choices,
         widget=forms.Select(attrs={"class": "form-control"}),
     )
     compare_features_b = forms.ChoiceField(
         label="Feature on y-axis",
-        choices=feature_choices,
+        choices=numeric_feature_choices,
         initial=("Sequence length", "Sequence length"),
         widget=forms.Select(attrs={"class": "form-control"}),
     )
@@ -208,7 +218,7 @@ class CompareFeatureForm(forms.Form):
     )
     compare_feature_a = forms.ChoiceField(
         label="Feature",
-        choices=feature_choices,
+        choices=numeric_feature_choices,
         initial=("GRAVY", "GRAVY"),
         widget=forms.Select(attrs={"class": "form-control"}),
     )
@@ -236,6 +246,7 @@ FORM_TO_FEATURE_FUNCTION = {
     AromaticityForm: "aromaticity",
     ChargeForm: "charge_at_ph",
     ChargeDensityForm: "charge_density",
+    BomanIndexForm: "boman_index",
 }
 FORM_TO_PLOT_FUNCTION = {
     AaDistributionForm: "aa_distribution",

@@ -70,6 +70,7 @@ def _compute_features(
             partial(_charge_density, ph=params["charge_density_level"]),
         ),
         "boman_index": ("Boman index", _boman_index),
+        "aliphatic_index": ("Aliphatic index", _aliphatic_index),
     }
     # Filter features that got True in given params
     chosen_features = {
@@ -286,3 +287,17 @@ def _boman_index(seq: str) -> float:
     desc = GlobalDescriptor(seq)
     desc.boman_index()
     return float(round(desc.descriptor[0][0], 2))
+
+
+def _aliphatic_index(seq: str) -> float:
+    """
+    Computes the aliphatic index of a given sequence (Ikai, 1980).
+        seq: Given sequence
+    """
+    freq = _aa_frequency(seq)
+    length = _seq_length(seq)
+    nA = freq["A"]
+    nV = freq["V"]
+    nI = freq["I"]
+    nL = freq["L"]
+    return round((nA + 2.9 * nV + 3.9 * (nI + nL)) * 100.0 / length, 2)

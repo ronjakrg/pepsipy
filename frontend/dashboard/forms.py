@@ -1,6 +1,6 @@
 from django import forms
 
-# Numeric features available for comparision
+# Numeric features available for comparison
 numeric_feature_choices = (
     ("Molecular weight", "Molecular weight"),
     ("Isoelectric point", "Isoelectric point"),

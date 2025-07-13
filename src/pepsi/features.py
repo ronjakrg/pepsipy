@@ -282,4 +282,6 @@ def _boman_index(seq: str) -> float:
     Computes the boman index of a given sequence (Boman, 2003).
         seq: Given sequence
     """
-    return
+    desc = GlobalDescriptor(seq)
+    desc.boman_index()
+    return float(round(desc.descriptor[0][0], 2))

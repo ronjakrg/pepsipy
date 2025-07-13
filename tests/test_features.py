@@ -194,7 +194,7 @@ def test_boman_index():
 
 
 def test_aliphatic_index():
-    assert pytest.approx(55.71, rel=1e-4) == _aliphatic_index("PEPTIDE")
-    assert pytest.approx(70.20, rel=1e-4) == _aliphatic_index(
+    assert pytest.approx(55.71) == _aliphatic_index("PEPTIDE")
+    assert pytest.approx(70.20) == _aliphatic_index(
         "DPTWFWLEFSLYEERSMDGAPGDGLYFQDDMLDFCLKQKINIVWHRYLKY"
     )

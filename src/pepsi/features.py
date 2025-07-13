@@ -286,3 +286,17 @@ def _boman_index(seq: str) -> float:
     desc = GlobalDescriptor(seq)
     desc.boman_index()
     return float(round(desc.descriptor[0][0], 2))
+
+
+def _aliphatic_index(seq: str) -> float:
+    """
+    Computes the aliphatic index of a given sequence (Ikai, 1980).
+        seq: Given sequence
+    """
+    freq = _aa_frequency(seq)
+    length = _seq_length(seq)
+    nA = freq["A"]
+    nV = freq["V"]
+    nI = freq["I"]
+    nL = freq["L"]
+    return (nA + 2.9 * nV + 3.9 * (nI + nL)) * 100.0 / length

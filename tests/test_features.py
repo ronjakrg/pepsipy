@@ -16,6 +16,7 @@ from pepsi.features import (
     _aa_classification,
     _charge_at_ph,
     _charge_density,
+    _boman_index,
 )
 
 # Any function that calls one of these functions is already covered by a test for invalid amino acids.
@@ -185,3 +186,7 @@ def test_charge_at_ph():
 
 def test_charge_density():
     assert pytest.approx(-0.00375) == _charge_density("PEPTIDE", 7.0)
+
+
+def test_boman_index():
+    assert type(_boman_index("PEPTIDE")) is float

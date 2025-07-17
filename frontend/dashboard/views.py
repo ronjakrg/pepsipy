@@ -7,39 +7,43 @@ from pathlib import Path
 from frontend.project import settings
 from pepsi.calculator import Calculator
 
-from .forms import *
-from .utils import load_data, get_params, get_match_for_seq, clear_tmp
+from .forms import *  # TODO
+from .utils import load_data, get_params, get_match_for_seq, clear_tmp, make_forms
 
 
 def overview(request):
-    calc = Calculator()
+    # Setup
     computed_features = pd.DataFrame()
     computed_peptide_features = {}
     num_matches = 0
     html_peptide_plots = []
     html_data_plots = []
-
-    # Get form data with prefixes
     feature_forms = []
     plot_forms = []
-    for cls in FORM_TO_FEATURE_FUNCTION.keys():
-        form = cls(
-            data=request.POST or None,
-            prefix=cls.__name__,
+    selection_forms_bound = (
+        True  # len(feature_forms) > 0 and feature_forms[0].is_valid()
+    )
+
+    calc = Calculator()
+    config_form = ConfigForm(request.POST or None)
+
+    if config_form.is_valid():
+        metadata = load_data(config_form.cleaned_data["metadata_name"])
+        metadata_choices = [(col, col) for col in metadata.columns]
+        feature_forms = make_forms(request.POST, FORM_TO_FEATURE_FUNCTION.keys())
+        plot_forms = make_forms(
+            request.POST, FORM_TO_PLOT_FUNCTION.keys(), metadata_choices
         )
-        feature_forms.append(form)
-    for cls in FORM_TO_PLOT_FUNCTION:
-        form = cls(data=request.POST or None)
-        plot_forms.append(form)
-    if request.method == "POST":
+
+    elif request.method == "POST" and "calculate" in request.POST:
         # Clear tmp directory
         clear_tmp()
 
         # Get data
-        gen_form = GeneralForm(request.POST)
-        if gen_form.is_valid():
-            calc.set_dataset(load_data(gen_form.cleaned_data["data_name"]))
-            calc.set_seq(gen_form.cleaned_data["seq"])
+        if config_form.is_valid():
+            calc.set_dataset(load_data(config_form.cleaned_data["data_name"]))
+            calc.set_metadata(metadata)
+            calc.set_seq(config_form.cleaned_data["seq"])
 
         # Compute features
         calc.set_feature_params(**get_params(feature_forms, FORM_TO_FEATURE_FUNCTION))
@@ -74,34 +78,22 @@ def overview(request):
             html_data_plots.append(plot.to_html(config={"responsive": True}))
             i += 1
     else:
-        gen_form = GeneralForm()
+        config_form = ConfigForm()
 
-    return render(
-        request,
-        "overview.html",
-        {
-            "gen_form": gen_form,
-            "seq": calc.seq,
-            "forms_list": [feature_forms, plot_forms],
-            "feature_forms": feature_forms,
-            "plot_forms": plot_forms,
-            "computed_features": computed_features,
-            "computed_peptide_features": computed_peptide_features,
-            "num_matches": num_matches,
-            "peptide_plots": html_peptide_plots,
-            "data_plots": html_data_plots,
-        },
-    )
-
-
-def fill_metadata_options(request):
-    if request.method == "POST":
-        gen_form = GeneralForm(request.POST)
-        if gen_form.is_valid():
-            metadata = load_data(gen_form.cleaned_data["metadata_name"])
-            metadata_list = list(metadata.columns)
-            return JsonResponse({"metadata": metadata_list})
-    return JsonResponse({"metadata": []})
+    context = {
+        "config_form": config_form,
+        "seq": calc.seq,
+        "feature_forms": feature_forms,
+        "plot_forms": plot_forms,
+        "selection_forms": [feature_forms, plot_forms],
+        "selection_forms_bound": selection_forms_bound,
+        "computed_features": computed_features,
+        "computed_peptide_features": computed_peptide_features,
+        "num_matches": num_matches,
+        "peptide_plots": html_peptide_plots,
+        "data_plots": html_data_plots,
+    }
+    return render(request, "index.html", context)
 
 
 def download_data(request):

@@ -1,7 +1,9 @@
+from django.http import QueryDict
 import pandas as pd
 from pathlib import Path
 import os
 from django.conf import settings
+from .forms import CompareFeatureForm, CompareFeaturesForm
 
 
 def load_data(name: str) -> pd.DataFrame:
@@ -73,3 +75,17 @@ def clear_tmp():
         if os.path.exists(path / "plots"):
             for item in (path / "plots").iterdir():
                 item.unlink()
+
+
+def make_forms(post_data: QueryDict, classes: dict, metadata_choices: dict = None):
+    """
+    TODO
+    """
+    forms = []
+    for cls in classes:
+        kwargs = {"data": post_data} if post_data else {}
+        # Include metadata aspects at run time
+        if cls in (CompareFeatureForm, CompareFeaturesForm):
+            kwargs["metadata_choices"] = metadata_choices
+        forms.append(cls(prefix=cls.__name__, **kwargs))
+    return forms

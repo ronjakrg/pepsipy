@@ -73,8 +73,23 @@ def test_get_params():
 
 
 def test_get_match_for_seq():
-    # TODO Write test as soon as dynamic columns are implemented
-    pass
+    data = pd.DataFrame(
+        {
+            "Sample": ["AD01_C1_INSOLUBLE_01", "CTR01_C1_INSOLUBLE_01"],
+            "Protein ID": ["A0A075B6S2", "A0A075B6S2"],
+            "Sequence": ["FSGVPDR", "PEPTIDE"],
+            "Intensity": [936840.0, "NaN"],
+            "PEP": [0.0068633, 0.0056387],
+            "GRAVY": [2.0, 1.0]
+        }
+    )
+    seq = "PEPTIDE"
+    expected_match = {
+            "Sequence": "PEPTIDE",
+            "GRAVY": 1.0,
+    }
+    assert (1, expected_match) == get_match_for_seq(data, "PEPTIDE")
+    assert (0, {}) == get_match_for_seq(data, "PEP")
 
 
 @patch("frontend.dashboard.views.load_data")

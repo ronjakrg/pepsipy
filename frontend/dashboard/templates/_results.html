@@ -1,0 +1,78 @@
+{% load static %}
+{# params: seq, computed_peptide_features, num_matches, peptide_plots, data_plots #}
+
+{% if seq %}
+    <div class="row mb-3">
+        <div class="col">
+            <h5 class="title-with-icon">
+                <img src="{% static 'img/bookmark.svg' %}" class="me-1" width="18" height="18">
+                <b>Results for Peptide of Interest</b>
+            </h5>
+            <table class="table w-auto">
+                <tbody>
+                {% for label, value in computed_peptide_features.items %}
+                    <tr>
+                        <th scope="row">{{ label }}</th>
+                        <td>
+                            {{ value }}
+                            {% if label == "Molecular weight" %}
+                            <span> Da</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="col">
+            <div class="d-flex align-items-center justify-content-end gap-2">
+                <a class="btn btn-purple d-inline-flex align-items-center" href="{% url 'download_data' %}?filename=features">
+                    <img src="{% static 'img/download.svg' %}" class="me-1" width="14" height="14">
+                    Download results
+                </a>
+                <a class="btn btn-purple d-inline-flex align-items-center" href="{% url 'download_plots'%}">
+                    <img src="{% static 'img/download.svg' %}" class="me-1" width="14" height="14">
+                    Download plots
+                </a>
+            </div>
+            <div>
+                <div class="d-flex align-items-center justify-content-end mt-3">
+                    {% if num_matches < 1 %}
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="#F1A765" class="bi bi-exclamation-triangle-fill me-1" viewBox="0 0 16 16">
+                        <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5m.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2"/>
+                        </svg>
+                    {% endif %}
+                    <span>This peptide has {{ num_matches }} entries in the selected dataset.</span>
+                </div>
+                {% if num_matches < 1 %}
+                    <div class="d-flex justify-content-end">
+                        <a class="btn btn-grey d-inline-flex align-items-center" href="{% url 'download_data' %}?filename=peptide_features">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="black" class="bi bi-download me-1" viewBox="0 0 16 16">
+                            <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5"/>
+                            <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z"/>
+                            </svg>
+                            Download peptide results only
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="row row-cols-2">
+        {% for plot in peptide_plots %}
+            <div class="col"> {{ plot|safe }} </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="mb-3"> No peptide of interest selected. </div>
+{% endif %}
+    
+<h5 class="title-with-icon">
+    <img src="{% static 'img/bookmark.svg' %}" class="me-1" width="18" height="18">
+    <b>Results for Selected Dataset</b>
+</h5>
+<div class="row row-cols-2">
+    {% for plot in data_plots %}
+        <div class="col"> {{ plot|safe }} </div>
+    {% endfor %}
+</div>

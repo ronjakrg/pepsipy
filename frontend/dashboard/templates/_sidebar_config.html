@@ -1,0 +1,9 @@
+{# params: config_form #}
+
+{% for field in config_form %}
+    <div class="form-group mb-2">
+        <label for="{{ field.id_for_label }}"> {{ field.label }} </label>
+        {{ field }}
+    </div>
+{% endfor %}
+<button type="submit" name="load" class="btn btn-purple">Load</button>

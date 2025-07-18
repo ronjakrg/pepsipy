@@ -74,7 +74,6 @@ def overview(request):
             )
             html_data_plots.append(plot.to_html(config={"responsive": True}))
             i += 1
-        print(f"is feature form valid? {feature_forms[0].is_valid()}")
         results_ready = True
     else:
         config_form = ConfigForm()

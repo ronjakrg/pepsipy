@@ -203,8 +203,11 @@ class Calculator:
         seperated into two lists of plots.
         """
         self._ensure_attrs("plot_params", "computed_features", "seq")
+        enriched_features = pd.merge(
+            self.computed_features, self.metadata, on=self.key_metadata, how="left"
+        )
         return _generate_plots(
-            df=self.computed_features,
+            df=enriched_features,
             seq=self.seq,
             params=self.plot_params,
         )

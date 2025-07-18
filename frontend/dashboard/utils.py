@@ -3,7 +3,12 @@ import pandas as pd
 from pathlib import Path
 import os
 from django.conf import settings
-from .forms import CompareFeatureForm, CompareFeaturesForm
+from .forms import (
+    CompareFeatureForm,
+    CompareFeaturesForm,
+    ChargeForm,
+    ChargeDensityForm,
+)
 
 
 def load_data(name: str) -> pd.DataFrame:
@@ -83,9 +88,18 @@ def make_forms(post_data: QueryDict, classes: dict, metadata_choices: dict = Non
     """
     forms = []
     for cls in classes:
-        kwargs = {"data": post_data} if post_data else {}
-        # Include metadata aspects at run time
+        prefix = cls.__name__
+        kwargs = {"prefix": prefix}
+        is_bound = any(key.startswith(f"{prefix}-") for key in post_data.keys())
+        # Include initial values at run time
         if cls in (CompareFeatureForm, CompareFeaturesForm):
             kwargs["metadata_choices"] = metadata_choices
-        forms.append(cls(prefix=cls.__name__, **kwargs))
+        if not is_bound:
+            if cls == ChargeForm:
+                kwargs["initial"] = {"charge_at_ph_level": 7.0}
+            if cls == ChargeDensityForm:
+                kwargs["initial"] = {"charge_density_level": 7.0}
+        else:
+            kwargs["data"] = post_data
+        forms.append(cls(**kwargs))
     return forms

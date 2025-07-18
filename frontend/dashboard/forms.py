@@ -96,7 +96,6 @@ class ChargeForm(forms.Form):
     charge_at_ph_level = forms.FloatField(
         label="pH level",
         required=False,
-        initial=7.0,
         widget=forms.NumberInput(attrs={"class": "form-control"}),
     )
 
@@ -109,7 +108,6 @@ class ChargeDensityForm(forms.Form):
     charge_density_level = forms.FloatField(
         label="pH level",
         required=False,
-        initial=7.0,
         widget=forms.NumberInput(attrs={"class": "form-control"}),
     )
 
@@ -198,12 +196,13 @@ class CompareFeaturesForm(forms.Form):
     compare_features_a = forms.ChoiceField(
         label="Feature on x-axis",
         choices=numeric_feature_choices,
+        initial=("Sequence length", "Sequence length"),
         widget=forms.Select(attrs={"class": "form-control"}),
     )
     compare_features_b = forms.ChoiceField(
         label="Feature on y-axis",
         choices=numeric_feature_choices,
-        initial=("Sequence length", "Sequence length"),
+        initial=("Molecular weight", "Molecular weight"),
         widget=forms.Select(attrs={"class": "form-control"}),
     )
     compare_features_metadata = forms.ChoiceField(

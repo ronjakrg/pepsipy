@@ -9,7 +9,7 @@ from frontend.dashboard.utils import (
     get_params,
     get_match_for_seq,
 )
-from frontend.dashboard.views import overview
+from frontend.dashboard.views import index
 from frontend.dashboard.forms import (
     ThreeLetterCodeForm,
     MolecularFormulaForm,
@@ -84,7 +84,7 @@ def test_get_match_for_seq():
 @patch("frontend.dashboard.views.Path.mkdir")
 @patch("frontend.dashboard.views.pd.DataFrame.to_csv")
 @patch("frontend.dashboard.views.Path.write_bytes")
-def test_overview_valid_form(
+def test_index_valid_form(
     mock_write_bytes,
     mock_to_csv,
     mock_mkdir,
@@ -117,7 +117,7 @@ def test_overview_valid_form(
     mock_calc.get_plots.return_value = ([plot_a], [plot_b])
 
     # Execute
-    url = reverse("overview")
+    url = reverse("index")
     response = client.post(
         url,
         data={

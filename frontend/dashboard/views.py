@@ -11,7 +11,7 @@ from .forms import ConfigForm, FORM_TO_FEATURE_FUNCTION, FORM_TO_PLOT_FUNCTION
 from .utils import load_data, get_params, get_match_for_seq, clear_tmp, make_forms
 
 
-def overview(request):
+def index(request):
     # Setup
     computed_features = pd.DataFrame()
     computed_peptide_features = {}

@@ -70,6 +70,9 @@ def get_match_for_seq(data: pd.DataFrame, seq: str) -> dict:
 
 
 def clear_tmp():
+    """
+    Deletes all files from temporary directory /tmp.
+    """
     path = settings.TMP_DIR
     if os.path.exists(path):
         for item in path.iterdir():
@@ -82,9 +85,13 @@ def clear_tmp():
                 item.unlink()
 
 
-def make_forms(post_data: QueryDict, classes: dict, metadata_choices: dict = None):
+def make_forms(post_data: QueryDict, classes: list, metadata_choices: dict = None):
     """
-    TODO
+    Returns a list of feature or plot forms based on the provided classes and POST data.
+    Includes metadata options and other initial values at run time.
+        post_data: POST data of request
+        classes: List of feature or plot form classes
+        metadata_choices: Dict containing dropdown options from loaded metadata file
     """
     forms = []
     for cls in classes:

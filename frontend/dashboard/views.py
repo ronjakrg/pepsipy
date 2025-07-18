@@ -20,9 +20,7 @@ def overview(request):
     html_data_plots = []
     feature_forms = []
     plot_forms = []
-    selection_forms_bound = (
-        True  # len(feature_forms) > 0 and feature_forms[0].is_valid()
-    )
+    results_ready = False
 
     calc = Calculator()
     config_form = ConfigForm(request.POST or None)
@@ -30,20 +28,19 @@ def overview(request):
     if config_form.is_valid():
         metadata = load_data(config_form.cleaned_data["metadata_name"])
         metadata_choices = [(col, col) for col in metadata.columns]
+        calc.set_seq(config_form.cleaned_data["seq"])
         feature_forms = make_forms(request.POST, FORM_TO_FEATURE_FUNCTION.keys())
         plot_forms = make_forms(
             request.POST, FORM_TO_PLOT_FUNCTION.keys(), metadata_choices
         )
 
-    elif request.method == "POST" and "calculate" in request.POST:
+    if request.method == "POST" and "calculate" in request.POST:
         # Clear tmp directory
         clear_tmp()
 
         # Get data
-        if config_form.is_valid():
-            calc.set_dataset(load_data(config_form.cleaned_data["data_name"]))
-            calc.set_metadata(metadata)
-            calc.set_seq(config_form.cleaned_data["seq"])
+        calc.set_dataset(load_data(config_form.cleaned_data["data_name"]))
+        calc.set_metadata(metadata)
 
         # Compute features
         calc.set_feature_params(**get_params(feature_forms, FORM_TO_FEATURE_FUNCTION))
@@ -77,6 +74,8 @@ def overview(request):
             )
             html_data_plots.append(plot.to_html(config={"responsive": True}))
             i += 1
+        print(f"is feature form valid? {feature_forms[0].is_valid()}")
+        results_ready = True
     else:
         config_form = ConfigForm()
 
@@ -86,7 +85,7 @@ def overview(request):
         "feature_forms": feature_forms,
         "plot_forms": plot_forms,
         "selection_forms": [feature_forms, plot_forms],
-        "selection_forms_bound": selection_forms_bound,
+        "results_ready": results_ready,
         "computed_features": computed_features,
         "computed_peptide_features": computed_peptide_features,
         "num_matches": num_matches,

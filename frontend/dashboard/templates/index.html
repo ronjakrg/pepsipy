@@ -13,16 +13,16 @@
     <div class="col-md-3 border-end pe-4">
         <h5><b>Welcome to PEPSI Dashboard!</b></h5>
         {% include "_sidebar_config.html" %}
-        {% if config_form.is_bound %}
+        {% if feature_forms|length > 0 %}
             {% include "_sidebar_selection.html" %}
         {% endif %}
     </div>
     <!-- RESULTS COLUMN -->
     <div class="col-md-9 ps-4">
-        {% if selection_forms_bound %}
+        {% if results_ready %}
             {% include "_results.html" %}
         {% else %}
-            <!-- NO RESULTS AVAILABLE -->
+          <!-- NO RESULTS AVAILABLE -->
             <h5 class="title-with-icon">
                 <img src="{% static 'img/search.svg' %}" class="me-3" width="20" height="20">
                 No results available yet.

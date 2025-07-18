@@ -80,13 +80,13 @@ def test_get_match_for_seq():
             "Sequence": ["FSGVPDR", "PEPTIDE"],
             "Intensity": [936840.0, "NaN"],
             "PEP": [0.0068633, 0.0056387],
-            "GRAVY": [2.0, 1.0]
+            "GRAVY": [2.0, 1.0],
         }
     )
     seq = "PEPTIDE"
     expected_match = {
-            "Sequence": "PEPTIDE",
-            "GRAVY": 1.0,
+        "Sequence": "PEPTIDE",
+        "GRAVY": 1.0,
     }
     assert (1, expected_match) == get_match_for_seq(data, "PEPTIDE")
     assert (0, {}) == get_match_for_seq(data, "PEP")

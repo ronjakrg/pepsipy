@@ -1,9 +1,8 @@
 import pytest
 import pandas as pd
 from pandas.testing import assert_frame_equal
-from django.conf import settings
 from django.urls import reverse
-from unittest.mock import patch, MagicMock
+from unittest.mock import call, patch, MagicMock
 
 from frontend.dashboard.utils import (
     load_data,
@@ -125,6 +124,7 @@ def test_overview_valid_form(
             "data_name": "peptides.csv",
             "metadata_name": "metadata.csv",
             "seq": "PEPTIDE",
+            "calculate": "1"
         },
     )
 
@@ -136,7 +136,10 @@ def test_overview_valid_form(
     assert False == response.context["computed_features"].empty
     assert_frame_equal(features, response.context["computed_peptide_features"])
 
-    mock_load_data.assert_called_once_with("peptides.csv")
+    mock_load_data.assert_has_calls([
+        call("metadata.csv"),
+        call("peptides.csv"),
+    ])
     mock_get_match_for_seq.assert_called_once_with(peptides, "PEPTIDE")
 
     mock_calc.set_dataset.assert_called_once_with(peptides)

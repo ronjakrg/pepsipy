@@ -214,7 +214,7 @@ def _isoelectric_point(seq: str, option: str = "bjellqvist") -> float:
         with open(model_path, "rb") as f:
             model = pickle.load(f)
 
-        return float(model.predict(X)[0])
+        return float(round(model.predict(X)[0], 2))
 
     elif option == "bjellqvist":
         desc = GlobalDescriptor(seq)

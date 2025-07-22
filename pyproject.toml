@@ -48,3 +48,10 @@ omit = [
   "wsgi.py",
   "forms.py",
 ]
+
+[tool.black]
+extend-exclude = '''
+(
+  (^|/)external(/|$)
+)
+'''

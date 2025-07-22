@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% load static %}
+{% block js %}
+  <script type="text/javascript" src="{% static 'js/plotly-3.0.1.min.js' %}"></script>
+  <script type="text/javascript" src="{% static 'js/index.js' %}"></script>
+{% endblock %}
+{% block content %}
+<div class="container-fluid my-5 px-5">
+  <form method="post" class="row">
+    {% csrf_token %}
+
+    <!-- SIDEBAR COLUMN -->
+    <div class="col-md-3 border-end pe-4">
+        <h5><b>Welcome to PEPSI Dashboard!</b></h5>
+        {% include "_sidebar_config.html" %}
+        {% if feature_forms|length > 0 %}
+            {% include "_sidebar_selection.html" %}
+        {% endif %}
+    </div>
+    <!-- RESULTS COLUMN -->
+    <div class="col-md-9 ps-4">
+        {% if results_ready %}
+            {% include "_results.html" %}
+        {% else %}
+          <!-- NO RESULTS AVAILABLE -->
+            <h5 class="title-with-icon">
+                <img src="{% static 'img/search.svg' %}" class="me-3" width="20" height="20">
+                No results available yet.
+            </h5>
+        {% endif %}
+    </div>
+  </form>
+</div>
+{% endblock %}

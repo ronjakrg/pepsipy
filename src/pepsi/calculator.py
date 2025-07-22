@@ -16,6 +16,8 @@ from pepsi.features import (
     _aa_classification,
     _charge_at_ph,
     _charge_density,
+    _boman_index,
+    _aliphatic_index,
 )
 from pepsi.plots import (
     _generate_plots,
@@ -82,6 +84,8 @@ class Calculator:
         charge_at_ph_level: float = 7.0,
         charge_density: bool = False,
         charge_density_level: float = 7.0,
+        boman_index: bool = False,
+        aliphatic_index: bool = False,
     ):
         params = locals().copy()
         params.pop("self")
@@ -163,6 +167,8 @@ class Calculator:
     aa_classification = staticmethod(_aa_classification)
     charge_at_ph = staticmethod(_charge_at_ph)
     charge_density = staticmethod(_charge_density)
+    boman_index = staticmethod(_boman_index)
+    aliphatic_index = staticmethod(_aliphatic_index)
 
     # Plots
     def get_peptide_plots(self) -> list[go.Figure]:
@@ -197,8 +203,11 @@ class Calculator:
         seperated into two lists of plots.
         """
         self._ensure_attrs("plot_params", "computed_features", "seq")
+        enriched_features = pd.merge(
+            self.computed_features, self.metadata, on=self.key_metadata, how="left"
+        )
         return _generate_plots(
-            df=self.computed_features,
+            df=enriched_features,
             seq=self.seq,
             params=self.plot_params,
         )

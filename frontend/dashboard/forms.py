@@ -1,31 +1,36 @@
 from django import forms
 
-
-feature_choices = (
+# Numeric features available for comparison
+numeric_feature_choices = (
     ("Molecular weight", "Molecular weight"),
     ("Isoelectric point", "Isoelectric point"),
     ("Sequence length", "Sequence length"),
     ("GRAVY", "GRAVY"),
     ("Aromaticity", "Aromaticity"),
+    ("Charge", "Charge"),
+    ("Charge density", "Charge density"),
+    ("Boman index", "Boman index"),
+    ("Aliphatic index", "Aliphatic index"),
 )
 
 
-class GeneralForm(forms.Form):
+class ConfigForm(forms.Form):
     data_name = forms.CharField(
         label="Name of dataset in /data (.csv)",
         max_length=100,
-        initial="peptides.csv",
+        initial="diab-peptides.csv",
         widget=forms.TextInput(attrs={"class": "form-control"}),
     )
     metadata_name = forms.CharField(
         label="Name of metadata file in /data (.csv)",
         max_length=100,
-        initial="metadata.csv",
+        initial="diab-metadata.csv",
         widget=forms.TextInput(attrs={"class": "form-control"}),
     )
     seq = forms.CharField(
         label="Peptide sequence of interest",
         max_length=100,
+        initial="SGSVIDQSRVLNLGPI",
         widget=forms.TextInput(attrs={"class": "form-control"}),
         required=False,
     )
@@ -91,7 +96,6 @@ class ChargeForm(forms.Form):
     charge_at_ph_level = forms.FloatField(
         label="pH level",
         required=False,
-        initial=7.0,
         widget=forms.NumberInput(attrs={"class": "form-control"}),
     )
 
@@ -104,14 +108,27 @@ class ChargeDensityForm(forms.Form):
     charge_density_level = forms.FloatField(
         label="pH level",
         required=False,
-        initial=7.0,
         widget=forms.NumberInput(attrs={"class": "form-control"}),
+    )
+
+
+class BomanIndexForm(forms.Form):
+    selected = forms.BooleanField(
+        label="Boman index",
+        required=False,
     )
 
 
 class AromaticityForm(forms.Form):
     selected = forms.BooleanField(
         label="Aromaticity",
+        required=False,
+    )
+
+
+class AliphaticIndexForm(forms.Form):
+    selected = forms.BooleanField(
+        label="Aliphatic index",
         required=False,
     )
 
@@ -178,19 +195,19 @@ class CompareFeaturesForm(forms.Form):
     )
     compare_features_a = forms.ChoiceField(
         label="Feature on x-axis",
-        choices=feature_choices,
+        choices=numeric_feature_choices,
+        initial=("Sequence length", "Sequence length"),
         widget=forms.Select(attrs={"class": "form-control"}),
     )
     compare_features_b = forms.ChoiceField(
         label="Feature on y-axis",
-        choices=feature_choices,
-        initial=("Sequence length", "Sequence length"),
+        choices=numeric_feature_choices,
+        initial=("Molecular weight", "Molecular weight"),
         widget=forms.Select(attrs={"class": "form-control"}),
     )
     compare_features_metadata = forms.ChoiceField(
         label="Group by metadata aspect",
-        choices=(),  # Changes dynamically
-        initial=("", ""),
+        choices=(),  # Overridden by __init__
         widget=forms.Select(attrs={"class": "form-control"}),
     )
     compare_features_intensity_threshold = forms.FloatField(
@@ -200,6 +217,11 @@ class CompareFeaturesForm(forms.Form):
         widget=forms.NumberInput(attrs={"class": "form-control"}),
     )
 
+    def __init__(self, *args, metadata_choices=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        if metadata_choices is not None:
+            self.fields["compare_features_metadata"].choices = metadata_choices
+
 
 class CompareFeatureForm(forms.Form):
     selected = forms.BooleanField(
@@ -208,14 +230,13 @@ class CompareFeatureForm(forms.Form):
     )
     compare_feature_a = forms.ChoiceField(
         label="Feature",
-        choices=feature_choices,
+        choices=numeric_feature_choices,
         initial=("GRAVY", "GRAVY"),
         widget=forms.Select(attrs={"class": "form-control"}),
     )
     compare_feature_metadata = forms.ChoiceField(
         label="Group by metadata aspect",
-        choices=(),  # Changes dynamically
-        initial=("", ""),
+        choices=(),  # Overridden by __init__
         widget=forms.Select(attrs={"class": "form-control"}),
     )
     compare_feature_intensity_threshold = forms.FloatField(
@@ -224,6 +245,11 @@ class CompareFeatureForm(forms.Form):
         initial=0.01,
         widget=forms.NumberInput(attrs={"class": "form-control"}),
     )
+
+    def __init__(self, *args, metadata_choices=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        if metadata_choices is not None:
+            self.fields["compare_feature_metadata"].choices = metadata_choices
 
 
 FORM_TO_FEATURE_FUNCTION = {
@@ -236,6 +262,8 @@ FORM_TO_FEATURE_FUNCTION = {
     AromaticityForm: "aromaticity",
     ChargeForm: "charge_at_ph",
     ChargeDensityForm: "charge_density",
+    BomanIndexForm: "boman_index",
+    AliphaticIndexForm: "aliphatic_index",
 }
 FORM_TO_PLOT_FUNCTION = {
     AaDistributionForm: "aa_distribution",

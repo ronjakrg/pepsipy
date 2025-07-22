@@ -112,8 +112,7 @@ def test_molecular_formula():
 
 
 def test_isoelectric_point():
-    # Warning: This method is currently disabled to decrease the project's size.
-    # assert type(_isoelectric_point("PEPTIDE", "kozlowski")) is float
+    assert type(_isoelectric_point("PEPTIDE", "kozlowski")) is float
     assert type(_isoelectric_point("PEPTIDE", "bjellqvist")) is float
     with pytest.raises(ValueError) as e:
         _isoelectric_point("PEPTIDE", "foo")

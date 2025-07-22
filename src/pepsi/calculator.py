@@ -14,12 +14,17 @@ from pepsi.features import (
     _isoelectric_point,
     _aromaticity,
     _aa_classification,
+    _charge_at_ph,
+    _charge_density,
+    _boman_index,
+    _aliphatic_index,
 )
 from pepsi.plots import (
     _generate_plots,
     _aa_distribution,
     _hydropathy_profile,
     _classification,
+    _titration_curve,
     _compare_features,
     _compare_feature,
 )
@@ -36,6 +41,9 @@ class Calculator:
     feature_params: dict
     plot_params: dict
     computed_features: pd.DataFrame
+    metadata: pd.DataFrame
+    metadata_list: list[str]
+    key_metadata: str
 
     def __init__(
         self,
@@ -44,15 +52,19 @@ class Calculator:
         feature_params=None,
         plot_params=None,
         computed_features=None,
+        metadata=None,
     ):
         self.dataset = dataset
         self.seq = seq
         self.feature_params = feature_params
         self.plot_params = plot_params
         self.computed_features = computed_features
+        self.metadata = metadata
 
     # Setter
-    def set_dataset(self, dataset: pd.DataFrame):
+    def set_dataset(
+        self, dataset: pd.DataFrame
+    ):  # TODO Convert to one setup method with flexible params
         self.dataset = dataset
 
     def set_seq(self, seq: str):
@@ -68,6 +80,12 @@ class Calculator:
         isoelectric_point: bool = False,
         isoelectric_point_option: str = "bjellqvist",
         aromaticity: bool = False,
+        charge_at_ph: bool = False,
+        charge_at_ph_level: float = 7.0,
+        charge_density: bool = False,
+        charge_density_level: float = 7.0,
+        boman_index: bool = False,
+        aliphatic_index: bool = False,
     ):
         params = locals().copy()
         params.pop("self")
@@ -81,19 +99,25 @@ class Calculator:
         hydropathy_profile: bool = False,
         classification: bool = False,
         classification_classify_by: str = "chemical",
+        titration_curve: bool = False,
         compare_features: bool = False,
         compare_features_a: str = "Sequence length",
         compare_features_b: str = "Molecular weight",
-        compare_features_groups: list = None,
+        compare_features_metadata: str = None,
         compare_features_intensity_threshold: float = None,
         compare_feature: bool = False,
         compare_feature_a: str = "GRAVY",
-        compare_feature_groups: list = None,
+        compare_feature_metadata: str = None,
         compare_feature_intensity_threshold: float = None,
     ):
         params = locals().copy()
         params.pop("self")
         self.plot_params = params
+
+    def set_metadata(self, metadata: pd.DataFrame):
+        self.metadata = metadata
+        self.metadata_list = list(self.metadata.columns)
+        self.key_metadata = self.metadata_list[0]
 
     # Utils
     def _ensure_attrs(self, *attrs):
@@ -104,6 +128,14 @@ class Calculator:
         if missing:
             msg = f"The following information is not available: {missing}. Please execute the corresponding set or get methods first."
             raise ValueError(msg)
+
+    def get_metadata_list(self):
+        if self.metadata is None:
+            raise ValueError(
+                "No metadata pd.DataFrame found. Please execute set_metadata first."
+            )
+        else:
+            return self.metadata_list
 
     # Features
     def get_features(self) -> pd.DataFrame:
@@ -133,6 +165,10 @@ class Calculator:
     isoelectric_point = staticmethod(_isoelectric_point)
     aromaticity = staticmethod(_aromaticity)
     aa_classification = staticmethod(_aa_classification)
+    charge_at_ph = staticmethod(_charge_at_ph)
+    charge_density = staticmethod(_charge_density)
+    boman_index = staticmethod(_boman_index)
+    aliphatic_index = staticmethod(_aliphatic_index)
 
     # Plots
     def get_peptide_plots(self) -> list[go.Figure]:
@@ -142,18 +178,24 @@ class Calculator:
         self._ensure_attrs("plot_params", "seq")
         return _generate_plots(
             seq=self.seq,
+            df=None,
             params=self.plot_params,
-        )
+        )[0]
 
     def get_dataset_plots(self) -> list[go.Figure]:
         """
         Generates plots for the entire dataset.
         """
         self._ensure_attrs("plot_params", "computed_features")
-        return _generate_plots(
-            df=self.computed_features,
-            params=self.plot_params,
+
+        enriched_features = pd.merge(
+            self.computed_features, self.metadata, on=self.key_metadata, how="left"
         )
+        return _generate_plots(
+            seq=None,
+            df=enriched_features,
+            params=self.plot_params,
+        )[1]
 
     def get_plots(self):
         """
@@ -161,8 +203,11 @@ class Calculator:
         seperated into two lists of plots.
         """
         self._ensure_attrs("plot_params", "computed_features", "seq")
+        enriched_features = pd.merge(
+            self.computed_features, self.metadata, on=self.key_metadata, how="left"
+        )
         return _generate_plots(
-            df=self.computed_features,
+            df=enriched_features,
             seq=self.seq,
             params=self.plot_params,
         )
@@ -170,5 +215,6 @@ class Calculator:
     aa_distribution = staticmethod(_aa_distribution)
     hydropathy_profile = staticmethod(_hydropathy_profile)
     classification = staticmethod(_classification)
+    titration_curve = staticmethod(_titration_curve)
     compare_features = staticmethod(_compare_features)
     compare_feature = staticmethod(_compare_feature)

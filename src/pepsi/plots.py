@@ -13,8 +13,8 @@ from pepsi.constants import (
     CHEMICAL_CLASS_PER_AA,
     CHARGE_CLASS_PER_AA,
 )
-from pepsi.features import _aa_frequency, _aa_classification
-from pepsi.utils import find_group, get_column_name
+from pepsi.features import _aa_frequency, _aa_classification, _charge_at_ph
+from pepsi.utils import get_column_name
 
 
 def _generate_plots(df: pd.DataFrame, seq: str, params: dict) -> list:
@@ -43,14 +43,14 @@ def _generate_plots(df: pd.DataFrame, seq: str, params: dict) -> list:
                 classify_by=params["classification_classify_by"],
             )
             peptide_plots.append(plot)
+        if params["titration_curve"]:
+            plot = _titration_curve(seq)
+            peptide_plots.append(plot)
     if df is not None:
         if params["compare_features"]:
             plot = _compare_features(
                 df=df,
-                # TODO Don't hardcode this, work with metadata
-                groups=[
-                    grp.strip() for grp in params["compare_features_groups"].split(";")
-                ],
+                metadata=params["compare_features_metadata"],
                 feature_a=params["compare_features_a"],
                 feature_b=params["compare_features_b"],
                 intensity_threshold=params["compare_features_intensity_threshold"],
@@ -59,9 +59,7 @@ def _generate_plots(df: pd.DataFrame, seq: str, params: dict) -> list:
         if params["compare_feature"]:
             plot = _compare_feature(
                 df=df,
-                groups=[
-                    grp.strip() for grp in params["compare_feature_groups"].split(";")
-                ],
+                metadata=params["compare_feature_metadata"],
                 feature=params["compare_feature_a"],
                 intensity_threshold=params["compare_feature_intensity_threshold"],
             )
@@ -70,8 +68,6 @@ def _generate_plots(df: pd.DataFrame, seq: str, params: dict) -> list:
 
 
 # Peptide-specific plots
-
-
 def _aa_distribution(
     seq: str,
     order_by: str = "frequency",
@@ -222,19 +218,36 @@ def _classification(seq: str, classify_by: str = "chemical") -> go.Figure:
 
 
 # Dataset-specific plots
+def _titration_curve(seq: str) -> go.Figure:
+    """
+    Computes a graph showing the net charge of a given sequence per pH level.
+        seq: Given sequence
+    """
+    ph_vals = np.arange(0.0, 14.0 + 0.1, 0.1)
+    df = pd.DataFrame({"pH": ph_vals})
+    df["Charge"] = df["pH"].apply(lambda ph: _charge_at_ph(seq, ph))
+    fig = px.line(
+        df,
+        x="pH",
+        y="Charge",
+        title="Titration curve (charge vs. pH)",
+        color_discrete_sequence=COLORS,
+    )
+    fig.add_hline(y=0, line_dash="dash")
+    return fig
 
 
 def _compare_features(
     df: pd.DataFrame,
     feature_a: str,
     feature_b: str,
-    groups: list = None,
+    metadata: str,
     intensity_threshold: float = None,
 ) -> go.Figure:
     """
-    Creates a scatter plot to compare two features across groups.
+    Creates a scatter plot to compare two features across a metadata aspect.
         df: Dataframe that contains the features
-        groups: List of prefixes representing groups that can be found in column "Sample"
+        metadata: Metadata aspect (e.g. Group, Batch, ...) that peptides get grouped by
         feature_a: Feature shown on x-axis
         feature_b: Feature shown on y-axis
         intensity_threshold: Peptides with intensities below this threshold are not included
@@ -244,18 +257,16 @@ def _compare_features(
     seq_col = get_column_name(peptides, "sequence")
     if intensity_threshold is not None:
         peptides = peptides[peptides[intensity_col] > intensity_threshold]
-    # TODO Work with metadata
-    peptides["Group"] = peptides["Sample"].apply(lambda x: find_group(x, groups))
 
     fig = px.scatter(
         peptides,
         x=feature_a,
         y=feature_b,
-        color="Group",
+        color=metadata,
         color_discrete_sequence=COLORS,
-        symbol="Group",
+        symbol=metadata,
         symbol_sequence=["square", "circle", "arrow-up", "star"],
-        title="Comparison of peptide features across groups",
+        title=f"Comparison of peptide features across each {metadata}",
         hover_name=seq_col,
     )
     fig.update_traces(marker=dict(size=10))
@@ -265,13 +276,13 @@ def _compare_features(
 def _compare_feature(
     df: pd.DataFrame,
     feature: str,
-    groups: list = None,
+    metadata: str,
     intensity_threshold: float = None,
 ) -> go.Figure:
     """
-    Creates box plots for each group to compare a feature between groups.
+    Creates box plots for each group to compare a feature between metadata aspect.
         df: Dataframe that contains the features
-        groups: List of prefixes representing groups that can be found in column "Sample"
+        metadata: Metadata aspect (e.g. Group, Batch, ...) that peptides get grouped by
         feature: Feature to be compared
         intensity_threshold: Peptides with intensities below this threshold are not included
     """
@@ -280,15 +291,14 @@ def _compare_feature(
     seq_col = get_column_name(peptides, "sequence")
     if intensity_threshold is not None:
         peptides = peptides[peptides[intensity_col] > intensity_threshold]
-    peptides["Group"] = peptides["Sample"].apply(lambda x: find_group(x, groups))
 
     fig = px.box(
         peptides,
-        x="Group",
+        x=metadata,
         y=feature,
-        color="Group",
+        color=metadata,
         color_discrete_sequence=COLORS,
-        title=f"Distribution of {feature} across groups",
+        title=f"Distribution of {feature} across each {metadata}",
         hover_name=seq_col,
     )
     return fig

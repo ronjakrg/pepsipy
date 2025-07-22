@@ -304,17 +304,21 @@ def _compare_feature(
     return fig
 
 
-def _raincloud(df: pd.DataFrame) -> go.Figure:
-    """TODO"""
+def _raincloud(df: pd.DataFrame, feature: str) -> go.Figure:
+    """
+    Creates a raincloud plot (containing half violin, box and scatter) for displaying
+    the intensity distribution as well as a chosen feature value.
+        df: Dataframe that contains the features
+        feature: Feature to be shown in scatter plot
+    """
     peptides = df.copy()
     intensity_col = get_column_name(peptides, "intensity")
     intensities = peptides[intensity_col]
-    # intensities_log = np.log10(intensities[intensities>0])
 
     violin_width = 0.5
-    box_width = 0.1
+    box_width = 0.075
     violin_y = np.zeros(len(intensities))
-    box_y = np.full(len(intensities), -0.1)
+    box_y = np.full(len(intensities), -0.04)
     scatter_y = np.random.uniform(-0.3, -0.1, size=len(intensities))
 
     violin = go.Violin(
@@ -333,14 +337,29 @@ def _raincloud(df: pd.DataFrame) -> go.Figure:
         x=intensities,
         y=scatter_y,
         mode="markers",
-        marker=dict(size=5, color=COLORS[0]),
+        marker=dict(
+            size=7,
+            color=df[feature],
+            colorscale="Plasma",
+            showscale=True,
+            colorbar=dict(
+                title=feature,
+                outlinewidth=0,
+                len=0.55,
+                y=1.0,
+                yanchor="top",
+            ),
+        ),
         showlegend=False,
+        text = df[feature],
+        hovertemplate = f"Intensity: %{{x}}<br>{feature}: %{{text}}<extra></extra>",
+
     )
     box = go.Box(
         x=intensities,
         y=box_y,
         orientation="h",
-        whiskerwidth=0.3,
+        whiskerwidth=0.5,
         width=box_width,
         boxpoints=False,
         showlegend=False,
@@ -351,9 +370,9 @@ def _raincloud(df: pd.DataFrame) -> go.Figure:
     fig.add_traces([violin, scatter, box])
 
     fig.update_layout(
-        title="Work in progress Title",
+        title=f"Raincloud: Intensity and {feature} distribution",
         xaxis=dict(
-            title="Intensity (log)",
+            title="Intensity",
             type="linear",
         ),
         yaxis=dict(

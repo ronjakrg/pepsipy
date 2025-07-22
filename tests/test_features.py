@@ -119,12 +119,6 @@ def test_isoelectric_point():
     assert "Unknown option" in str(e.value)
 
 
-def test_external_ipc2_availability():
-    url = "https://ipc2.mimuw.edu.pl/ipc-2.0.1.zip"
-    res = requests.head(url, allow_redirects=True, timeout=5)
-    assert 200 == res.status_code
-
-
 def test_compute_features():
     options = {
         "three_letter_code": False,

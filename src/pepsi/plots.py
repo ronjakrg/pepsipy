@@ -351,9 +351,8 @@ def _raincloud(df: pd.DataFrame, feature: str) -> go.Figure:
             ),
         ),
         showlegend=False,
-        text = df[feature],
-        hovertemplate = f"Intensity: %{{x}}<br>{feature}: %{{text}}<extra></extra>",
-
+        text=df[feature],
+        hovertemplate=f"Intensity: %{{x}}<br>{feature}: %{{text}}<extra></extra>",
     )
     box = go.Box(
         x=intensities,

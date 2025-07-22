@@ -6,6 +6,4 @@ __pycache__/
 /build/*
 /results/*
 /frontend/tmp/*
-/external/*
-/src/pepsi/external/*
 /dist/*

@@ -6,6 +6,5 @@ pandas
 plotly
 kaleido
 scikit-learn
-biopython
 requests
 modlamp

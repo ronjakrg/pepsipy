@@ -114,18 +114,11 @@ def test_molecular_formula():
 
 
 def test_isoelectric_point():
-    # Warning: This method is currently disabled to decrease the project's size.
-    # assert type(_isoelectric_point("PEPTIDE", "kozlowski")) is float
+    assert type(_isoelectric_point("PEPTIDE", "kozlowski")) is float
     assert type(_isoelectric_point("PEPTIDE", "bjellqvist")) is float
     with pytest.raises(ValueError) as e:
         _isoelectric_point("PEPTIDE", "foo")
     assert "Unknown option" in str(e.value)
-
-
-def test_external_ipc2_availability():
-    url = "https://ipc2.mimuw.edu.pl/ipc-2.0.1.zip"
-    res = requests.head(url, allow_redirects=True, timeout=5)
-    assert 200 == res.status_code
 
 
 def test_compute_features():

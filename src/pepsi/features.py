@@ -5,7 +5,6 @@ import pickle
 import string
 import sys
 
-from Bio.SeqUtils import IsoelectricPoint
 from modlamp.descriptors import GlobalDescriptor
 import numpy as np
 import pandas as pd
@@ -208,7 +207,7 @@ def _isoelectric_point(seq: str, option: str = "bjellqvist") -> float:
         else:
             raise RuntimeError("IPC 2.0 installation could not be found.")
 
-        # Ignoring warning because this function is dynamically added at runtime
+        # Ignoring warning for import from local module
         from ipc2_lib.svr_functions import get_pI_features  # type: ignore
 
         X, _ = get_pI_features([[clean_seq, ""]])
@@ -217,11 +216,12 @@ def _isoelectric_point(seq: str, option: str = "bjellqvist") -> float:
         with open(model_path, "rb") as f:
             model = pickle.load(f)
 
-        return float(model.predict(X)[0])
+        return float(round(model.predict(X)[0], 2))
 
     elif option == "bjellqvist":
-        calc = IsoelectricPoint.IsoelectricPoint(clean_seq)
-        return round(calc.pi(), 3)
+        desc = GlobalDescriptor(seq)
+        desc.isoelectric_point(amide=False)
+        return float(round(desc.descriptor[0][0], 2))
 
     else:
         raise ValueError(f"Unknown option: {option}")

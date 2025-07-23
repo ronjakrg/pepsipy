@@ -182,9 +182,9 @@ def _hydropathy_profile(seq: str) -> go.Figure:
         df,
         y="Hydropathy Index",
         title=f"Hydropathy Plot of Sequence {seq}",
-        color_discrete_sequence=COLORS,
         hover_data={"Amino Acid": True, "Hydropathy Index": True},
     )
+    fig.update_traces(line=dict(color=COLORS[0], width=3))
     fig.add_hline(
         y=0,
         line_dash="dash",
@@ -230,9 +230,32 @@ def _titration_curve(seq: str) -> go.Figure:
         x="pH",
         y="Charge",
         title="Titration curve (charge vs. pH)",
-        color_discrete_sequence=COLORS,
     )
+    fig.update_traces(line=dict(color=COLORS[0], width=3))
     fig.add_hline(y=0, line_dash="dash")
+
+    min_charge = int(np.floor(df["Charge"].min()))
+    max_charge = int(np.ceil(df["Charge"].max()))
+    int_charges = np.arange(min_charge, max_charge + 1)
+
+    points = []
+    for i in int_charges:
+        matched_charges = df[np.isclose(df["Charge"], i, atol=0.03)]
+        if not matched_charges.empty:
+            median_ph = matched_charges["pH"].median()
+            points.append((median_ph, i))
+    if points:
+        ph, charge = zip(*points)
+        fig.add_trace(
+            go.Scatter(
+                x=ph,
+                y=charge,
+                mode="markers",
+                marker=dict(size=8, color=COLORS[1]),
+                hovertemplate="pH=%{x:.1f}<br>Charge=%{y:.0f}<extra></extra>",
+                showlegend=False,
+            )
+        )
     return fig
 
 

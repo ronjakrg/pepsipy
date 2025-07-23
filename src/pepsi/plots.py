@@ -3,6 +3,7 @@ import numpy as np
 import plotly.express as px
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
+from plotly.colors import sample_colorscale
 
 from pepsi.constants import (
     AA_WEIGHTS,
@@ -304,78 +305,119 @@ def _compare_feature(
     return fig
 
 
-def _raincloud(df: pd.DataFrame, feature: str) -> go.Figure:
+def _raincloud(df: pd.DataFrame, group_by: str, feature: str) -> go.Figure:
     """
     Creates a raincloud plot (containing half violin, box and scatter) for displaying
     the intensity distribution as well as a chosen feature value.
         df: Dataframe that contains the features
+        group_by: Metadata aspect (e.g. Group, Batch, ...) that peptides get grouped by
         feature: Feature to be shown in scatter plot
     """
-    peptides = df.copy()
-    intensity_col = get_column_name(peptides, "intensity")
-    intensities = peptides[intensity_col]
-
+    intensity_col = get_column_name(df, "intensity")
+    groups = df[group_by].unique()
     violin_width = 0.5
     box_width = 0.075
-    violin_y = np.zeros(len(intensities))
-    box_y = np.full(len(intensities), -0.04)
-    scatter_y = np.random.uniform(-0.3, -0.1, size=len(intensities))
 
-    violin = go.Violin(
-        x=intensities,
-        y=violin_y,
-        orientation="h",
-        side="positive",
-        width=violin_width,
-        box_visible=False,
-        points=False,
-        showlegend=False,
-        fillcolor=COLORS[0],
-        line=dict(color=COLORS[0]),
+    fig = make_subplots(
+        rows=len(groups),
+        cols=1,
+        shared_xaxes=True,
+        vertical_spacing=0.025,
     )
-    scatter = go.Scatter(
-        x=intensities,
-        y=scatter_y,
-        mode="markers",
-        marker=dict(
-            size=7,
-            color=df[feature],
-            colorscale="Plasma",
-            showscale=True,
-            colorbar=dict(
-                title=feature,
-                outlinewidth=0,
-                len=0.55,
-                y=1.0,
-                yanchor="top",
+
+    # Set unified coloring for scatter plots across subplots
+    min_feature_val = df[feature].min()
+    max_feature_val = df[feature].max()
+    color_norm = lambda x: (x - min_feature_val) / (max_feature_val - min_feature_val)
+    colorscale = "Plasma"
+
+    for i, group in enumerate(groups):
+        peptides = df[(df[group_by] == group) & (df[intensity_col].notna())].copy()
+        intensities = peptides[intensity_col]
+        peptides["Color"] = peptides[feature].apply(
+            lambda x: sample_colorscale(colorscale, color_norm(x))[0]
+        )
+
+        violin_y = np.zeros(len(intensities))
+        box_y = np.full(len(intensities), -0.05)
+        scatter_y = np.random.uniform(-0.3, -0.1, size=len(intensities))
+
+        violin = go.Violin(
+            x=intensities,
+            y=violin_y,
+            orientation="h",
+            side="positive",
+            width=violin_width,
+            box_visible=False,
+            points=False,
+            showlegend=False,
+            fillcolor="rgba(70,70,70,1)",  # TODO Move to constants.py
+            line=dict(color="rgba(70,70,70,1)"),
+        )
+        scatter = go.Scatter(
+            x=intensities,
+            y=scatter_y,
+            mode="markers",
+            marker=dict(size=7, color=peptides["Color"]),
+            showlegend=False,
+            text=peptides[feature],
+            hovertemplate=f"Intensity=%{{x}}<br>{feature}=%{{text}}<extra></extra>",
+        )
+        box = go.Box(
+            x=intensities,
+            y=box_y,
+            orientation="h",
+            whiskerwidth=0.5,
+            width=box_width,
+            boxpoints=False,
+            showlegend=False,
+            fillcolor="rgba(0,0,0,0)",
+            line=dict(color="rgba(70,70,70,1)"),
+        )
+        fig.add_trace(violin, row=i + 1, col=1)
+        fig.add_trace(scatter, row=i + 1, col=1)
+        fig.add_trace(box, row=i + 1, col=1)
+
+        # Add title & set margins by y-range
+        fig.update_yaxes(
+            row=i + 1,
+            col=1,
+            title_text=group,
+            range=[violin_width * (-0.7), violin_width * 0.6],
+            showticklabels=False,
+            zeroline=False,
+        )
+
+    # Add invisible trace to show shared colorscale
+    fig.add_trace(
+        go.Scatter(
+            x=[None],
+            y=[None],
+            mode="markers",
+            marker=dict(
+                colorscale=colorscale,
+                cmin=min_feature_val,
+                cmax=max_feature_val,
+                showscale=True,
+                size=0,
+                color=[min_feature_val, max_feature_val],
+                colorbar=dict(
+                    title=feature,
+                    outlinewidth=0,
+                    len=0.45,
+                    yanchor="top",
+                    y=1.045,
+                ),
             ),
-        ),
-        showlegend=False,
-        text=df[feature],
-        hovertemplate=f"Intensity: %{{x}}<br>{feature}: %{{text}}<extra></extra>",
+            hoverinfo="none",
+            showlegend=False,
+        )
     )
-    box = go.Box(
-        x=intensities,
-        y=box_y,
-        orientation="h",
-        whiskerwidth=0.5,
-        width=box_width,
-        boxpoints=False,
-        showlegend=False,
-        fillcolor="rgba(0,0,0,0)",
-        line=dict(color="rgba(70,70,70,1)"),
+    # Show y-axis title only on last subplot
+    fig.update_xaxes(
+        row=len(groups),
+        col=1,
+        title_text="Intensity",
     )
-    fig = go.Figure()
-    fig.add_traces([violin, scatter, box])
-
-    fig.update_layout(
-        title=f"Raincloud: Intensity and {feature} distribution",
-        xaxis=dict(
-            title="Intensity",
-            type="linear",
-        ),
-        yaxis=dict(
-            title="", range=[-0.5, violin_width], showticklabels=False, zeroline=False
-        ),
-    )
+    fig.update_layout(title=f"Raincloud: Intensity and {feature} distribution")
     return fig

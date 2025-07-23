@@ -205,7 +205,7 @@ class CompareFeaturesForm(forms.Form):
         initial=("Molecular weight", "Molecular weight"),
         widget=forms.Select(attrs={"class": "form-control"}),
     )
-    compare_features_metadata = forms.ChoiceField(
+    compare_features_group_by = forms.ChoiceField(
         label="Group by metadata aspect",
         choices=(),  # Overridden by __init__
         widget=forms.Select(attrs={"class": "form-control"}),
@@ -220,7 +220,7 @@ class CompareFeaturesForm(forms.Form):
     def __init__(self, *args, metadata_choices=None, **kwargs):
         super().__init__(*args, **kwargs)
         if metadata_choices is not None:
-            self.fields["compare_features_metadata"].choices = metadata_choices
+            self.fields["compare_features_group_by"].choices = metadata_choices
 
 
 class CompareFeatureForm(forms.Form):
@@ -234,7 +234,7 @@ class CompareFeatureForm(forms.Form):
         initial=("GRAVY", "GRAVY"),
         widget=forms.Select(attrs={"class": "form-control"}),
     )
-    compare_feature_metadata = forms.ChoiceField(
+    compare_feature_group_by = forms.ChoiceField(
         label="Group by metadata aspect",
         choices=(),  # Overridden by __init__
         widget=forms.Select(attrs={"class": "form-control"}),
@@ -249,7 +249,7 @@ class CompareFeatureForm(forms.Form):
     def __init__(self, *args, metadata_choices=None, **kwargs):
         super().__init__(*args, **kwargs)
         if metadata_choices is not None:
-            self.fields["compare_feature_metadata"].choices = metadata_choices
+            self.fields["compare_feature_group_by"].choices = metadata_choices
 
 
 FORM_TO_FEATURE_FUNCTION = {

@@ -101,6 +101,11 @@ def make_forms(post_data: QueryDict, classes: list, metadata_choices: dict = Non
         # Include initial values at run time
         if cls in (CompareFeatureForm, CompareFeaturesForm):
             kwargs["metadata_choices"] = metadata_choices
+            if ("Group", "Group") in metadata_choices:
+                kwargs["initial"] = {
+                    "compare_feature_group_by": ("Group", "Group"),
+                    "compare_features_group_by": ("Group", "Group"),
+                }
         if not is_bound:
             if cls == ChargeForm:
                 kwargs["initial"] = {"charge_at_ph_level": 7.0}

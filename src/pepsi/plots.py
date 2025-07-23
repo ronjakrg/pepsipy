@@ -50,7 +50,7 @@ def _generate_plots(df: pd.DataFrame, seq: str, params: dict) -> list:
         if params["compare_features"]:
             plot = _compare_features(
                 df=df,
-                metadata=params["compare_features_metadata"],
+                group_by=params["compare_features_group_by"],
                 feature_a=params["compare_features_a"],
                 feature_b=params["compare_features_b"],
                 intensity_threshold=params["compare_features_intensity_threshold"],
@@ -59,7 +59,7 @@ def _generate_plots(df: pd.DataFrame, seq: str, params: dict) -> list:
         if params["compare_feature"]:
             plot = _compare_feature(
                 df=df,
-                metadata=params["compare_feature_metadata"],
+                group_by=params["compare_feature_group_by"],
                 feature=params["compare_feature_a"],
                 intensity_threshold=params["compare_feature_intensity_threshold"],
             )
@@ -144,6 +144,7 @@ def _aa_distribution(
                     x=class_df["Amino Acid"],
                     y=class_df["Frequency"],
                     marker_color=CLASS_TO_COLOR[cls],
+                    hovertemplate="Amino Acid=%{x}<br>Frequency=%{y}<extra></extra>",
                     showlegend=False,
                 ),
                 row=1,
@@ -181,9 +182,9 @@ def _hydropathy_profile(seq: str) -> go.Figure:
         df,
         y="Hydropathy Index",
         title=f"Hydropathy Plot of Sequence {seq}",
-        color_discrete_sequence=COLORS,
         hover_data={"Amino Acid": True, "Hydropathy Index": True},
     )
+    fig.update_traces(line=dict(color=COLORS[0], width=3))
     fig.add_hline(
         y=0,
         line_dash="dash",
@@ -229,9 +230,32 @@ def _titration_curve(seq: str) -> go.Figure:
         x="pH",
         y="Charge",
         title="Titration curve (charge vs. pH)",
-        color_discrete_sequence=COLORS,
     )
+    fig.update_traces(line=dict(color=COLORS[0], width=3))
     fig.add_hline(y=0, line_dash="dash")
+
+    min_charge = int(np.floor(df["Charge"].min()))
+    max_charge = int(np.ceil(df["Charge"].max()))
+    int_charges = np.arange(min_charge, max_charge + 1)
+
+    points = []
+    for i in int_charges:
+        matched_charges = df[np.isclose(df["Charge"], i, rtol=0.01)]
+        if not matched_charges.empty:
+            median_ph = matched_charges["pH"].median()
+            points.append((median_ph, i))
+    if points:
+        ph, charge = zip(*points)
+        fig.add_trace(
+            go.Scatter(
+                x=ph,
+                y=charge,
+                mode="markers",
+                marker=dict(size=8, color=COLORS[1]),
+                hovertemplate="pH=%{x:.1f}<br>Charge=%{y:.0f}<extra></extra>",
+                showlegend=False,
+            )
+        )
     return fig
 
 
@@ -239,17 +263,25 @@ def _compare_features(
     df: pd.DataFrame,
     feature_a: str,
     feature_b: str,
-    metadata: str,
+    group_by: str,
     intensity_threshold: float = None,
 ) -> go.Figure:
     """
     Creates a scatter plot to compare two features across a metadata aspect.
         df: Dataframe that contains the features
-        metadata: Metadata aspect (e.g. Group, Batch, ...) that peptides get grouped by
+        group_by: Metadata aspect (e.g. Group, Batch, ...) that peptides get grouped by
         feature_a: Feature shown on x-axis
         feature_b: Feature shown on y-axis
         intensity_threshold: Peptides with intensities below this threshold are not included
     """
+    if feature_a not in df.columns:
+        raise ValueError(
+            f"Feature {feature_a} could not be found in dataset. Please make sure to compute it first."
+        )
+    if feature_b not in df.columns:
+        raise ValueError(
+            f"Feature {feature_b} could not be found in dataset. Please make sure to compute it first."
+        )
     peptides = df.copy()
     intensity_col = get_column_name(peptides, "intensity")
     seq_col = get_column_name(peptides, "sequence")
@@ -260,11 +292,11 @@ def _compare_features(
         peptides,
         x=feature_a,
         y=feature_b,
-        color=metadata,
+        color=group_by,
         color_discrete_sequence=COLORS,
-        symbol=metadata,
+        symbol=group_by,
         symbol_sequence=["square", "circle", "arrow-up", "star"],
-        title=f"Comparison of peptide features across each {metadata}",
+        title=f"Comparison of peptide features across each {group_by}",
         hover_name=seq_col,
     )
     fig.update_traces(marker=dict(size=10))
@@ -274,16 +306,20 @@ def _compare_features(
 def _compare_feature(
     df: pd.DataFrame,
     feature: str,
-    metadata: str,
+    group_by: str,
     intensity_threshold: float = None,
 ) -> go.Figure:
     """
     Creates box plots for each group to compare a feature between metadata aspect.
         df: Dataframe that contains the features
-        metadata: Metadata aspect (e.g. Group, Batch, ...) that peptides get grouped by
+        group_by: Metadata aspect (e.g. Group, Batch, ...) that peptides get grouped by
         feature: Feature to be compared
         intensity_threshold: Peptides with intensities below this threshold are not included
     """
+    if feature not in df.columns:
+        raise ValueError(
+            f"Feature {feature} could not be found in dataset. Please make sure to compute it first."
+        )
     peptides = df.copy()
     intensity_col = get_column_name(peptides, "intensity")
     seq_col = get_column_name(peptides, "sequence")
@@ -292,11 +328,11 @@ def _compare_feature(
 
     fig = px.box(
         peptides,
-        x=metadata,
+        x=group_by,
         y=feature,
-        color=metadata,
+        color=group_by,
         color_discrete_sequence=COLORS,
-        title=f"Distribution of {feature} across each {metadata}",
+        title=f"Distribution of {feature} across each {group_by}",
         hover_name=seq_col,
     )
     return fig

@@ -50,7 +50,7 @@ def _generate_plots(df: pd.DataFrame, seq: str, params: dict) -> list:
         if params["compare_features"]:
             plot = _compare_features(
                 df=df,
-                metadata=params["compare_features_metadata"],
+                group_by=params["compare_features_metadata"],
                 feature_a=params["compare_features_a"],
                 feature_b=params["compare_features_b"],
                 intensity_threshold=params["compare_features_intensity_threshold"],
@@ -59,7 +59,7 @@ def _generate_plots(df: pd.DataFrame, seq: str, params: dict) -> list:
         if params["compare_feature"]:
             plot = _compare_feature(
                 df=df,
-                metadata=params["compare_feature_metadata"],
+                group_by=params["compare_feature_metadata"],
                 feature=params["compare_feature_a"],
                 intensity_threshold=params["compare_feature_intensity_threshold"],
             )
@@ -239,13 +239,13 @@ def _compare_features(
     df: pd.DataFrame,
     feature_a: str,
     feature_b: str,
-    metadata: str,
+    group_by: str,
     intensity_threshold: float = None,
 ) -> go.Figure:
     """
     Creates a scatter plot to compare two features across a metadata aspect.
         df: Dataframe that contains the features
-        metadata: Metadata aspect (e.g. Group, Batch, ...) that peptides get grouped by
+        group_by: Metadata aspect (e.g. Group, Batch, ...) that peptides get grouped by
         feature_a: Feature shown on x-axis
         feature_b: Feature shown on y-axis
         intensity_threshold: Peptides with intensities below this threshold are not included
@@ -260,11 +260,11 @@ def _compare_features(
         peptides,
         x=feature_a,
         y=feature_b,
-        color=metadata,
+        color=group_by,
         color_discrete_sequence=COLORS,
-        symbol=metadata,
+        symbol=group_by,
         symbol_sequence=["square", "circle", "arrow-up", "star"],
-        title=f"Comparison of peptide features across each {metadata}",
+        title=f"Comparison of peptide features across each {group_by}",
         hover_name=seq_col,
     )
     fig.update_traces(marker=dict(size=10))
@@ -274,13 +274,13 @@ def _compare_features(
 def _compare_feature(
     df: pd.DataFrame,
     feature: str,
-    metadata: str,
+    group_by: str,
     intensity_threshold: float = None,
 ) -> go.Figure:
     """
     Creates box plots for each group to compare a feature between metadata aspect.
         df: Dataframe that contains the features
-        metadata: Metadata aspect (e.g. Group, Batch, ...) that peptides get grouped by
+        group_by: Metadata aspect (e.g. Group, Batch, ...) that peptides get grouped by
         feature: Feature to be compared
         intensity_threshold: Peptides with intensities below this threshold are not included
     """
@@ -292,11 +292,11 @@ def _compare_feature(
 
     fig = px.box(
         peptides,
-        x=metadata,
+        x=group_by,
         y=feature,
-        color=metadata,
+        color=group_by,
         color_discrete_sequence=COLORS,
-        title=f"Distribution of {feature} across each {metadata}",
+        title=f"Distribution of {feature} across each {group_by}",
         hover_name=seq_col,
     )
     return fig

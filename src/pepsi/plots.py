@@ -240,7 +240,7 @@ def _titration_curve(seq: str) -> go.Figure:
 
     points = []
     for i in int_charges:
-        matched_charges = df[np.isclose(df["Charge"], i, atol=0.03)]
+        matched_charges = df[np.isclose(df["Charge"], i, rtol=0.01)]
         if not matched_charges.empty:
             median_ph = matched_charges["pH"].median()
             points.append((median_ph, i))
@@ -274,11 +274,11 @@ def _compare_features(
         feature_b: Feature shown on y-axis
         intensity_threshold: Peptides with intensities below this threshold are not included
     """
-    if not feature_a in df.columns:
+    if feature_a not in df.columns:
         raise ValueError(
             f"Feature {feature_a} could not be found in dataset. Please make sure to compute it first."
         )
-    if not feature_b in df.columns:
+    if feature_b not in df.columns:
         raise ValueError(
             f"Feature {feature_b} could not be found in dataset. Please make sure to compute it first."
         )
@@ -316,7 +316,7 @@ def _compare_feature(
         feature: Feature to be compared
         intensity_threshold: Peptides with intensities below this threshold are not included
     """
-    if not feature in df.columns:
+    if feature not in df.columns:
         raise ValueError(
             f"Feature {feature} could not be found in dataset. Please make sure to compute it first."
         )

@@ -194,6 +194,7 @@ COLORS = [
     "#A7A1B2",
     "#8E3F25",
     "#511D43",
+    "#464646",
 ]
 
 PROJECT_PATH = Path(__file__).resolve().parent.parent.parent

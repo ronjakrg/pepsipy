@@ -351,8 +351,8 @@ def _raincloud(df: pd.DataFrame, group_by: str, feature: str) -> go.Figure:
             box_visible=False,
             points=False,
             showlegend=False,
-            fillcolor="rgba(70,70,70,1)",  # TODO Move to constants.py
-            line=dict(color="rgba(70,70,70,1)"),
+            fillcolor=COLORS[7],
+            line=dict(color=COLORS[7]),
         )
         scatter = go.Scatter(
             x=intensities,
@@ -371,8 +371,8 @@ def _raincloud(df: pd.DataFrame, group_by: str, feature: str) -> go.Figure:
             width=box_width,
             boxpoints=False,
             showlegend=False,
-            fillcolor="rgba(0,0,0,0)",
-            line=dict(color="rgba(70,70,70,1)"),
+            fillcolor="rgba(0,0,0,0)",  # Transparent
+            line=dict(color=COLORS[7]),
         )
         fig.add_trace(violin, row=i + 1, col=1)
         fig.add_trace(scatter, row=i + 1, col=1)

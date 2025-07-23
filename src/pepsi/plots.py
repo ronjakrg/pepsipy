@@ -65,6 +65,13 @@ def _generate_plots(df: pd.DataFrame, seq: str, params: dict) -> list:
                 intensity_threshold=params["compare_feature_intensity_threshold"],
             )
             data_plots.append(plot)
+        if params["raincloud"]:
+            plot = _raincloud(
+                df=df,
+                feature=params["raincloud_feature"],
+                group_by=params["raincloud_group_by"],
+            )
+            data_plots.append(plot)
     return peptide_plots, data_plots
 
 

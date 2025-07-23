@@ -27,6 +27,7 @@ from pepsi.plots import (
     _titration_curve,
     _compare_features,
     _compare_feature,
+    _raincloud,
 )
 
 
@@ -109,6 +110,9 @@ class Calculator:
         compare_feature_a: str = "GRAVY",
         compare_feature_metadata: str = None,
         compare_feature_intensity_threshold: float = None,
+        raincloud: bool = False,
+        raincloud_feature: str = "GRAVY",
+        raincloud_group_by: str = None,
     ):
         params = locals().copy()
         params.pop("self")
@@ -218,3 +222,4 @@ class Calculator:
     titration_curve = staticmethod(_titration_curve)
     compare_features = staticmethod(_compare_features)
     compare_feature = staticmethod(_compare_feature)
+    raincloud = staticmethod(_raincloud)

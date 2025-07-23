@@ -252,6 +252,29 @@ class CompareFeatureForm(forms.Form):
             self.fields["compare_feature_metadata"].choices = metadata_choices
 
 
+class RaincloudForm(forms.Form):
+    selected = forms.BooleanField(
+        label="📈 Raincloud plot",
+        required=False,
+    )
+    raincloud_feature = forms.ChoiceField(
+        label="Feature",
+        choices=numeric_feature_choices,
+        initial=("GRAVY", "GRAVY"),
+        widget=forms.Select(attrs={"class": "form-control"}),
+    )
+    raincloud_group_by = forms.ChoiceField(
+        label="Group by metadata aspect",
+        choices=(),  # Overridden by __init__
+        widget=forms.Select(attrs={"class": "form-control"}),
+    )
+
+    def __init__(self, *args, metadata_choices=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        if metadata_choices is not None:
+            self.fields["raincloud_group_by"].choices = metadata_choices
+
+
 FORM_TO_FEATURE_FUNCTION = {
     ThreeLetterCodeForm: "three_letter_code",
     MolecularFormulaForm: "molecular_formula",
@@ -272,4 +295,5 @@ FORM_TO_PLOT_FUNCTION = {
     TitrationCurveForm: "titration_curve",
     CompareFeaturesForm: "compare_features",
     CompareFeatureForm: "compare_feature",
+    RaincloudForm: "raincloud",
 }

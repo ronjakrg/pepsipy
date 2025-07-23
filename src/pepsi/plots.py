@@ -365,7 +365,7 @@ def _raincloud(df: pd.DataFrame, group_by: str, feature: str) -> go.Figure:
             x=intensities,
             y=scatter_y,
             mode="markers",
-            marker=dict(size=7, color=peptides["Color"]),
+            marker=dict(size=5, color=peptides["Color"]),
             showlegend=False,
             text=peptides[feature],
             hovertemplate=f"Intensity=%{{x}}<br>{feature}=%{{text}}<extra></extra>",
@@ -390,7 +390,7 @@ def _raincloud(df: pd.DataFrame, group_by: str, feature: str) -> go.Figure:
             row=i + 1,
             col=1,
             title_text=group,
-            range=[violin_width * (-0.7), violin_width * 0.6],
+            range=[violin_width * (-0.8), violin_width * 0.7],
             showticklabels=False,
             zeroline=False,
         )
@@ -411,9 +411,6 @@ def _raincloud(df: pd.DataFrame, group_by: str, feature: str) -> go.Figure:
                 colorbar=dict(
                     title=feature,
                     outlinewidth=0,
-                    len=0.45,
-                    yanchor="top",
-                    y=1.045,
                 ),
             ),
             hoverinfo="none",

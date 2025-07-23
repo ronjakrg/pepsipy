@@ -250,6 +250,10 @@ def _compare_features(
         feature_b: Feature shown on y-axis
         intensity_threshold: Peptides with intensities below this threshold are not included
     """
+    if not feature_a in df.columns:
+        raise ValueError(f"Feature {feature_a} could not be found in dataset. Please make sure to compute it first.")
+    if not feature_b in df.columns:
+        raise ValueError(f"Feature {feature_b} could not be found in dataset. Please make sure to compute it first.")        
     peptides = df.copy()
     intensity_col = get_column_name(peptides, "intensity")
     seq_col = get_column_name(peptides, "sequence")
@@ -284,6 +288,8 @@ def _compare_feature(
         feature: Feature to be compared
         intensity_threshold: Peptides with intensities below this threshold are not included
     """
+    if not feature in df.columns:
+        raise ValueError(f"Feature {feature} could not be found in dataset. Please make sure to compute it first.")
     peptides = df.copy()
     intensity_col = get_column_name(peptides, "intensity")
     seq_col = get_column_name(peptides, "sequence")

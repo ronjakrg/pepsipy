@@ -1,4 +1,5 @@
 import pandas as pd
+from plotly.colors import sample_colorscale
 
 from pepsi.constants import AA_LETTERS
 
@@ -31,3 +32,17 @@ def get_distinct_seq(df: pd.DataFrame) -> pd.DataFrame:
     """
     seq_col_name = get_column_name(df, "sequence")
     return df[[seq_col_name]].drop_duplicates(keep="first")
+
+
+def normalize_color(
+    val: float, min: float, max: float, colorscale: str = "Plasma"
+) -> float:
+    """
+    Normalizes a feature value to [0,1] and maps it to a color from a given Plotly colorscale.
+        val: Feature value to normalize
+        min: Minimum feature value
+        max: Maximum feature value
+        colorscale: Name of a Plotly colorscale (see https://plotly.com/python/builtin-colorscales/ for more information)
+    """
+    norm = (val - min) / (max - min)
+    return sample_colorscale(colorscale, norm)[0]

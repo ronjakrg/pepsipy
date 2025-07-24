@@ -8,6 +8,7 @@ from plotly.colors import sample_colorscale
 from pepsi.constants import (
     AA_WEIGHTS,
     COLORS,
+    COLORS_BY_NAME,
     HYDROPATHY_INDICES,
     CHEMICAL_CLASS,
     CHARGE_CLASS,
@@ -15,7 +16,7 @@ from pepsi.constants import (
     CHARGE_CLASS_PER_AA,
 )
 from pepsi.features import _aa_frequency, _aa_classification, _charge_at_ph
-from pepsi.utils import get_column_name
+from pepsi.utils import get_column_name, normalize_color
 
 
 def _generate_plots(df: pd.DataFrame, seq: str, params: dict) -> list:
@@ -193,7 +194,7 @@ def _hydropathy_profile(seq: str) -> go.Figure:
         title=f"Hydropathy Plot of Sequence {seq}",
         hover_data={"Amino Acid": True, "Hydropathy Index": True},
     )
-    fig.update_traces(line=dict(color=COLORS[0], width=3))
+    fig.update_traces(line=dict(color=COLORS_BY_NAME["red"], width=3))
     fig.add_hline(
         y=0,
         line_dash="dash",
@@ -241,7 +242,7 @@ def _titration_curve(seq: str) -> go.Figure:
         y="Charge",
         title="Titration curve (charge vs. pH)",
     )
-    fig.update_traces(line=dict(color=COLORS[0], width=3))
+    fig.update_traces(line=dict(color=COLORS_BY_NAME["red"], width=3))
     fig.add_hline(y=0, line_dash="dash")
 
     min_charge = int(np.floor(df["Charge"].min()))
@@ -261,7 +262,7 @@ def _titration_curve(seq: str) -> go.Figure:
                 x=ph,
                 y=charge,
                 mode="markers",
-                marker=dict(size=8, color=COLORS[1]),
+                marker=dict(size=8, color=COLORS_BY_NAME["blue"]),
                 hovertemplate="pH=%{x:.1f}<br>Charge=%{y:.0f}<extra></extra>",
                 showlegend=False,
             )
@@ -358,8 +359,20 @@ def _raincloud(df: pd.DataFrame, group_by: str, feature: str) -> go.Figure:
     """
     intensity_col = get_column_name(df, "intensity")
     groups = df[group_by].unique()
+
+    # Sizes & spacings
     violin_width = 0.5
+    violin_margin_bottom = -0.8
+    violin_margin_top = 0.7
     box_width = 0.075
+    violin_box_spacing = -0.043
+    scatter_min = -0.3
+    scatter_max = -0.1
+
+    # Min & max used for unified color scaling
+    min_feature_val = df[feature].min()
+    max_feature_val = df[feature].max()
+    colorscale = "Plasma"
 
     fig = make_subplots(
         rows=len(groups),
@@ -368,22 +381,18 @@ def _raincloud(df: pd.DataFrame, group_by: str, feature: str) -> go.Figure:
         vertical_spacing=0.025,
     )
 
-    # Set unified coloring for scatter plots across subplots
-    min_feature_val = df[feature].min()
-    max_feature_val = df[feature].max()
-    color_norm = lambda x: (x - min_feature_val) / (max_feature_val - min_feature_val)
-    colorscale = "Plasma"
-
     for i, group in enumerate(groups):
         peptides = df[(df[group_by] == group) & (df[intensity_col].notna())].copy()
         intensities = peptides[intensity_col]
         peptides["Color"] = peptides[feature].apply(
-            lambda x: sample_colorscale(colorscale, color_norm(x))[0]
+            lambda x: normalize_color(x, min_feature_val, max_feature_val, colorscale)
         )
 
         violin_y = np.zeros(len(intensities))
-        box_y = np.full(len(intensities), -0.05)
-        scatter_y = np.random.uniform(-0.3, -0.1, size=len(intensities))
+        box_y = np.full(len(intensities), violin_box_spacing)
+        scatter_y = np.random.uniform(
+            low=scatter_min, high=scatter_max, size=len(intensities)
+        )
 
         violin = go.Violin(
             x=intensities,
@@ -394,8 +403,8 @@ def _raincloud(df: pd.DataFrame, group_by: str, feature: str) -> go.Figure:
             box_visible=False,
             points=False,
             showlegend=False,
-            fillcolor=COLORS[7],
-            line=dict(color=COLORS[7]),
+            fillcolor=COLORS_BY_NAME["lightgray"],
+            line=dict(color=COLORS_BY_NAME["lightgray"]),
         )
         scatter = go.Scatter(
             x=intensities,
@@ -414,8 +423,8 @@ def _raincloud(df: pd.DataFrame, group_by: str, feature: str) -> go.Figure:
             width=box_width,
             boxpoints=False,
             showlegend=False,
-            fillcolor="rgba(0,0,0,0)",  # Transparent
-            line=dict(color=COLORS[7]),
+            fillcolor=COLORS_BY_NAME["transparent"],
+            line=dict(color=COLORS_BY_NAME["darkgray"]),
         )
         fig.add_trace(violin, row=i + 1, col=1)
         fig.add_trace(scatter, row=i + 1, col=1)
@@ -426,7 +435,10 @@ def _raincloud(df: pd.DataFrame, group_by: str, feature: str) -> go.Figure:
             row=i + 1,
             col=1,
             title_text=group,
-            range=[violin_width * (-0.8), violin_width * 0.7],
+            range=[
+                violin_width * violin_margin_bottom,
+                violin_width * violin_margin_top,
+            ],
             showticklabels=False,
             zeroline=False,
         )

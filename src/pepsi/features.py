@@ -55,18 +55,18 @@ def _compute_features(
         "molecular_weight": ("Molecular weight", _molecular_weight),
         "isoelectric_point": (
             "Isoelectric point",
-            partial(_isoelectric_point, option=params["isoelectric_point_option"]),
+            partial(_isoelectric_point, option=params.get("isoelectric_point_option")),
         ),
         "seq_length": ("Sequence length", _seq_length),
         "gravy": ("GRAVY", _gravy),
         "aromaticity": ("Aromaticity", _aromaticity),
         "charge_at_ph": (
             "Charge",
-            partial(_charge_at_ph, ph=params["charge_at_ph_level"]),
+            partial(_charge_at_ph, ph=params.get("charge_at_ph_level")),
         ),
         "charge_density": (
             "Charge density",
-            partial(_charge_density, ph=params["charge_density_level"]),
+            partial(_charge_density, ph=params.get("charge_density_level")),
         ),
         "boman_index": ("Boman index", _boman_index),
         "aliphatic_index": ("Aliphatic index", _aliphatic_index),
@@ -126,7 +126,7 @@ def _molecular_weight(seq: str) -> float:
     """
     num = _seq_length(seq)
     weight = sum(AA_WEIGHTS[aa] for aa in seq) - (num - 1) * WATER
-    return round(weight, 3)
+    return round(weight, 2)
 
 
 def _three_letter_code(seq: str) -> str:

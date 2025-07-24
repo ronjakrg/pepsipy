@@ -95,6 +95,7 @@ def _seq_length(seq: str) -> int:
     """
     Computes the length in a given sequence.
     Note: The input sequence must be pre-sanitized to compute only valid amino acids.
+        seq: Given sequence
     """
     invalid = set(seq) - AA_LETTERS
     if invalid:
@@ -106,6 +107,7 @@ def _aa_frequency(seq: str) -> dict[str, int]:
     """
     Computes the frequency of each amino acid in a given sequence.
     Note: The input sequence must be pre-sanitized to compute only valid amino acids.
+        seq: Given sequence
     """
     try:
         freq = {val: 0 for val in AA_LETTERS}
@@ -120,6 +122,7 @@ def _molecular_weight(seq: str) -> float:
     """
     Computes the average molecular weight of a given sequence in Da.
     Note: The input sequence must be pre-sanitized to compute only valid amino acids.
+        seq: Given sequence
     """
     num = _seq_length(seq)
     weight = sum(AA_WEIGHTS[aa] for aa in seq) - (num - 1) * WATER
@@ -130,6 +133,7 @@ def _three_letter_code(seq: str) -> str:
     """
     Converts a sequence of amino acids into its representation in three letter code.
     Note: The input sequence must be pre-sanitized to compute only valid amino acids.
+        seq: Given sequence
     """
     try:
         return "".join(AA_THREE_LETTER_CODE[aa] for aa in seq)
@@ -140,6 +144,7 @@ def _three_letter_code(seq: str) -> str:
 def _one_letter_code(codes: str) -> str:
     """
     Converts concatenated three-letter amino acid codes into their one-letter code representation.
+        codes: Sequence in three letter code
     """
     separators = set(string.whitespace + string.punctuation)
     if any(ch in separators for ch in codes):
@@ -160,6 +165,7 @@ def _gravy(seq: str) -> float:
     """
     Computes the GRAVY (grand average of hydropathy) score of a given sequence.
     Note: The input sequence must be pre-sanitized to compute only valid amino acids.
+        seq: Given sequence
     """
     num = _seq_length(seq)
     hydropathy_sum = sum(HYDROPATHY_INDICES[aa] for aa in seq)
@@ -170,6 +176,7 @@ def _molecular_formula(seq: str) -> str:
     """
     Computes the molecular formula of a given sequence.
     Note: The input sequence must be pre-sanitized to compute only valid amino acids.
+        seq: Given sequence
     """
     total_atoms = {}
     for aa in seq:
@@ -231,6 +238,7 @@ def _aromaticity(seq: str) -> float:
     """
     Computes the aromaticity of a given sequence by calculating the relative
     frequency of amino acids F, Y, and W (Lobry and Gautier, 1994).
+        seq: Given sequence
     """
     freq = _aa_frequency(seq)
     seq_len = _seq_length(seq)

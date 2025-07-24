@@ -8,6 +8,7 @@ from .forms import (
     CompareFeaturesForm,
     ChargeForm,
     ChargeDensityForm,
+    RaincloudForm,
 )
 
 
@@ -99,12 +100,14 @@ def make_forms(post_data: QueryDict, classes: list, metadata_choices: dict = Non
         kwargs = {"prefix": prefix}
         is_bound = any(key.startswith(f"{prefix}-") for key in post_data.keys())
         # Include initial values at run time
-        if cls in (CompareFeatureForm, CompareFeaturesForm):
+        if cls in (CompareFeatureForm, CompareFeaturesForm, RaincloudForm):
             kwargs["metadata_choices"] = metadata_choices
-            if ("Group", "Group") in metadata_choices:
+            group_option = ("Group", "Group")
+            if group_option in metadata_choices:
                 kwargs["initial"] = {
-                    "compare_feature_group_by": ("Group", "Group"),
-                    "compare_features_group_by": ("Group", "Group"),
+                    "compare_feature_group_by": group_option,
+                    "compare_features_group_by": group_option,
+                    "raincloud_group_by": group_option,
                 }
         if not is_bound:
             if cls == ChargeForm:

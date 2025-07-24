@@ -3,10 +3,12 @@ import numpy as np
 import plotly.express as px
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
+from plotly.colors import sample_colorscale
 
 from pepsi.constants import (
     AA_WEIGHTS,
     COLORS,
+    COLORS_BY_NAME,
     HYDROPATHY_INDICES,
     CHEMICAL_CLASS,
     CHARGE_CLASS,
@@ -14,7 +16,7 @@ from pepsi.constants import (
     CHARGE_CLASS_PER_AA,
 )
 from pepsi.features import _aa_frequency, _aa_classification, _charge_at_ph
-from pepsi.utils import get_column_name
+from pepsi.utils import get_column_name, normalize_color
 
 
 def _generate_plots(df: pd.DataFrame, seq: str, params: dict) -> list:
@@ -64,9 +66,17 @@ def _generate_plots(df: pd.DataFrame, seq: str, params: dict) -> list:
                 intensity_threshold=params["compare_feature_intensity_threshold"],
             )
             data_plots.append(plot)
+        if params["raincloud"]:
+            plot = _raincloud(
+                df=df,
+                feature=params["raincloud_feature"],
+                group_by=params["raincloud_group_by"],
+            )
+            data_plots.append(plot)
     return peptide_plots, data_plots
 
 
+# Peptide-specific plots
 def _aa_distribution(
     seq: str,
     order_by: str = "frequency",
@@ -184,7 +194,7 @@ def _hydropathy_profile(seq: str) -> go.Figure:
         title=f"Hydropathy Plot of Sequence {seq}",
         hover_data={"Amino Acid": True, "Hydropathy Index": True},
     )
-    fig.update_traces(line=dict(color=COLORS[0], width=3))
+    fig.update_traces(line=dict(color=COLORS_BY_NAME["red"], width=3))
     fig.add_hline(
         y=0,
         line_dash="dash",
@@ -217,6 +227,7 @@ def _classification(seq: str, classify_by: str = "chemical") -> go.Figure:
     return fig
 
 
+# Dataset-specific plots
 def _titration_curve(seq: str) -> go.Figure:
     """
     Computes a graph showing the net charge of a given sequence per pH level.
@@ -231,7 +242,7 @@ def _titration_curve(seq: str) -> go.Figure:
         y="Charge",
         title="Titration curve (charge vs. pH)",
     )
-    fig.update_traces(line=dict(color=COLORS[0], width=3))
+    fig.update_traces(line=dict(color=COLORS_BY_NAME["red"], width=3))
     fig.add_hline(y=0, line_dash="dash")
 
     min_charge = int(np.floor(df["Charge"].min()))
@@ -251,7 +262,7 @@ def _titration_curve(seq: str) -> go.Figure:
                 x=ph,
                 y=charge,
                 mode="markers",
-                marker=dict(size=8, color=COLORS[1]),
+                marker=dict(size=8, color=COLORS_BY_NAME["blue"]),
                 hovertemplate="pH=%{x:.1f}<br>Charge=%{y:.0f}<extra></extra>",
                 showlegend=False,
             )
@@ -335,4 +346,130 @@ def _compare_feature(
         title=f"Distribution of {feature} across each {group_by}",
         hover_name=seq_col,
     )
+    return fig
+
+
+def _raincloud(df: pd.DataFrame, group_by: str, feature: str) -> go.Figure:
+    """
+    Creates a raincloud plot (containing half violin, box and scatter) for displaying
+    the intensity distribution as well as a chosen feature value.
+        df: Dataframe that contains the features
+        group_by: Metadata aspect (e.g. Group, Batch, ...) that peptides get grouped by
+        feature: Feature to be shown in scatter plot
+    """
+    intensity_col = get_column_name(df, "intensity")
+    groups = df[group_by].unique()
+
+    # Sizes & spacings
+    violin_width = 0.5
+    violin_margin_bottom = -0.8
+    violin_margin_top = 0.7
+    box_width = 0.075
+    violin_box_spacing = -0.043
+    scatter_min = -0.3
+    scatter_max = -0.1
+
+    # Min & max used for unified color scaling
+    min_feature_val = df[feature].min()
+    max_feature_val = df[feature].max()
+    colorscale = "Plasma"
+
+    fig = make_subplots(
+        rows=len(groups),
+        cols=1,
+        shared_xaxes=True,
+        vertical_spacing=0.025,
+    )
+
+    for i, group in enumerate(groups):
+        peptides = df[(df[group_by] == group) & (df[intensity_col].notna())].copy()
+        intensities = peptides[intensity_col]
+        peptides["Color"] = peptides[feature].apply(
+            lambda x: normalize_color(x, min_feature_val, max_feature_val, colorscale)
+        )
+
+        violin_y = np.zeros(len(intensities))
+        box_y = np.full(len(intensities), violin_box_spacing)
+        scatter_y = np.random.uniform(
+            low=scatter_min, high=scatter_max, size=len(intensities)
+        )
+
+        violin = go.Violin(
+            x=intensities,
+            y=violin_y,
+            orientation="h",
+            side="positive",
+            width=violin_width,
+            box_visible=False,
+            points=False,
+            showlegend=False,
+            fillcolor=COLORS_BY_NAME["lightgray"],
+            line=dict(color=COLORS_BY_NAME["lightgray"]),
+        )
+        scatter = go.Scatter(
+            x=intensities,
+            y=scatter_y,
+            mode="markers",
+            marker=dict(size=5, color=peptides["Color"]),
+            showlegend=False,
+            text=peptides[feature],
+            hovertemplate=f"Intensity=%{{x}}<br>{feature}=%{{text}}<extra></extra>",
+        )
+        box = go.Box(
+            x=intensities,
+            y=box_y,
+            orientation="h",
+            whiskerwidth=0.5,
+            width=box_width,
+            boxpoints=False,
+            showlegend=False,
+            fillcolor=COLORS_BY_NAME["transparent"],
+            line=dict(color=COLORS_BY_NAME["darkgray"]),
+        )
+        fig.add_trace(violin, row=i + 1, col=1)
+        fig.add_trace(scatter, row=i + 1, col=1)
+        fig.add_trace(box, row=i + 1, col=1)
+
+        # Add title & set margins by y-range
+        fig.update_yaxes(
+            row=i + 1,
+            col=1,
+            title_text=group,
+            range=[
+                violin_width * violin_margin_bottom,
+                violin_width * violin_margin_top,
+            ],
+            showticklabels=False,
+            zeroline=False,
+        )
+
+    # Add invisible trace to show shared colorscale
+    fig.add_trace(
+        go.Scatter(
+            x=[None],
+            y=[None],
+            mode="markers",
+            marker=dict(
+                colorscale=colorscale,
+                cmin=min_feature_val,
+                cmax=max_feature_val,
+                showscale=True,
+                size=0,
+                color=[min_feature_val, max_feature_val],
+                colorbar=dict(
+                    title=feature,
+                    outlinewidth=0,
+                ),
+            ),
+            hoverinfo="none",
+            showlegend=False,
+        )
+    )
+    # Show y-axis title only on last subplot
+    fig.update_xaxes(
+        row=len(groups),
+        col=1,
+        title_text="Intensity",
+    )
+    fig.update_layout(title=f"Raincloud: Intensity and {feature} distribution")
     return fig

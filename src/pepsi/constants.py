@@ -195,6 +195,13 @@ COLORS = [
     "#8E3F25",
     "#511D43",
 ]
+COLORS_BY_NAME = {
+    "transparent": "rgba(0,0,0,0)",
+    "darkgray": "#464646",
+    "lightgray": "#777777",
+    "red": COLORS[0],
+    "blue": COLORS[1],
+}
 
 PROJECT_PATH = Path(__file__).resolve().parent.parent.parent
 EXTERNAL_PATH = PROJECT_PATH / "external"

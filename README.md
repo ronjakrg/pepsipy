@@ -8,7 +8,7 @@
 | frontend/dashboard/\_\_init\_\_.py            |        0 |        0 |    100% |           |
 | frontend/dashboard/migrations/\_\_init\_\_.py |        0 |        0 |    100% |           |
 | frontend/dashboard/utils.py                   |       58 |        9 |     84% |79-86, 107, 118 |
-| frontend/dashboard/views.py                   |       63 |       11 |     83% |57-59, 79, 98-99, 107-111 |
+| frontend/dashboard/views.py                   |       62 |       10 |     84% |57-59, 96-97, 105-109 |
 | frontend/project/\_\_init\_\_.py              |        0 |        0 |    100% |           |
 | src/pepsi/\_\_init\_\_.py                     |        2 |        0 |    100% |           |
 | src/pepsi/calculator.py                       |       84 |       37 |     56% |58-63, 69, 72, 91-93, 117-119, 122-124, 131-134, 137-142, 149-153, 159-160, 182-183, 193-198, 209-213 |
@@ -16,7 +16,7 @@
 | src/pepsi/features.py                         |      122 |        3 |     98% |37-42, 208 |
 | src/pepsi/plots.py                            |      167 |      150 |     10% |28-76, 91-174, 182-202, 211-227, 236-270, 288-314, 330-349, 360-475 |
 | src/pepsi/utils.py                            |       17 |        2 |     88% |     47-48 |
-|                                     **TOTAL** |  **529** |  **212** | **60%** |           |
+|                                     **TOTAL** |  **528** |  **211** | **60%** |           |
 
 
 ## Setup coverage badge

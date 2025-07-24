@@ -32,8 +32,7 @@ def _generate_plots(df: pd.DataFrame, seq: str, params: dict) -> list:
             plot = _aa_distribution(
                 seq=seq,
                 order_by=params["aa_distribution_order_by"],
-                # Comparison with string necessary because form.cleaned_data only offers strings
-                show_all=(params["aa_distribution_show_all"] == "True"),
+                show_all=params["aa_distribution_show_all"],
             )
             peptide_plots.append(plot)
         if params["hydropathy_profile"]:

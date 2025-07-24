@@ -70,6 +70,13 @@ def _compute_features(
         ),
         "boman_index": ("Boman index", _boman_index),
         "aliphatic_index": ("Aliphatic index", _aliphatic_index),
+        "extinction_coefficient": (
+            "Extinction coefficient",
+            partial(
+                _extinction_coefficient,
+                oxidized=params.get("extinction_coefficient_oxidized"),
+            ),
+        ),
     }
     # Filter features that got True in given params
     chosen_features = {
@@ -79,6 +86,7 @@ def _compute_features(
     }
 
     # Compute features
+    # TODO Compute reduced & oxidized extinction coefficients as tuple?
     for feature, func in chosen_features.items():
         sequences[feature] = sequences[seq_col_name].apply(func)
 

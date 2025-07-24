@@ -309,3 +309,16 @@ def _aliphatic_index(seq: str) -> float:
     nI = freq["I"]
     nL = freq["L"]
     return round((nA + 2.9 * nV + 3.9 * (nI + nL)) * 100.0 / length, 2)
+
+
+def _extinction_coefficient(seq: str, oxidized: bool) -> int:
+    """
+    Computes the extinction coefficient of a given sequence. Formula is based on (Gill, von Hippel, 1989) and improved by (Pace et al., 1995).
+        seq: Given sequence
+        oxidized: True, if all pairs of Cystine form cystines (disulfide bridges). False, if all Cystine residues are reduced.
+    """
+    freq = _aa_frequency(seq)
+    extinction = freq["W"] * 5500 + freq["Y"] * 1490
+    if oxidized:
+        extinction += (freq["C"] // 2) * 125
+    return extinction

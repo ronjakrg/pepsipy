@@ -18,6 +18,7 @@ from pepsi.features import (
     _charge_density,
     _boman_index,
     _aliphatic_index,
+    _extinction_coefficient,
 )
 
 # Any function that calls one of these functions is already covered by a test for invalid amino acids.
@@ -192,4 +193,15 @@ def test_aliphatic_index():
     assert pytest.approx(55.71) == _aliphatic_index("PEPTIDE")
     assert pytest.approx(70.20) == _aliphatic_index(
         "DPTWFWLEFSLYEERSMDGAPGDGLYFQDDMLDFCLKQKINIVWHRYLKY"
+    )
+
+
+def test_extinction_efficient():
+    # Benchmark values from ExPASy (Gasteiger et al., 2005)
+    assert 0 == _extinction_coefficient("PEPTIDE", oxidized=False)
+    assert 34490 == _extinction_coefficient(
+        "HLDQWLPALKQLWLRMAIMWMTWMHDPLPCLNWSMCLQGIWATKNYASGQ", oxidized=False
+    )
+    assert 34615 == _extinction_coefficient(
+        "HLDQWLPALKQLWLRMAIMWMTWMHDPLPCLNWSMCLQGIWATKNYASGQ", oxidized=True
     )

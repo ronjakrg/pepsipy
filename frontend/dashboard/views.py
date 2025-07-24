@@ -75,8 +75,6 @@ def index(request):
             html_data_plots.append(plot.to_html(config={"responsive": True}))
             i += 1
         results_ready = True
-    else:
-        config_form = ConfigForm()
 
     context = {
         "config_form": config_form,

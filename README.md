@@ -7,16 +7,16 @@
 | frontend/\_\_init\_\_.py                      |        0 |        0 |    100% |           |
 | frontend/dashboard/\_\_init\_\_.py            |        0 |        0 |    100% |           |
 | frontend/dashboard/migrations/\_\_init\_\_.py |        0 |        0 |    100% |           |
-| frontend/dashboard/utils.py                   |       57 |        9 |     84% |78-85, 105, 115 |
+| frontend/dashboard/utils.py                   |       58 |        9 |     84% |79-86, 107, 118 |
 | frontend/dashboard/views.py                   |       63 |       11 |     83% |57-59, 79, 98-99, 107-111 |
 | frontend/project/\_\_init\_\_.py              |        0 |        0 |    100% |           |
 | src/pepsi/\_\_init\_\_.py                     |        2 |        0 |    100% |           |
-| src/pepsi/calculator.py                       |       83 |       37 |     55% |57-62, 68, 71, 90-92, 113-115, 118-120, 127-130, 133-138, 145-149, 155-156, 178-179, 189-194, 205-209 |
-| src/pepsi/constants.py                        |       15 |        0 |    100% |           |
+| src/pepsi/calculator.py                       |       84 |       37 |     56% |58-63, 69, 72, 91-93, 117-119, 122-124, 131-134, 137-142, 149-153, 159-160, 182-183, 193-198, 209-213 |
+| src/pepsi/constants.py                        |       16 |        0 |    100% |           |
 | src/pepsi/features.py                         |      122 |        3 |     98% |37-42, 208 |
-| src/pepsi/plots.py                            |      131 |      116 |     11% |26-67, 81-164, 172-192, 201-217, 225-259, 277-303, 319-338 |
-| src/pepsi/utils.py                            |       13 |        0 |    100% |           |
-|                                     **TOTAL** |  **486** |  **176** | **64%** |           |
+| src/pepsi/plots.py                            |      167 |      150 |     10% |28-76, 91-174, 182-202, 211-227, 236-270, 288-314, 330-349, 360-475 |
+| src/pepsi/utils.py                            |       17 |        2 |     88% |     47-48 |
+|                                     **TOTAL** |  **529** |  **212** | **60%** |           |
 
 
 ## Setup coverage badge

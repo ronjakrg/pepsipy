@@ -8,13 +8,14 @@ from frontend.project import settings
 from pepsi.calculator import Calculator
 
 from .forms import ConfigForm, FORM_TO_FEATURE_FUNCTION, FORM_TO_PLOT_FUNCTION
-from .utils import load_data, get_params, get_match_for_seq, clear_tmp, make_forms
+from .utils import load_data, get_params, get_match_for_seq, clear_tmp, make_forms, get_paired_list
 
 
 def index(request):
     # Setup
     computed_features = pd.DataFrame()
     computed_peptide_features = {}
+    paired_peptide_features = list()
     num_matches = 0
     html_peptide_plots = []
     html_data_plots = []
@@ -57,6 +58,7 @@ def index(request):
                 res = calc.get_peptide_features()
                 res.to_csv(settings.TMP_DIR / "peptide_features.csv", index=False)
                 computed_peptide_features = res.iloc[0].to_dict()
+            paired_peptide_features = get_paired_list(computed_peptide_features)
 
         # Generate plots
         calc.set_plot_params(**get_params(plot_forms, FORM_TO_PLOT_FUNCTION))
@@ -85,6 +87,7 @@ def index(request):
         "results_ready": results_ready,
         "computed_features": computed_features,
         "computed_peptide_features": computed_peptide_features,
+        "paired_peptide_features": paired_peptide_features,
         "num_matches": num_matches,
         "peptide_plots": html_peptide_plots,
         "data_plots": html_data_plots,

@@ -19,19 +19,19 @@ class ConfigForm(forms.Form):
     data_name = forms.CharField(
         label="Name of dataset in /data (.csv)",
         max_length=100,
-        initial="diab-peptides.csv",
+        initial="alzh-peptides.csv",
         widget=forms.TextInput(attrs={"class": "form-control"}),
     )
     metadata_name = forms.CharField(
         label="Name of metadata file in /data (.csv)",
         max_length=100,
-        initial="diab-metadata.csv",
+        initial="alzh-metadata.csv",
         widget=forms.TextInput(attrs={"class": "form-control"}),
     )
     seq = forms.CharField(
         label="Peptide sequence of interest",
         max_length=100,
-        initial="SGSVIDQSRVLNLGPI",
+        initial="GQAGEYECVTHNGVNSAPDSR",
         widget=forms.TextInput(attrs={"class": "form-control"}),
         required=False,
     )

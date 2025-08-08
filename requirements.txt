@@ -6,5 +6,4 @@ pandas
 plotly
 kaleido
 scikit-learn
-requests
 modlamp

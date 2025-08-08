@@ -2,6 +2,7 @@ from django import template
 
 register = template.Library()
 
+
 @register.filter
 def insert_break(value, arg):
     """
@@ -11,4 +12,4 @@ def insert_break(value, arg):
     """
     number = int(arg)
     if isinstance(value, str):
-        return "<br>".join(value[i:i+number] for i in range(0, len(value), number))
+        return "<br>".join(value[i : i + number] for i in range(0, len(value), number))

@@ -132,6 +132,7 @@ def eval_input(input: any):
             return False
     return input
 
+
 def get_paired_list(d: dict) -> list:
     items = list(d.items())
-    return [items[i:i+2] for i in range(0, len(items), 2)]
+    return [items[i : i + 2] for i in range(0, len(items), 2)]

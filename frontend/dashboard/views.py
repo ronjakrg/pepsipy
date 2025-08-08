@@ -8,7 +8,14 @@ from frontend.project import settings
 from pepsi.calculator import Calculator
 
 from .forms import ConfigForm, FORM_TO_FEATURE_FUNCTION, FORM_TO_PLOT_FUNCTION
-from .utils import load_data, get_params, get_match_for_seq, clear_tmp, make_forms, get_paired_list
+from .utils import (
+    load_data,
+    get_params,
+    get_match_for_seq,
+    clear_tmp,
+    make_forms,
+    get_paired_list,
+)
 
 
 def index(request):

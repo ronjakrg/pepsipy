@@ -90,7 +90,6 @@ def index(request):
         "feature_forms": feature_forms,
         "plot_forms": plot_forms,
         "selection_forms": [feature_forms, plot_forms],
-
         "results_ready": results_ready,
         "seq": calc.seq,
         "paired_peptide_features": paired_peptide_features,

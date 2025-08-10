@@ -8,13 +8,14 @@
 {% endfor %}
 <div class="flex-between">
     <button type="submit" name="load" class="btn btn-purple">Load</button>
-    <!-- TODO Only show if config_form is submitted -->
-    <div style="display: inline-flex">
-        <button type="button" class="btn btn-grey js-toggle-checkboxes me-1" data-checked="true">
-            Select all
-        </button>
-        <button type="button" class="btn btn-grey js-toggle-checkboxes" data-checked="false">
-            Unselect all
-        </button>
-    </div>
+    {% if config_form.is_bound %}
+        <div style="display: inline-flex">
+            <button type="button" class="btn btn-grey js-toggle-checkboxes me-1" data-checked="true">
+                Select all
+            </button>
+            <button type="button" class="btn btn-grey js-toggle-checkboxes" data-checked="false">
+                Unselect all
+            </button>
+        </div>
+    {% endif %}
 </div>

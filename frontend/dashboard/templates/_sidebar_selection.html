@@ -2,12 +2,12 @@
 {# params: selection_forms #}
 
 <div id="forms">
-    <div class="d-flex align-items-center rounded-3 bg-light-purple ps-2 pt-2 pb-1 my-3">
+    <div class="d-flex align-items-center form-section-tile">
         <h5 class="white-title">Features</h5>
     </div>
     {% for forms in selection_forms %}
         {% if forloop.counter > 1 %}
-            <div class="d-flex align-items-center rounded-3 bg-light-purple ps-2 pt-2 pb-1 my-3">
+            <div class="d-flex align-items-center form-section-tile">
                 <h5 class="white-title">Plots</h5>
             </div>
         {% endif %}

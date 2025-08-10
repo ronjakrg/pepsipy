@@ -87,13 +87,12 @@ def index(request):
 
     context = {
         "config_form": config_form,
-        "seq": calc.seq,
         "feature_forms": feature_forms,
         "plot_forms": plot_forms,
         "selection_forms": [feature_forms, plot_forms],
+
         "results_ready": results_ready,
-        "computed_features": computed_features,
-        "computed_peptide_features": computed_peptide_features,
+        "seq": calc.seq,
         "paired_peptide_features": paired_peptide_features,
         "num_matches": num_matches,
         "peptide_plots": html_peptide_plots,

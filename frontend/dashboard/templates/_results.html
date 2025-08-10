@@ -1,6 +1,6 @@
 {% load static %}
 {% load utils %}
-{# params: seq, computed_peptide_features, num_matches, peptide_plots, data_plots #}
+{# params: seq, paired_peptide_features, num_matches, peptide_plots, data_plots #}
 
 {% if seq %}
     <div class="row mb-3">
@@ -24,8 +24,6 @@
                                 {% endif %}
                             </td>
                         {% endfor %}
-
-                        {# Wenn ungerade, fülle rechte Spalte auf #}
                         {% if pair|length == 1 %}
                             <th></th><td></td>
                         {% endif %}

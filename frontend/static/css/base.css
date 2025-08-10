@@ -6,6 +6,7 @@
 }
 .btn-purple {
   color: #ffffff;
+  font-weight: bold;
   background-color: #511D43;
   border: none;
   transition: background-color 0.2s ease, color 0.2s ease;
@@ -51,4 +52,11 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+.white-title {
+  color: white !important;
+  font-weight: bold;
+}
+.bg-light-purple {
+  background-color: #8b527c;
 }

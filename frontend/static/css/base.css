@@ -60,3 +60,6 @@
 .bg-light-purple {
   background-color: #8b527c;
 }
+.table-cell {
+  min-width: 10rem;
+}

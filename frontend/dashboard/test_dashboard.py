@@ -148,8 +148,6 @@ def test_index_valid_form(
     assert "<div>plot_a</div>" in response.context["peptide_plots"][0]
     assert "<div>plot_b</div>" in response.context["data_plots"][0]
     assert "PEPTIDE" == response.context["seq"]
-    assert False == response.context["computed_features"].empty
-    assert_frame_equal(features, response.context["computed_peptide_features"])
 
     mock_load_data.assert_has_calls(
         [

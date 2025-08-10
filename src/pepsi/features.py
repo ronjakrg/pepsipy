@@ -86,7 +86,6 @@ def _compute_features(
     }
 
     # Compute features
-    # TODO Compute reduced & oxidized extinction coefficients as tuple?
     for feature, func in chosen_features.items():
         sequences[feature] = sequences[seq_col_name].apply(func)
 

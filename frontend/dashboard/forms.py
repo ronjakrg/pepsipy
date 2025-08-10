@@ -11,6 +11,7 @@ numeric_feature_choices = (
     ("Charge density", "Charge density"),
     ("Boman index", "Boman index"),
     ("Aliphatic index", "Aliphatic index"),
+    ("Extinction coefficient", "Extinction coefficient"),
 )
 
 
@@ -36,6 +37,7 @@ class ConfigForm(forms.Form):
     )
 
 
+# Feature forms
 class ThreeLetterCodeForm(forms.Form):
     selected = forms.BooleanField(
         label="Three letter code",
@@ -133,6 +135,23 @@ class AliphaticIndexForm(forms.Form):
     )
 
 
+class ExtinctionCoefficientForm(forms.Form):
+    selected = forms.BooleanField(
+        label="Extinction coefficient",
+        required=False,
+    )
+    extinction_coefficient_oxidized = forms.ChoiceField(
+        label="Cysteine oxidation state",
+        choices=(
+            ("False", "Reduced"),
+            ("True", "Oxidized"),
+        ),
+        required=False,
+        widget=forms.Select(attrs={"class": "form-control"}),
+    )
+
+
+# Plot forms
 class AaDistributionForm(forms.Form):
     selected = forms.BooleanField(
         label="📈 Frequency of amino acids",
@@ -287,6 +306,7 @@ FORM_TO_FEATURE_FUNCTION = {
     ChargeDensityForm: "charge_density",
     BomanIndexForm: "boman_index",
     AliphaticIndexForm: "aliphatic_index",
+    ExtinctionCoefficientForm: "extinction_coefficient",
 }
 FORM_TO_PLOT_FUNCTION = {
     AaDistributionForm: "aa_distribution",

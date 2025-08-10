@@ -2,6 +2,7 @@ from django.http import QueryDict
 import pandas as pd
 from pathlib import Path
 import os
+from typing import Any
 from django.conf import settings
 from .forms import (
     CompareFeatureForm,
@@ -36,7 +37,7 @@ def get_params(forms: list, mapping: dict) -> dict:
             if form.cleaned_data["selected"]:
                 # Get params from form
                 params = {
-                    key: val
+                    key: eval_input(val)
                     for key, val in form.cleaned_data.items()
                     if key != "selected"
                 }
@@ -118,3 +119,16 @@ def make_forms(post_data: QueryDict, classes: list, metadata_choices: dict = Non
             kwargs["data"] = post_data
         forms.append(cls(**kwargs))
     return forms
+
+
+def eval_input(input: Any) -> bool | Any:
+    """
+    Evaluation that converts str 'True' to bool True.
+        input: Input of any type
+    """
+    if isinstance(input, str):
+        if input.lower() == "true":
+            return True
+        elif input.lower() == "false":
+            return False
+    return input

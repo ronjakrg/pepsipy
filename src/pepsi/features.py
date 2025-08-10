@@ -55,21 +55,28 @@ def _compute_features(
         "molecular_weight": ("Molecular weight", _molecular_weight),
         "isoelectric_point": (
             "Isoelectric point",
-            partial(_isoelectric_point, option=params["isoelectric_point_option"]),
+            partial(_isoelectric_point, option=params.get("isoelectric_point_option")),
         ),
         "seq_length": ("Sequence length", _seq_length),
         "gravy": ("GRAVY", _gravy),
         "aromaticity": ("Aromaticity", _aromaticity),
         "charge_at_ph": (
             "Charge",
-            partial(_charge_at_ph, ph=params["charge_at_ph_level"]),
+            partial(_charge_at_ph, ph=params.get("charge_at_ph_level")),
         ),
         "charge_density": (
             "Charge density",
-            partial(_charge_density, ph=params["charge_density_level"]),
+            partial(_charge_density, ph=params.get("charge_density_level")),
         ),
         "boman_index": ("Boman index", _boman_index),
         "aliphatic_index": ("Aliphatic index", _aliphatic_index),
+        "extinction_coefficient": (
+            "Extinction coefficient",
+            partial(
+                _extinction_coefficient,
+                oxidized=params.get("extinction_coefficient_oxidized"),
+            ),
+        ),
     }
     # Filter features that got True in given params
     chosen_features = {
@@ -95,6 +102,7 @@ def _seq_length(seq: str) -> int:
     """
     Computes the length in a given sequence.
     Note: The input sequence must be pre-sanitized to compute only valid amino acids.
+        seq: Given sequence
     """
     invalid = set(seq) - AA_LETTERS
     if invalid:
@@ -106,6 +114,7 @@ def _aa_frequency(seq: str) -> dict[str, int]:
     """
     Computes the frequency of each amino acid in a given sequence.
     Note: The input sequence must be pre-sanitized to compute only valid amino acids.
+        seq: Given sequence
     """
     try:
         freq = {val: 0 for val in AA_LETTERS}
@@ -120,16 +129,18 @@ def _molecular_weight(seq: str) -> float:
     """
     Computes the average molecular weight of a given sequence in Da.
     Note: The input sequence must be pre-sanitized to compute only valid amino acids.
+        seq: Given sequence
     """
     num = _seq_length(seq)
     weight = sum(AA_WEIGHTS[aa] for aa in seq) - (num - 1) * WATER
-    return round(weight, 3)
+    return round(weight, 2)
 
 
 def _three_letter_code(seq: str) -> str:
     """
     Converts a sequence of amino acids into its representation in three letter code.
     Note: The input sequence must be pre-sanitized to compute only valid amino acids.
+        seq: Given sequence
     """
     try:
         return "".join(AA_THREE_LETTER_CODE[aa] for aa in seq)
@@ -140,6 +151,7 @@ def _three_letter_code(seq: str) -> str:
 def _one_letter_code(codes: str) -> str:
     """
     Converts concatenated three-letter amino acid codes into their one-letter code representation.
+        codes: Sequence in three letter code
     """
     separators = set(string.whitespace + string.punctuation)
     if any(ch in separators for ch in codes):
@@ -160,6 +172,7 @@ def _gravy(seq: str) -> float:
     """
     Computes the GRAVY (grand average of hydropathy) score of a given sequence.
     Note: The input sequence must be pre-sanitized to compute only valid amino acids.
+        seq: Given sequence
     """
     num = _seq_length(seq)
     hydropathy_sum = sum(HYDROPATHY_INDICES[aa] for aa in seq)
@@ -170,6 +183,7 @@ def _molecular_formula(seq: str) -> str:
     """
     Computes the molecular formula of a given sequence.
     Note: The input sequence must be pre-sanitized to compute only valid amino acids.
+        seq: Given sequence
     """
     total_atoms = {}
     for aa in seq:
@@ -231,6 +245,7 @@ def _aromaticity(seq: str) -> float:
     """
     Computes the aromaticity of a given sequence by calculating the relative
     frequency of amino acids F, Y, and W (Lobry and Gautier, 1994).
+        seq: Given sequence
     """
     freq = _aa_frequency(seq)
     seq_len = _seq_length(seq)
@@ -301,3 +316,16 @@ def _aliphatic_index(seq: str) -> float:
     nI = freq["I"]
     nL = freq["L"]
     return round((nA + 2.9 * nV + 3.9 * (nI + nL)) * 100.0 / length, 2)
+
+
+def _extinction_coefficient(seq: str, oxidized: bool) -> int:
+    """
+    Computes the extinction coefficient of a given sequence. Formula is based on (Gill, von Hippel, 1989) and improved by (Pace et al., 1995).
+        seq: Given sequence
+        oxidized: True, if all pairs of Cysteine form cystines (disulfide bridges). False, if all Cysteine residues are reduced.
+    """
+    freq = _aa_frequency(seq)
+    extinction = freq["W"] * 5500 + freq["Y"] * 1490
+    if oxidized:
+        extinction += (freq["C"] // 2) * 125
+    return extinction

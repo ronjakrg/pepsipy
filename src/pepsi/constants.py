@@ -204,4 +204,3 @@ COLORS_BY_NAME = {
 }
 
 PROJECT_PATH = Path(__file__).resolve().parent.parent.parent
-EXTERNAL_PATH = PROJECT_PATH / "external"

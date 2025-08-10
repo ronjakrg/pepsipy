@@ -12,11 +12,11 @@
 | frontend/project/\_\_init\_\_.py              |        0 |        0 |    100% |           |
 | src/pepsi/\_\_init\_\_.py                     |        2 |        0 |    100% |           |
 | src/pepsi/calculator.py                       |       85 |       37 |     56% |59-64, 70, 73, 94-96, 120-122, 125-127, 134-137, 140-145, 152-156, 162-163, 186-187, 197-202, 213-217 |
-| src/pepsi/constants.py                        |       16 |        0 |    100% |           |
+| src/pepsi/constants.py                        |       15 |        0 |    100% |           |
 | src/pepsi/features.py                         |      128 |        3 |     98% |37-42, 222 |
 | src/pepsi/plots.py                            |      167 |      150 |     10% |28-75, 90-173, 181-201, 210-226, 235-269, 287-313, 329-348, 359-474 |
 | src/pepsi/utils.py                            |       17 |        2 |     88% |     47-48 |
-|                                     **TOTAL** |  **543** |  **213** | **61%** |           |
+|                                     **TOTAL** |  **542** |  **213** | **61%** |           |
 
 
 ## Setup coverage badge

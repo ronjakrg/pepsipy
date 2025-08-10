@@ -1,18 +1,17 @@
+{% load static %}
 {# params: selection_forms #}
 
 <div id="forms">
-    <div class="flex-between">
-        <span><b>Feature selection</b></span>
-        <div style="display: inline-flex">
-            <button type="button" class="btn btn-grey js-toggle-checkboxes me-1" data-checked="true">
-                Select all
-            </button>
-            <button type="button" class="btn btn-grey js-toggle-checkboxes" data-checked="false">
-                Unselect all
-            </button>
-        </div>
+    <div class="d-flex align-items-center form-section-tile">
+        <h5 class="white-title">Features</h5>
     </div>
-    {% for forms in selection_forms %} {% for form in forms %} {% for field in form %}
+    {% for forms in selection_forms %}
+        {% if forloop.counter > 1 %}
+            <div class="d-flex align-items-center form-section-tile">
+                <h5 class="white-title">Plots</h5>
+            </div>
+        {% endif %}
+        {% for form in forms %} {% for field in form %}
         <div class="form-group mb-2">
             {% if field.name == 'selected' %}
                 <label class="form-check-label"> {{ field }} <b> {{ field.label }} </b></label>
@@ -22,7 +21,8 @@
             </div>
             {% endif %}
         </div>
-    {% endfor %} {% endfor %} {% endfor %}
+        {% endfor %} {% endfor %}
+    {% endfor %}
     <div
         class="position-sticky bg-white"
         style="bottom: 0; padding: 1rem 1rem 1rem 0"

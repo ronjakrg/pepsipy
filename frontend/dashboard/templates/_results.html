@@ -1,5 +1,6 @@
 {% load static %}
-{# params: seq, computed_peptide_features, num_matches, peptide_plots, data_plots #}
+{% load utils %}
+{# params: seq, paired_peptide_features, num_matches, peptide_plots, data_plots #}
 
 {% if seq %}
     <div class="row mb-3">
@@ -10,15 +11,22 @@
             </h5>
             <table class="table w-auto">
                 <tbody>
-                {% for label, value in computed_peptide_features.items %}
+                {% for pair in paired_peptide_features %}
                     <tr>
-                        <th scope="row">{{ label }}</th>
-                        <td>
-                            {{ value }}
-                            {% if label == "Molecular weight" %}
-                            <span> Da</span>
-                            {% endif %}
-                        </td>
+                        {% for label, value in pair %}
+                            <th class="table-cell" scope="row"><b>{{ label }}</b></th>
+                            <td class="table-cell">
+                                {% if label == "Three letter code" %}
+                                    {{ value|insert_break:"30"|safe }}
+                                {% else %}
+                                    {{ value }}
+                                    {% if label == "Molecular weight" %}<span> Da</span>{% endif %}
+                                {% endif %}
+                            </td>
+                        {% endfor %}
+                        {% if pair|length == 1 %}
+                            <th></th><td></td>
+                        {% endif %}
                     </tr>
                 {% endfor %}
                 </tbody>

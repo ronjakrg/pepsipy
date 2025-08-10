@@ -19,19 +19,19 @@ class ConfigForm(forms.Form):
     data_name = forms.CharField(
         label="Name of dataset in /data (.csv)",
         max_length=100,
-        initial="diab-peptides.csv",
+        initial="alzh-peptides.csv",
         widget=forms.TextInput(attrs={"class": "form-control"}),
     )
     metadata_name = forms.CharField(
         label="Name of metadata file in /data (.csv)",
         max_length=100,
-        initial="diab-metadata.csv",
+        initial="alzh-metadata.csv",
         widget=forms.TextInput(attrs={"class": "form-control"}),
     )
     seq = forms.CharField(
         label="Peptide sequence of interest",
         max_length=100,
-        initial="SGSVIDQSRVLNLGPI",
+        initial="GQAGEYECVTHNGVNSAPDSR",
         widget=forms.TextInput(attrs={"class": "form-control"}),
         required=False,
     )
@@ -154,7 +154,7 @@ class ExtinctionCoefficientForm(forms.Form):
 # Plot forms
 class AaDistributionForm(forms.Form):
     selected = forms.BooleanField(
-        label="📈 Frequency of amino acids",
+        label="Frequency of amino acids",
         required=False,
     )
     aa_distribution_order_by = forms.ChoiceField(
@@ -180,14 +180,14 @@ class AaDistributionForm(forms.Form):
 
 class HydropathyProfileForm(forms.Form):
     selected = forms.BooleanField(
-        label="📈 Hydropathy profile",
+        label="Hydropathy profile",
         required=False,
     )
 
 
 class ClassificationForm(forms.Form):
     selected = forms.BooleanField(
-        label="📈 Classification",
+        label="Classification",
         required=False,
     )
     classification_classify_by = forms.ChoiceField(
@@ -202,14 +202,14 @@ class ClassificationForm(forms.Form):
 
 class TitrationCurveForm(forms.Form):
     selected = forms.BooleanField(
-        label="📈 Titration curve (charge vs. pH)",
+        label="Titration curve (charge vs. pH)",
         required=False,
     )
 
 
 class CompareFeaturesForm(forms.Form):
     selected = forms.BooleanField(
-        label="📈 Compare features across a metadata aspect",
+        label="Compare features across a metadata aspect",
         required=False,
     )
     compare_features_a = forms.ChoiceField(
@@ -244,7 +244,7 @@ class CompareFeaturesForm(forms.Form):
 
 class CompareFeatureForm(forms.Form):
     selected = forms.BooleanField(
-        label="📈 Compare a feature across a metadata aspect",
+        label="Compare a feature across a metadata aspect",
         required=False,
     )
     compare_feature_a = forms.ChoiceField(
@@ -273,7 +273,7 @@ class CompareFeatureForm(forms.Form):
 
 class RaincloudForm(forms.Form):
     selected = forms.BooleanField(
-        label="📈 Raincloud plot",
+        label="Raincloud plot",
         required=False,
     )
     raincloud_feature = forms.ChoiceField(

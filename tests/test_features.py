@@ -1,5 +1,4 @@
 import pytest
-import requests
 
 from constants import TEST_DATA
 from pepsi.features import (

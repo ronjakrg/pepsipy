@@ -132,3 +132,12 @@ def eval_input(input: Any) -> bool | Any:
         elif input.lower() == "false":
             return False
     return input
+
+
+def get_paired_list(dict: dict) -> list:
+    """
+    Creates a list of paired items from a dictionary.
+        dict: Dictionary of items
+    """
+    items = list(dict.items())
+    return [items[i : i + 2] for i in range(0, len(items), 2)]

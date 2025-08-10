@@ -2,6 +2,7 @@ from django.http import QueryDict
 import pandas as pd
 from pathlib import Path
 import os
+from typing import Any
 from django.conf import settings
 from .forms import (
     CompareFeatureForm,
@@ -120,7 +121,7 @@ def make_forms(post_data: QueryDict, classes: list, metadata_choices: dict = Non
     return forms
 
 
-def eval_input(input: any):
+def eval_input(input: Any) -> bool | Any:
     """
     Evaluation that converts str 'True' to bool True.
         input: Input of any type

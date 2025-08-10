@@ -322,7 +322,7 @@ def _extinction_coefficient(seq: str, oxidized: bool) -> int:
     """
     Computes the extinction coefficient of a given sequence. Formula is based on (Gill, von Hippel, 1989) and improved by (Pace et al., 1995).
         seq: Given sequence
-        oxidized: True, if all pairs of Cystine form cystines (disulfide bridges). False, if all Cystine residues are reduced.
+        oxidized: True, if all pairs of Cysteine form cystines (disulfide bridges). False, if all Cysteine residues are reduced.
     """
     freq = _aa_frequency(seq)
     extinction = freq["W"] * 5500 + freq["Y"] * 1490

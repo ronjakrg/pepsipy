@@ -10,9 +10,7 @@ from pepsi.utils import (
     normalize_color,
     extract_related_kwargs,
 )
-
-
-PEPTIDES = pd.read_csv("tests/data/peptides.csv")
+from .constants import PEPTIDES
 
 
 def test_sanitize_seq():

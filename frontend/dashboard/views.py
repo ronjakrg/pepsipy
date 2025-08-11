@@ -20,6 +20,7 @@ from .utils import (
 
 def index(request):
     # Setup
+    seq = ""
     computed_features = pd.DataFrame()
     computed_peptide_features = {}
     paired_peptide_features = list()
@@ -36,7 +37,8 @@ def index(request):
     if config_form.is_valid():
         metadata = load_data(config_form.cleaned_data["metadata_name"])
         metadata_choices = [(col, col) for col in metadata.columns]
-        calc.set_seq(config_form.cleaned_data["seq"])
+        seq = config_form.cleaned_data["seq"]
+        calc.setup(seq=seq)
         feature_forms = make_forms(request.POST, FORM_TO_FEATURE_FUNCTION.keys())
         plot_forms = make_forms(
             request.POST, FORM_TO_PLOT_FUNCTION.keys(), metadata_choices
@@ -47,8 +49,9 @@ def index(request):
         clear_tmp()
 
         # Get data
-        calc.set_dataset(load_data(config_form.cleaned_data["data_name"]))
-        calc.set_metadata(metadata)
+        calc.setup(
+            dataset=load_data(config_form.cleaned_data["data_name"]), metadata=metadata
+        )
 
         # Compute features
         calc.set_feature_params(**get_params(feature_forms, FORM_TO_FEATURE_FUNCTION))
@@ -69,7 +72,7 @@ def index(request):
 
         # Generate plots
         calc.set_plot_params(**get_params(plot_forms, FORM_TO_PLOT_FUNCTION))
-        peptide_plots, data_plots = calc.get_plots()
+        peptide_plots, data_plots = calc.get_plots(as_tuple=True)
         i = 1
         for plot in peptide_plots:
             plot.write_image(
@@ -91,7 +94,7 @@ def index(request):
         "plot_forms": plot_forms,
         "selection_forms": [feature_forms, plot_forms],
         "results_ready": results_ready,
-        "seq": calc.seq,
+        "seq": seq,
         "paired_peptide_features": paired_peptide_features,
         "num_matches": num_matches,
         "peptide_plots": html_peptide_plots,

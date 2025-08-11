@@ -81,11 +81,14 @@ class Calculator:
             metadata: pandas DataFrame containing the metadata. The first column must contain unique identifiers (used as the key). All other columns can provide additional information for each key (e.g., group, batch, ...).
             seq: Amino acid sequence of interest
         """
-        self.dataset = dataset
-        self.metadata = metadata
-        self.metadata_list = list(metadata.columns)
-        self.key_metadata = metadata.columns[0]
-        self.seq = seq
+        if dataset is not None:
+            self.dataset = dataset
+        if metadata is not None:
+            self.metadata = metadata
+            self.metadata_list = list(metadata.columns)
+            self.key_metadata = metadata.columns[0]
+        if seq is not None:
+            self.seq = seq
 
     def set_feature_params(
         self,
@@ -206,10 +209,11 @@ class Calculator:
     extinction_coefficient = staticmethod(_extinction_coefficient)
 
     # Plots
-    def get_plots(self):
+    def get_plots(self, as_tuple: bool = False):
         """
         Generates selected plots. Requires a sequence or a dataset set by setup().
         Note: If no plots were explicitly selected, all available plots are computed with their default options.
+            as_tuple: If set to True, the peptide and dataset plots are returned seperated as tuple.
         """
         self._ensure_attrs("computed_features")
         enriched_dataset = pd.merge(
@@ -219,13 +223,16 @@ class Calculator:
             params = self.plot_params
         else:
             params = {"select_all": True}
-        plot_list = _generate_plots(
+        plot_tuple = _generate_plots(
             df=enriched_dataset,
             seq=self.seq,
             params=params,
         )
-        plots = [plot for sublist in plot_list for plot in sublist]
-        return plots
+        if as_tuple:
+            return plot_tuple
+        else:
+            plots = [plot for sublist in plot_tuple for plot in sublist]
+            return plots
 
     aa_distribution = staticmethod(_aa_distribution)
     hydropathy_profile = staticmethod(_hydropathy_profile)

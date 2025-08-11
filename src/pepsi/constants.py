@@ -204,3 +204,4 @@ COLORS_BY_NAME = {
 }
 
 PROJECT_PATH = Path(__file__).resolve().parent.parent.parent
+DATA_PATH = PROJECT_PATH / "data"

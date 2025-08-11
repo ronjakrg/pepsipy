@@ -10,7 +10,7 @@ from pepsi.utils import (
     normalize_color,
     extract_related_kwargs,
 )
-from .constants import PEPTIDES
+from tests.constants import PEPTIDES
 
 
 def test_sanitize_seq():

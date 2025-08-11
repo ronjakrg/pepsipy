@@ -19,7 +19,7 @@ from pepsi.features import (
     _aliphatic_index,
     _extinction_coefficient,
 )
-from .constants import PEPTIDES
+from tests.constants import PEPTIDES
 
 # Any function that calls one of these functions is already covered by a test for invalid amino acids.
 INVALID_SEQ = "ABC"

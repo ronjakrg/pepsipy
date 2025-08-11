@@ -35,10 +35,8 @@ from pepsi.plots import (
 class Calculator:
     """
     The central interface for using the PEPSI package. Computes peptide-specific of dataset-specific features and plots based on defined parameters.
-        dataset: pandas DataFrame containing the peptidomic data. The column 'Sequence' must contain the amino acid sequences.
-            Columns 'Protein ID', 'Intensity' and 'PEP' are optional. To link the metadata file, the first metadata column must be added to the dataset.
-        metadata: pandas DataFrame containing the metadata. The first column must contain unique identifiers (used as the key).
-            All other columns can provide additional information for each key (e.g., group, batch, ...).
+        dataset: pandas DataFrame containing the peptidomic data. The column 'Sequence' must contain the amino acid sequences. Columns 'Protein ID', 'Intensity' and 'PEP' are optional. To link the metadata file, the first metadata column must be added to the dataset.
+        metadata: pandas DataFrame containing the metadata. The first column must contain unique identifiers (used as the key). All other columns can provide additional information for each key (e.g., group, batch, ...).
         seq: Amino acid sequence of interest
         feature_params: Dictionary containing all available features and their associated parameters. Use set_feature_params() seperately to get an overview on all options.
         plot_params: Dictionary containing all available plots and their associated parameters. Use set_plot_params() seperately to get an overview on all options.
@@ -78,7 +76,10 @@ class Calculator:
         seq: str = None,
     ):
         """
-        TODO
+        Sets up relevant input data for computing features or generating plots.
+            dataset: pandas DataFrame containing the peptidomic data. The column 'Sequence' must contain the amino acid sequences. Columns 'Protein ID', 'Intensity' and 'PEP' are optional. To link the metadata file, the first metadata column must be added to the dataset.
+            metadata: pandas DataFrame containing the metadata. The first column must contain unique identifiers (used as the key). All other columns can provide additional information for each key (e.g., group, batch, ...).
+            seq: Amino acid sequence of interest
         """
         self.dataset = dataset
         self.metadata = metadata
@@ -106,7 +107,7 @@ class Calculator:
         extinction_coefficient_oxidized: bool = False,
     ):
         """
-        TODO
+        Selects peptide features and their related parameters.
         """
         params = locals().copy()
         params.pop("self")
@@ -135,7 +136,7 @@ class Calculator:
         raincloud_group_by: str = None,
     ):
         """
-        TODO
+        Selects peptide and dataset plots and their related parameters.
         """
         params = locals().copy()
         params.pop("self")
@@ -157,7 +158,8 @@ class Calculator:
     # Features
     def get_features(self):
         """
-        TODO
+        Computes selected features on the current dataset. Requires a dataset set by setup().
+        Note: If no features were explicitly selected, all available features are computed with their default options.
         """
         self._ensure_attrs("dataset")
         if self.feature_params:
@@ -173,7 +175,8 @@ class Calculator:
 
     def get_peptide_features(self):
         """
-        TODO
+        Computes selected features on the current peptide sequence of interest. Requires a sequence set by setup().
+        Note: If no features were explicitly selected, all available features are computed with their default options.
         """
         self._ensure_attrs("seq")
         if self.feature_params:
@@ -203,11 +206,10 @@ class Calculator:
     extinction_coefficient = staticmethod(_extinction_coefficient)
 
     # Plots
-    def get_plots(
-        self,
-    ):
+    def get_plots(self):
         """
-        TODO
+        Generates selected plots. Requires a sequence or a dataset set by setup().
+        Note: If no plots were explicitly selected, all available plots are computed with their default options.
         """
         self._ensure_attrs("computed_features")
         enriched_dataset = pd.merge(

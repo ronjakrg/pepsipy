@@ -20,7 +20,12 @@ from pepsi.constants import (
     CHEMICAL_CLASS,
     CHARGE_CLASS,
 )
-from pepsi.utils import sanitize_seq, get_distinct_seq, get_column_name
+from pepsi.utils import (
+    sanitize_seq,
+    get_distinct_seq,
+    get_column_name,
+    extract_related_kwargs,
+)
 
 
 def _compute_features(
@@ -32,21 +37,16 @@ def _compute_features(
     Computes all selected features on a pandas DataFrame.
     TODO Describe column naming & metadata file
     """
+    select_all = params.get("select_all")
     # On single sequence or dataset
     if seq is not None:
-        df = pd.DataFrame(
-            {
-                "Sequence": [seq],
-            }
-        )
-        sequences = pd.DataFrame(
-            {
-                "Sequence": [seq],
-            }
-        )
+        df = pd.DataFrame({"Sequence": [seq]})
+        sequences = pd.DataFrame({"Sequence": [seq]})
     else:
         sequences = get_distinct_seq(df)
-    seq_col_name = get_column_name(df, "sequence")
+    seq_col_name = get_column_name(
+        df, "sequence"
+    )  # TODO Maybe remove this and just require "Sequence" as column?
 
     # Mapping from params to (column name, function)
     feature_mapping = {
@@ -55,18 +55,36 @@ def _compute_features(
         "molecular_weight": ("Molecular weight", _molecular_weight),
         "isoelectric_point": (
             "Isoelectric point",
-            partial(_isoelectric_point, option=params.get("isoelectric_point_option")),
+            partial(
+                _isoelectric_point,
+                **extract_related_kwargs(
+                    {"isoelectric_point_option": "option"},
+                    params,
+                ),
+            ),
         ),
         "seq_length": ("Sequence length", _seq_length),
         "gravy": ("GRAVY", _gravy),
         "aromaticity": ("Aromaticity", _aromaticity),
         "charge_at_ph": (
             "Charge",
-            partial(_charge_at_ph, ph=params.get("charge_at_ph_level")),
+            partial(
+                _charge_at_ph,
+                **extract_related_kwargs(
+                    {"charge_at_ph_level": "ph"},
+                    params,
+                ),
+            ),
         ),
         "charge_density": (
             "Charge density",
-            partial(_charge_density, ph=params.get("charge_density_level")),
+            partial(
+                _charge_density,
+                **extract_related_kwargs(
+                    {"charge_density_level": "ph"},
+                    params,
+                ),
+            ),
         ),
         "boman_index": ("Boman index", _boman_index),
         "aliphatic_index": ("Aliphatic index", _aliphatic_index),
@@ -74,7 +92,10 @@ def _compute_features(
             "Extinction coefficient",
             partial(
                 _extinction_coefficient,
-                oxidized=params.get("extinction_coefficient_oxidized"),
+                **extract_related_kwargs(
+                    {"extinction_coefficient_oxidized": "oxidized"},
+                    params,
+                ),
             ),
         ),
     }
@@ -82,7 +103,7 @@ def _compute_features(
     chosen_features = {
         col: func
         for feature, (col, func) in feature_mapping.items()
-        if params.get(feature)
+        if params.get(feature) or select_all
     }
 
     # Compute features
@@ -274,7 +295,7 @@ def _aa_classification(seq: str, classify_by: str = "chemical") -> dict:
         raise ValueError(f"Unknown option: {classify_by}")
 
 
-def _charge_at_ph(seq: str, ph: float) -> float:
+def _charge_at_ph(seq: str, ph: float = 7.0) -> float:
     """
     Computes the charge of a given sequence at a given pH level.
         seq: Given sequence
@@ -285,7 +306,7 @@ def _charge_at_ph(seq: str, ph: float) -> float:
     return float(round(desc.descriptor[0][0], 2))
 
 
-def _charge_density(seq: str, ph: float) -> float:
+def _charge_density(seq: str, ph: float = 7.0) -> float:
     """
     Computes the charge density (charge / molecular weight) of a given sequence at a given pH level.
         seq: Given sequence
@@ -318,7 +339,7 @@ def _aliphatic_index(seq: str) -> float:
     return round((nA + 2.9 * nV + 3.9 * (nI + nL)) * 100.0 / length, 2)
 
 
-def _extinction_coefficient(seq: str, oxidized: bool) -> int:
+def _extinction_coefficient(seq: str, oxidized: bool = False) -> int:
     """
     Computes the extinction coefficient of a given sequence. Formula is based on (Gill, von Hippel, 1989) and improved by (Pace et al., 1995).
         seq: Given sequence

@@ -46,3 +46,15 @@ def normalize_color(
     """
     norm = (val - min) / (max - min)
     return sample_colorscale(colorscale, norm)[0]
+
+
+def extract_related_kwargs(mapping: dict, params: dict) -> dict:
+    """
+    TODO
+    """
+    kwargs = {}
+    for external_key, internal_key in mapping.items():
+        val = params.get(external_key)
+        if val is not None:
+            kwargs[internal_key] = val
+    return kwargs

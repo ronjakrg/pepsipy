@@ -105,6 +105,9 @@ class Calculator:
         extinction_coefficient: bool = False,
         extinction_coefficient_oxidized: bool = False,
     ):
+        """
+        TODO
+        """
         params = locals().copy()
         params.pop("self")
         self.feature_params = params
@@ -131,6 +134,9 @@ class Calculator:
         raincloud_feature: str = "GRAVY",
         raincloud_group_by: str = None,
     ):
+        """
+        TODO
+        """
         params = locals().copy()
         params.pop("self")
         self.plot_params = params
@@ -149,22 +155,36 @@ class Calculator:
             raise ValueError(msg)
 
     # Features
-    def get_features(self) -> pd.DataFrame:
+    def get_features(self):
         """
-        Computes a pandas DataFrame with selected features for the entire dataset.
+        TODO
         """
-        self._ensure_attrs("feature_params", "dataset")
+        self._ensure_attrs("dataset")
+        if self.feature_params:
+            params = self.feature_params
+        else:
+            params = {"select_all": True}
         self.computed_features = _compute_features(
-            params=self.feature_params, df=self.dataset
+            params=params,
+            df=self.dataset,
+            seq=None,
         )
         return self.computed_features
 
-    def get_peptide_features(self) -> pd.DataFrame:
+    def get_peptide_features(self):
         """
-        Computes a pandas DataFrame with selected features for a given peptide sequence.
+        TODO
         """
-        self._ensure_attrs("feature_params", "seq")
-        return _compute_features(params=self.feature_params, seq=self.seq)
+        self._ensure_attrs("seq")
+        if self.feature_params:
+            params = self.feature_params
+        else:
+            params = {"select_all": True}
+        return _compute_features(
+            params=params,
+            df=None,
+            seq=self.seq,
+        )
 
     seq_length = staticmethod(_seq_length)
     aa_frequency = staticmethod(_aa_frequency)
@@ -183,47 +203,27 @@ class Calculator:
     extinction_coefficient = staticmethod(_extinction_coefficient)
 
     # Plots
-    # TODO Simplify plot method
-    def get_peptide_plots(self) -> list[go.Figure]:
+    def get_plots(
+        self,
+    ):
         """
-        Generates plots for the given peptide sequence.
+        TODO
         """
-        self._ensure_attrs("plot_params", "seq")
-        return _generate_plots(
-            seq=self.seq,
-            df=None,
-            params=self.plot_params,
-        )[0]
-
-    def get_dataset_plots(self) -> list[go.Figure]:
-        """
-        Generates plots for the entire dataset.
-        """
-        self._ensure_attrs("plot_params", "computed_features")
-
-        enriched_features = pd.merge(
+        self._ensure_attrs("computed_features")
+        enriched_dataset = pd.merge(
             self.computed_features, self.metadata, on=self.key_metadata, how="left"
         )
-        return _generate_plots(
-            seq=None,
-            df=enriched_features,
-            params=self.plot_params,
-        )[1]
-
-    def get_plots(self):
-        """
-        Generates plots for the given peptide sequence and the entire dataset,
-        seperated into two lists of plots.
-        """
-        self._ensure_attrs("plot_params", "computed_features", "seq")
-        enriched_features = pd.merge(
-            self.computed_features, self.metadata, on=self.key_metadata, how="left"
-        )
-        return _generate_plots(
-            df=enriched_features,
+        if self.plot_params:
+            params = self.plot_params
+        else:
+            params = {"select_all": True}
+        plot_list = _generate_plots(
+            df=enriched_dataset,
             seq=self.seq,
-            params=self.plot_params,
+            params=params,
         )
+        plots = [plot for sublist in plot_list for plot in sublist]
+        return plots
 
     aa_distribution = staticmethod(_aa_distribution)
     hydropathy_profile = staticmethod(_hydropathy_profile)
@@ -232,3 +232,13 @@ class Calculator:
     compare_features = staticmethod(_compare_features)
     compare_feature = staticmethod(_compare_feature)
     raincloud = staticmethod(_raincloud)
+
+    # Demonstration: Hello PEPSI!
+    def hello_pepsi():
+        # Load example dataset & metadata
+        # Choose sequence from paper
+        # Select to three features
+        # Print dataset features
+        # Print peptide features
+        # Save all plots in /results
+        return

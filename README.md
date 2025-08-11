@@ -30,7 +30,7 @@ This work was conducted as part of the project 'Veni, Vidi, Visualization: Impro
 1. Initialize a calculator instance
    ```
    import pandas as pd
-   from pepsi.calculator import Calculator
+   from pepsi import Calculator
    calc = Calculator(
       dataset=pd.read_csv("data/peptides.csv"),
       metadata=pd.read_csv("data/metadata.csv"),
@@ -42,7 +42,7 @@ This work was conducted as part of the project 'Veni, Vidi, Visualization: Impro
    calc.set_feature_params(
       gravy=True,
       molecular_weight=True,
-     )
+   )
    calc.set_plot_params(
       hydropathy_profile=True,
       classification=True,

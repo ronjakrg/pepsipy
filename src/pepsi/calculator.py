@@ -34,42 +34,55 @@ from pepsi.plots import (
 
 class Calculator:
     """
-    The central interface for using the PEPSI package.
-    Computes peptide-specific of dataset-specific features and plots based on defined parameters.
+    The central interface for using the PEPSI package. Computes peptide-specific of dataset-specific features and plots based on defined parameters.
+        dataset: pandas DataFrame containing the peptidomic data. The column 'Sequence' must contain the amino acid sequences.
+            Columns 'Protein ID', 'Intensity' and 'PEP' are optional. To link the metadata file, the first metadata column must be added to the dataset.
+        metadata: pandas DataFrame containing the metadata. The first column must contain unique identifiers (used as the key).
+            All other columns can provide additional information for each key (e.g., group, batch, ...).
+        seq: Amino acid sequence of interest
+        feature_params: Dictionary containing all available features and their associated parameters. Use set_feature_params() seperately to get an overview on all options.
+        plot_params: Dictionary containing all available plots and their associated parameters. Use set_plot_params() seperately to get an overview on all options.
     """
 
     dataset: pd.DataFrame
+    metadata: pd.DataFrame
+    metadata_list: list[str]
+    key_metadata: str
     seq: str
     feature_params: dict
     plot_params: dict
     computed_features: pd.DataFrame
-    metadata: pd.DataFrame
-    metadata_list: list[str]
-    key_metadata: str
 
     def __init__(
         self,
-        dataset=None,
-        seq=None,
-        feature_params=None,
-        plot_params=None,
-        computed_features=None,
-        metadata=None,
+        dataset: pd.DataFrame = None,
+        metadata: pd.DataFrame = None,
+        seq: str = None,
+        feature_params: dict = None,
+        plot_params: dict = None,
     ):
-        self.dataset = dataset
-        self.seq = seq
+        self.setup(
+            dataset=dataset,
+            metadata=metadata,
+            seq=seq,
+        )
         self.feature_params = feature_params
         self.plot_params = plot_params
-        self.computed_features = computed_features
-        self.metadata = metadata
 
-    # Setter
-    def set_dataset(
-        self, dataset: pd.DataFrame
-    ):  # TODO Convert to one setup method with flexible params
+    # Setup
+    def setup(
+        self,
+        dataset: pd.DataFrame = None,
+        metadata: pd.DataFrame = None,
+        seq: str = None,
+    ):
+        """
+        TODO
+        """
         self.dataset = dataset
-
-    def set_seq(self, seq: str):
+        self.metadata = metadata
+        self.metadata_list = list(metadata.columns)
+        self.key_metadata = metadata.columns[0]
         self.seq = seq
 
     def set_feature_params(
@@ -121,11 +134,7 @@ class Calculator:
         params.pop("self")
         self.plot_params = params
 
-    def set_metadata(self, metadata: pd.DataFrame):
-        self.metadata = metadata
-        self.metadata_list = list(self.metadata.columns)
-        self.key_metadata = self.metadata_list[0]
-
+    # TODO If 'computed_features' is missing, raise different error message!
     # Utils
     def _ensure_attrs(self, *attrs):
         """
@@ -136,13 +145,14 @@ class Calculator:
             msg = f"The following information is not available: {missing}. Please execute the corresponding set or get methods first."
             raise ValueError(msg)
 
-    def get_metadata_list(self):
-        if self.metadata is None:
-            raise ValueError(
-                "No metadata pd.DataFrame found. Please execute set_metadata first."
-            )
-        else:
-            return self.metadata_list
+    # TODO Maybe delete this
+    # def get_metadata_list(self):
+    #     if self.metadata is None:
+    #         raise ValueError(
+    #             "No metadata pd.DataFrame found. Please execute set_metadata first."
+    #         )
+    #     else:
+    #         return self.metadata_list
 
     # Features
     def get_features(self) -> pd.DataFrame:
@@ -179,6 +189,7 @@ class Calculator:
     extinction_coefficient = staticmethod(_extinction_coefficient)
 
     # Plots
+    # TODO Simplify plot method
     def get_peptide_plots(self) -> list[go.Figure]:
         """
         Generates plots for the given peptide sequence.

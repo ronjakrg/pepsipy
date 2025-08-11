@@ -68,6 +68,7 @@ class Calculator:
         )
         self.feature_params = feature_params
         self.plot_params = plot_params
+        self.computed_features = None
 
     # Setup
     def setup(
@@ -134,7 +135,6 @@ class Calculator:
         params.pop("self")
         self.plot_params = params
 
-    # TODO If 'computed_features' is missing, raise different error message!
     # Utils
     def _ensure_attrs(self, *attrs):
         """
@@ -142,17 +142,11 @@ class Calculator:
         """
         missing = [a for a in attrs if getattr(self, a) is None]
         if missing:
-            msg = f"The following information is not available: {missing}. Please execute the corresponding set or get methods first."
+            if "computed_features" in missing:
+                msg = "No computed features have been found. Feature visualisation requires that get_features() has been executed first."
+            else:
+                msg = f"The following information is not available: {missing}. Please execute the corresponding set or get methods first."
             raise ValueError(msg)
-
-    # TODO Maybe delete this
-    # def get_metadata_list(self):
-    #     if self.metadata is None:
-    #         raise ValueError(
-    #             "No metadata pd.DataFrame found. Please execute set_metadata first."
-    #         )
-    #     else:
-    #         return self.metadata_list
 
     # Features
     def get_features(self) -> pd.DataFrame:

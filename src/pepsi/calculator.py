@@ -1,6 +1,5 @@
 import pandas as pd
-import plotly.graph_objects as go
-
+import plotly.io as pio
 
 from pepsi.features import (
     _compute_features,
@@ -30,6 +29,7 @@ from pepsi.plots import (
     _compare_feature,
     _raincloud,
 )
+from pepsi.constants import PROJECT_PATH, DATA_PATH
 
 
 class Calculator:
@@ -237,10 +237,39 @@ class Calculator:
 
     # Demonstration: Hello PEPSI!
     def hello_pepsi():
-        # Load example dataset & metadata
-        # Choose sequence from paper
-        # Select to three features
-        # Print dataset features
-        # Print peptide features
-        # Save all plots in /results
-        return
+        print("✨ Hello PEPSI! ✨")
+        # Load data
+        dataset = pd.read_csv(DATA_PATH / "peptides.csv")
+        metadata = pd.read_csv(DATA_PATH / "metadata.csv")
+        print("Loaded input data.")
+
+        # Initialize Calculator instance
+        calc = Calculator(
+            dataset=dataset,
+            metadata=metadata,
+            seq="SVIDQSRVLNLGPITR",
+        )
+        print("Set up calculator.")
+
+        # Select features and plots
+        calc.set_feature_params(
+            gravy=True,
+            molecular_weight=True,
+        )
+        calc.set_plot_params(
+            hydropathy_profile=True,
+            classification=True,
+            classification_classify_by="charge",
+        )
+        print("Set feature and plot parameters.")
+
+        # Compute and output results
+        print("Printing first five peptides with computed features ...")
+        print(calc.get_features().head())
+        plots = calc.get_plots()
+        i = 1
+        for plot in plots:
+            pio.write_image(plot, PROJECT_PATH / "results" / f"plot{i}.png", scale=3)
+            i += 1
+        print(f"You can find all generated plots in '{PROJECT_PATH / "results"}'.")
+        print("Successfully executed PEPSI demonstration. Happy coding! 💻🧬")

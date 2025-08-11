@@ -28,27 +28,27 @@ def _generate_plots(df: pd.DataFrame, seq: str, params: dict) -> list:
     peptide_plots = []
     data_plots = []
     if seq is not None:
-        if params["aa_distribution"]:
+        if params.get("aa_distribution"):
             plot = _aa_distribution(
                 seq=seq,
                 order_by=params["aa_distribution_order_by"],
                 show_all=params["aa_distribution_show_all"],
             )
             peptide_plots.append(plot)
-        if params["hydropathy_profile"]:
+        if params.get("hydropathy_profile"):
             plot = _hydropathy_profile(seq)
             peptide_plots.append(plot)
-        if params["classification"]:
+        if params.get("classification"):
             plot = _classification(
                 seq=seq,
                 classify_by=params["classification_classify_by"],
             )
             peptide_plots.append(plot)
-        if params["titration_curve"]:
+        if params.get("titration_curve"):
             plot = _titration_curve(seq)
             peptide_plots.append(plot)
     if df is not None:
-        if params["compare_features"]:
+        if params.get("compare_features"):
             plot = _compare_features(
                 df=df,
                 group_by=params["compare_features_group_by"],
@@ -57,7 +57,7 @@ def _generate_plots(df: pd.DataFrame, seq: str, params: dict) -> list:
                 intensity_threshold=params["compare_features_intensity_threshold"],
             )
             data_plots.append(plot)
-        if params["compare_feature"]:
+        if params.get("compare_feature"):
             plot = _compare_feature(
                 df=df,
                 group_by=params["compare_feature_group_by"],
@@ -65,7 +65,7 @@ def _generate_plots(df: pd.DataFrame, seq: str, params: dict) -> list:
                 intensity_threshold=params["compare_feature_intensity_threshold"],
             )
             data_plots.append(plot)
-        if params["raincloud"]:
+        if params.get("raincloud"):
             plot = _raincloud(
                 df=df,
                 feature=params["raincloud_feature"],

@@ -10,17 +10,21 @@
 PEPSI is an open-source Python package that provides methods for computing a wide range of peptide features, including sequence composition, charge, hydrophobicity, and other physicochemical properties. All features can be calculated on an entire dataset or on a single peptide sequence of interest. Additionally, PEPSI offers a selection of visualisations, such as hydropathy profile or amino acid classification.
 This work was conducted as part of the project 'Veni, Vidi, Visualization: Improving Analysis Communication for a Million-Dollar Machine' at the Data Analytics and Computational Statistics Chair, Hasso Plattner Institute.
 
-# Python package
+| 💻 Python package | 📊 Web-based dashboard] | Miscellaneous |
+|-------------------|-------------------------|-------|
+| [Installation](#installation)<br>[Usage](#usage) | [Installation](#installation-1)<br>[Usage](#usage-1) | [Third-party resources](#third-party-resources)<br>[License](#license) |
+
+# 💻 Python package
 ## Installation
 > [!CAUTION]
 > The release of the package on PyPI is still pending. See related [issue](https://github.com/pypi/support/issues/6869) for any updates.
 
-1. Make sure to have pip installed (Tutorial available [here](https://pip.pypa.io/en/stable/installation/))
+1. Make sure you have [pip](https://pip.pypa.io/en/stable/installation/)) installed
 2. Update pip in your console <br>
    ```python -m pip install --upgrade pip```
 3. Install PEPSI <br>
    ```pip install pepsi```
-4. Import and use PEPSI in your project! For more details, see section []().
+4. Import and use PEPSI in your project!
 
 ## Usage
 1. Initialize a calculator instance
@@ -53,7 +57,7 @@ This work was conducted as part of the project 'Veni, Vidi, Visualization: Impro
       plot.show()
    ```
 
-# Web-based dashboard
+# 📊 Web-based dashboard
 ## Installation
 
 1. Make sure you have a virtual environment manager installed, e.g., [Conda](https://www.anaconda.com/docs/getting-started/miniconda/install/) (recommended), or any other manager such as venv or Poetry.
@@ -72,7 +76,7 @@ This work was conducted as part of the project 'Veni, Vidi, Visualization: Impro
    ```
    python manage.py runserver
    ```
-5. Open `http://127.0.0.1:8000/` in the browser of your choice to use the PEPSI Dashboard! For more details, see section []()
+5. Open `http://127.0.0.1:8000/` in the browser of your choice to use the PEPSI Dashboard!
 
 ## Usage
 1. Select a dataset and a metadata file (must be uploaded to the `/data` folder) and a peptide sequence of interest.

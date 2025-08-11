@@ -27,11 +27,9 @@ def get_column_name(df: pd.DataFrame, keyword: str) -> str:
 
 def get_distinct_seq(df: pd.DataFrame) -> pd.DataFrame:
     """
-    Finds the first column containing "sequence" in its header and
-    returns a DataFrame containing only unique sequences.
+    Returns a pandas DataFrame containing only unique sequences.
     """
-    seq_col_name = get_column_name(df, "sequence")
-    return df[[seq_col_name]].drop_duplicates(keep="first")
+    return df[["Sequence"]].drop_duplicates(keep="first")
 
 
 def normalize_color(
@@ -50,7 +48,9 @@ def normalize_color(
 
 def extract_related_kwargs(mapping: dict, params: dict) -> dict:
     """
-    TODO
+    Extracts entries whose external key appears in a given mappen from a dictionary. The found entries are returned with their internal key and values with None are ignored.
+        mapping: Dictionary which maps external keys to internal keys
+        params: Dictionary containing external keys and values 
     """
     kwargs = {}
     for external_key, internal_key in mapping.items():

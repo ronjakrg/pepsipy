@@ -2,7 +2,7 @@ import pytest
 
 import pandas as pd
 
-from constants import TEST_DATA
+from constants import TEST_DATA, NORMALIZED_TEST_DATA
 from pepsi.utils import (
     sanitize_seq,
     get_column_name,
@@ -16,7 +16,8 @@ def test_sanitize_seq():
 
 
 def test_get_column_name():
-    assert "Sequence" == get_column_name(TEST_DATA, "sequence")
+    assert "Intensity" == get_column_name(TEST_DATA, "intensity")
+    assert "Normalized intensity" == get_column_name(NORMALIZED_TEST_DATA, "intensity")
     with pytest.raises(ValueError) as e:
         get_column_name(TEST_DATA, "test")
     assert "could not be found" in str(e.value)

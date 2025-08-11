@@ -14,3 +14,17 @@ TEST_DATA = pd.DataFrame(
         "PEP": [0.0068633, 0.057623, 0.057623],
     }
 )
+
+NORMALIZED_TEST_DATA = pd.DataFrame(
+    {
+        "Sample": [
+            "AD01_C1_INSOLUBLE_01",
+            "CTR01_C1_INSOLUBLE_01",
+            "CTR01_C1_INSOLUBLE_01",
+        ],
+        "Protein ID": ["A0A075B6S2", "A0A075B6R2", "A0A075B6R2"],
+        "Sequence": ["FSGVPDR", "VTISVDK", "VTISVDK"],
+        "Normalized intensity": [0.01382, 0.49289, 0.49289],
+        "PEP": [0.0068633, 0.057623, 0.057623],
+    }
+)

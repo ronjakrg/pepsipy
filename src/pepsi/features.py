@@ -23,7 +23,6 @@ from pepsi.constants import (
 from pepsi.utils import (
     sanitize_seq,
     get_distinct_seq,
-    get_column_name,
     extract_related_kwargs,
 )
 
@@ -34,8 +33,7 @@ def _compute_features(
     seq: str = None,
 ) -> pd.DataFrame:
     """
-    Computes all selected features on a pandas DataFrame.
-    TODO Describe column naming & metadata file
+    Computes all selected features on a pandas DataFrame. See API class 'Calculator' for more information.
     """
     select_all = params.get("select_all")
     # On single sequence or dataset
@@ -44,9 +42,6 @@ def _compute_features(
         sequences = pd.DataFrame({"Sequence": [seq]})
     else:
         sequences = get_distinct_seq(df)
-    seq_col_name = get_column_name(
-        df, "sequence"
-    )  # TODO Maybe remove this and just require "Sequence" as column?
 
     # Mapping from params to (column name, function)
     feature_mapping = {
@@ -108,12 +103,12 @@ def _compute_features(
 
     # Compute features
     for feature, func in chosen_features.items():
-        sequences[feature] = sequences[seq_col_name].apply(func)
+        sequences[feature] = sequences["Sequence"].apply(func)
 
     merged = pd.merge(
         df,
         sequences,
-        on=seq_col_name,
+        on="Sequence",
         how="left",
     )
     return merged

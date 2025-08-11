@@ -315,7 +315,6 @@ def _compare_features(
         )
     peptides = df.copy()
     intensity_col = get_column_name(peptides, "intensity")
-    seq_col = get_column_name(peptides, "sequence")
     if intensity_threshold is not None:
         peptides = peptides[peptides[intensity_col] > intensity_threshold]
 
@@ -328,7 +327,7 @@ def _compare_features(
         symbol=group_by,
         symbol_sequence=["square", "circle", "arrow-up", "star"],
         title=f"Comparison of peptide features across each {group_by}",
-        hover_name=seq_col,
+        hover_name="Sequence",
     )
     fig.update_traces(marker=dict(size=10))
     return fig
@@ -353,7 +352,6 @@ def _compare_feature(
         )
     peptides = df.copy()
     intensity_col = get_column_name(peptides, "intensity")
-    seq_col = get_column_name(peptides, "sequence")
     if intensity_threshold is not None:
         peptides = peptides[peptides[intensity_col] > intensity_threshold]
 
@@ -364,7 +362,7 @@ def _compare_feature(
         color=group_by,
         color_discrete_sequence=COLORS,
         title=f"Distribution of {feature} across each {group_by}",
-        hover_name=seq_col,
+        hover_name="Sequence",
     )
     return fig
 

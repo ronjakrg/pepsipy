@@ -129,13 +129,21 @@ def test_isoelectric_point():
     assert "Unknown option" in str(e.value)
 
 
-def test_compute_features():
+def test_compute_features_with_dataset():
     params = {"gravy": True}
     res = _compute_features(df=TEST_DATA, params=params)
     assert "GRAVY" in res.columns
     assert "Molecular weight" not in res.columns
     res_grouped = res.groupby("Sequence")["GRAVY"].nunique()
     assert (res_grouped <= 1).all()
+
+
+def test_compute_features_with_seq():
+    params = {"gravy": True}
+    res = _compute_features(seq="PEPTIDE", params=params)
+    assert "GRAVY" in res.columns
+    assert "Molecular weight" not in res.columns
+    assert len(res) == 1
 
 
 def test_aromaticity():

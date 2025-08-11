@@ -6,6 +6,6 @@
 #   To run this code, execute python -m pepsi.
 # ──────────────────────────────────────────────────────
 
-from pepsi.calculator import Calculator
+from pepsi import Calculator
 
 Calculator.hello_pepsi()

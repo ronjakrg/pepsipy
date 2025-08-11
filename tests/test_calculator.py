@@ -1,3 +1,4 @@
+import pytest
 import pandas as pd
 
 from pepsi import Calculator
@@ -30,3 +31,13 @@ def test_set_feature_params():
     assert ("hydropathy_profile", True) in calc.plot_params.items()
     assert ("titration_curve", False) in calc.plot_params.items()
     assert "self" not in calc.plot_params.keys()
+
+
+def test_ensure_attrs():
+    calc = Calculator()
+    with pytest.raises(ValueError) as e:
+        calc.get_features()
+    assert "not available" in str(e.value)
+    with pytest.raises(ValueError) as e:
+        calc.get_plots()
+    assert "No computed features have been found" in str(e.value)

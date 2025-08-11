@@ -59,6 +59,9 @@ class Calculator:
         feature_params: dict = None,
         plot_params: dict = None,
     ):
+        self.dataset = None
+        self.metadata = None
+        self.seq = None
         self.setup(
             dataset=dataset,
             metadata=metadata,

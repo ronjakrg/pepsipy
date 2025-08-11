@@ -50,7 +50,7 @@ def extract_related_kwargs(mapping: dict, params: dict) -> dict:
     """
     Extracts entries whose external key appears in a given mappen from a dictionary. The found entries are returned with their internal key and values with None are ignored.
         mapping: Dictionary which maps external keys to internal keys
-        params: Dictionary containing external keys and values 
+        params: Dictionary containing external keys and values
     """
     kwargs = {}
     for external_key, internal_key in mapping.items():

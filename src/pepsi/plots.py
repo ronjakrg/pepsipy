@@ -21,10 +21,7 @@ from pepsi.utils import get_column_name, normalize_color, extract_related_kwargs
 
 def _generate_plots(seq: str, df: pd.DataFrame, params: dict) -> list:
     """
-    Computes all selected plots on a given pandas DataFrame.
-    Returns a tuple of lists, containing the peptide-specific plots and the
-    plots describing the whole dataset.
-    TODO
+    Computes all selected plots on a given pandas DataFrame. Returns a tuple of lists, containing the peptide-specific plots and the plots describing the whole dataset.
     """
     peptide_plots = []
     data_plots = []
@@ -67,8 +64,6 @@ def _generate_plots(seq: str, df: pd.DataFrame, params: dict) -> list:
                 },
                 params,
             )
-            print("### params: ", params)
-            print("### kwargs: ", kwargs)
             data_plots.append(_compare_features(df=df, **kwargs))
 
         if params.get("compare_feature") or select_all:

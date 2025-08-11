@@ -3,7 +3,6 @@ import pytest
 import pandas as pd
 from plotly import exceptions
 
-from constants import TEST_DATA, NORMALIZED_TEST_DATA
 from pepsi.utils import (
     sanitize_seq,
     get_column_name,
@@ -13,22 +12,35 @@ from pepsi.utils import (
 )
 
 
+PEPTIDES = pd.read_csv("tests/data/peptides.csv")
+
+
 def test_sanitize_seq():
     assert "PEPTIDE" == sanitize_seq("pEPtiDe :)")
 
 
 def test_get_column_name():
-    assert "Intensity" == get_column_name(TEST_DATA, "intensity")
-    assert "Normalized intensity" == get_column_name(NORMALIZED_TEST_DATA, "intensity")
+    assert "Intensity" == get_column_name(PEPTIDES, "intensity")
+    normalized = PEPTIDES.rename(columns={"Intensity": "Normalized intensity"})
+    assert "Normalized intensity" == get_column_name(normalized, "intensity")
     with pytest.raises(ValueError) as e:
-        get_column_name(TEST_DATA, "test")
+        get_column_name(PEPTIDES, "test")
     assert "could not be found" in str(e.value)
 
 
 def test_get_distinct_seq():
-    assert get_distinct_seq(TEST_DATA).equals(
-        pd.DataFrame({"Sequence": ["FSGVPDR", "VTISVDK"]})
-    )
+    assert pd.DataFrame(
+        {
+            "Sequence": [
+                "SRVLNLGPITRK",
+                "PPPPPLGAPPPPPP",
+                "NDPFANKDDPFYYDWKNLQ",
+                "EEGEFEEEAEEEVA",
+                "GPPGPPGPPGHPGPQGPPG",
+                "VEWESNGQPENNYKTTPPVL",
+            ]
+        }
+    ).equals(get_distinct_seq(PEPTIDES))
 
 
 def test_normalize_color():

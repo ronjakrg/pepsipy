@@ -1,0 +1,7 @@
+Sample,ID,Group,Batch
+Sample_01,1,Affected,C1
+Sample_02,1,Affected,C2
+Sample_03,2,Control,C1
+Sample_04,2,Control,C2 
+Sample_05,3,Affected,C1
+Sample_06,4,Control,C1

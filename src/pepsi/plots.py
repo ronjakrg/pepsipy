@@ -16,62 +16,78 @@ from pepsi.constants import (
     CHARGE_CLASS_PER_AA,
 )
 from pepsi.features import _aa_frequency, _aa_classification, _charge_at_ph
-from pepsi.utils import get_column_name, normalize_color
+from pepsi.utils import get_column_name, normalize_color, extract_related_kwargs
 
 
-def _generate_plots(df: pd.DataFrame, seq: str, params: dict) -> list:
+def _generate_plots(seq: str, df: pd.DataFrame, params: dict) -> list:
     """
-    Computes all selected plots on a given pandas DataFrame.
-    Returns a tuple of lists, containing the peptide-specific plots and the
-    plots describing the whole dataset.
+    Computes all selected plots on a given pandas DataFrame. Returns a tuple of lists, containing the peptide-specific plots and the plots describing the whole dataset.
     """
     peptide_plots = []
     data_plots = []
+    select_all = params.get("select_all")
+
     if seq is not None:
-        if params["aa_distribution"]:
-            plot = _aa_distribution(
-                seq=seq,
-                order_by=params["aa_distribution_order_by"],
-                show_all=params["aa_distribution_show_all"],
+        if params.get("aa_distribution") or select_all:
+            kwargs = extract_related_kwargs(
+                {
+                    "aa_distribution_order_by": "order_by",
+                    "aa_distribution_show_all": "show_all",
+                },
+                params,
             )
-            peptide_plots.append(plot)
-        if params["hydropathy_profile"]:
-            plot = _hydropathy_profile(seq)
-            peptide_plots.append(plot)
-        if params["classification"]:
-            plot = _classification(
-                seq=seq,
-                classify_by=params["classification_classify_by"],
+            peptide_plots.append(_aa_distribution(seq=seq, **kwargs))
+
+        if params.get("hydropathy_profile") or select_all:
+            peptide_plots.append(_hydropathy_profile(seq))
+
+        if params.get("classification") or select_all:
+            kwargs = extract_related_kwargs(
+                {
+                    "classification_classify_by": "classify_by",
+                },
+                params,
             )
-            peptide_plots.append(plot)
-        if params["titration_curve"]:
-            plot = _titration_curve(seq)
-            peptide_plots.append(plot)
+            peptide_plots.append(_classification(seq=seq, **kwargs))
+
+        if params.get("titration_curve") or select_all:
+            peptide_plots.append(_titration_curve(seq))
+
     if df is not None:
-        if params["compare_features"]:
-            plot = _compare_features(
-                df=df,
-                group_by=params["compare_features_group_by"],
-                feature_a=params["compare_features_a"],
-                feature_b=params["compare_features_b"],
-                intensity_threshold=params["compare_features_intensity_threshold"],
+        if params.get("compare_features") or select_all:
+            kwargs = extract_related_kwargs(
+                {
+                    "compare_features_a": "feature_a",
+                    "compare_features_b": "feature_b",
+                    "compare_features_group_by": "group_by",
+                    "compare_features_intensity_threshold": "intensity_threshold",
+                },
+                params,
             )
-            data_plots.append(plot)
-        if params["compare_feature"]:
-            plot = _compare_feature(
-                df=df,
-                group_by=params["compare_feature_group_by"],
-                feature=params["compare_feature_a"],
-                intensity_threshold=params["compare_feature_intensity_threshold"],
+            data_plots.append(_compare_features(df=df, **kwargs))
+
+        if params.get("compare_feature") or select_all:
+            kwargs = extract_related_kwargs(
+                {
+                    "compare_feature_group_by": "group_by",
+                    "compare_feature_a": "feature",
+                    "compare_feature_intensity_threshold": "intensity_threshold",
+                },
+                params,
             )
-            data_plots.append(plot)
-        if params["raincloud"]:
-            plot = _raincloud(
-                df=df,
-                feature=params["raincloud_feature"],
-                group_by=params["raincloud_group_by"],
+
+            data_plots.append(_compare_feature(df=df, **kwargs))
+
+        if params.get("raincloud") or select_all:
+            kwargs = extract_related_kwargs(
+                {
+                    "raincloud_feature": "feature",
+                    "raincloud_group_by": "group_by",
+                },
+                params,
             )
-            data_plots.append(plot)
+            data_plots.append(_raincloud(df=df, **kwargs))
+
     return peptide_plots, data_plots
 
 
@@ -271,9 +287,9 @@ def _titration_curve(seq: str) -> go.Figure:
 
 def _compare_features(
     df: pd.DataFrame,
-    feature_a: str,
-    feature_b: str,
-    group_by: str,
+    feature_a: str = "Sequence length",
+    feature_b: str = "Molecular weight",
+    group_by: str = None,
     intensity_threshold: float = None,
 ) -> go.Figure:
     """
@@ -294,7 +310,6 @@ def _compare_features(
         )
     peptides = df.copy()
     intensity_col = get_column_name(peptides, "intensity")
-    seq_col = get_column_name(peptides, "sequence")
     if intensity_threshold is not None:
         peptides = peptides[peptides[intensity_col] > intensity_threshold]
 
@@ -307,7 +322,7 @@ def _compare_features(
         symbol=group_by,
         symbol_sequence=["square", "circle", "arrow-up", "star"],
         title=f"Comparison of peptide features across each {group_by}",
-        hover_name=seq_col,
+        hover_name="Sequence",
     )
     fig.update_traces(marker=dict(size=10))
     return fig
@@ -315,8 +330,8 @@ def _compare_features(
 
 def _compare_feature(
     df: pd.DataFrame,
-    feature: str,
-    group_by: str,
+    feature: str = "Sequence length",
+    group_by: str = None,
     intensity_threshold: float = None,
 ) -> go.Figure:
     """
@@ -332,7 +347,6 @@ def _compare_feature(
         )
     peptides = df.copy()
     intensity_col = get_column_name(peptides, "intensity")
-    seq_col = get_column_name(peptides, "sequence")
     if intensity_threshold is not None:
         peptides = peptides[peptides[intensity_col] > intensity_threshold]
 
@@ -343,12 +357,16 @@ def _compare_feature(
         color=group_by,
         color_discrete_sequence=COLORS,
         title=f"Distribution of {feature} across each {group_by}",
-        hover_name=seq_col,
+        hover_name="Sequence",
     )
     return fig
 
 
-def _raincloud(df: pd.DataFrame, group_by: str, feature: str) -> go.Figure:
+def _raincloud(
+    df: pd.DataFrame,
+    group_by: str = "Group",  # TODO #75: This should be None, so that one "None"-group exists
+    feature: str = "Sequence length",
+) -> go.Figure:
     """
     Creates a raincloud plot (containing half violin, box and scatter) for displaying
     the intensity distribution as well as a chosen feature value.

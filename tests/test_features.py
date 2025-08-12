@@ -1,6 +1,5 @@
 import pytest
 
-from constants import TEST_DATA
 from pepsi.features import (
     _seq_length,
     _aa_frequency,
@@ -19,6 +18,7 @@ from pepsi.features import (
     _aliphatic_index,
     _extinction_coefficient,
 )
+from tests.constants import PEPTIDES
 
 # Any function that calls one of these functions is already covered by a test for invalid amino acids.
 INVALID_SEQ = "ABC"
@@ -129,13 +129,21 @@ def test_isoelectric_point():
     assert "Unknown option" in str(e.value)
 
 
-def test_compute_features():
+def test_compute_features_with_dataset():
     params = {"gravy": True}
-    res = _compute_features(df=TEST_DATA, params=params)
+    res = _compute_features(df=PEPTIDES, params=params)
     assert "GRAVY" in res.columns
     assert "Molecular weight" not in res.columns
     res_grouped = res.groupby("Sequence")["GRAVY"].nunique()
     assert (res_grouped <= 1).all()
+
+
+def test_compute_features_with_seq():
+    params = {"gravy": True}
+    res = _compute_features(seq="PEPTIDE", params=params)
+    assert "GRAVY" in res.columns
+    assert "Molecular weight" not in res.columns
+    assert len(res) == 1
 
 
 def test_aromaticity():

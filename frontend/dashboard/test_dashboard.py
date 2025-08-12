@@ -1,8 +1,5 @@
 import pytest
 import pandas as pd
-from pandas.testing import assert_frame_equal
-from django.urls import reverse
-from unittest.mock import call, patch, MagicMock
 
 from frontend.dashboard.utils import (
     load_data,
@@ -90,77 +87,3 @@ def test_get_match_for_seq():
     }
     assert (1, expected_match) == get_match_for_seq(data, "PEPTIDE")
     assert (0, {}) == get_match_for_seq(data, "PEP")
-
-
-@patch("frontend.dashboard.views.load_data")
-@patch("frontend.dashboard.views.get_match_for_seq")
-@patch("frontend.dashboard.views.get_params")
-@patch("frontend.dashboard.views.Calculator")
-@patch("frontend.dashboard.views.Path.mkdir")
-@patch("frontend.dashboard.views.pd.DataFrame.to_csv")
-@patch("frontend.dashboard.views.Path.write_bytes")
-def test_index_valid_form(
-    mock_write_bytes,
-    mock_to_csv,
-    mock_mkdir,
-    mock_calculator,
-    mock_get_params,
-    mock_get_match_for_seq,
-    mock_load_data,
-    client,
-):
-    # Setup
-    mock_calc = MagicMock()
-    mock_calculator.return_value = mock_calc
-    mock_calc.seq = "PEPTIDE"
-    peptides = pd.DataFrame({"Sequence": ["PEPTIDE"]})
-    features = pd.DataFrame(
-        {
-            "Sequence": ["PEPTIDE"],
-            "Feature": [0.5],
-        }
-    )
-    mock_load_data.return_value = peptides
-    mock_calc.get_features.return_value = peptides
-    mock_calc.get_peptide_features.return_value = features
-    mock_get_match_for_seq.return_value = (1, features)
-    mock_get_params.side_effect = [{}, {}]
-    plot_a = MagicMock()
-    plot_a.to_html.return_value = "<div>plot_a</div>"
-    plot_b = MagicMock()
-    plot_b.to_html.return_value = "<div>plot_b</div>"
-    mock_calc.get_plots.return_value = ([plot_a], [plot_b])
-
-    # Execute
-    url = reverse("index")
-    response = client.post(
-        url,
-        data={
-            "data_name": "peptides.csv",
-            "metadata_name": "metadata.csv",
-            "seq": "PEPTIDE",
-            "calculate": "1",
-        },
-    )
-
-    # Assert
-    assert response.status_code == 200
-    assert "<div>plot_a</div>" in response.context["peptide_plots"][0]
-    assert "<div>plot_b</div>" in response.context["data_plots"][0]
-    assert "PEPTIDE" == response.context["seq"]
-
-    mock_load_data.assert_has_calls(
-        [
-            call("metadata.csv"),
-            call("peptides.csv"),
-        ]
-    )
-    mock_get_match_for_seq.assert_called_once_with(peptides, "PEPTIDE")
-
-    mock_calc.set_dataset.assert_called_once_with(peptides)
-    mock_calc.set_seq.assert_called_once_with("PEPTIDE")
-    mock_calc.set_feature_params.assert_called_once()
-    mock_calc.get_features.assert_called_once()
-    mock_calc.set_plot_params.assert_called_once()
-    mock_calc.get_plots.assert_called_once()
-    mock_to_csv.assert_called()

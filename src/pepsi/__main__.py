@@ -5,3 +5,7 @@
 #
 #   To run this code, execute python -m pepsi.
 # ──────────────────────────────────────────────────────
+
+from pepsi import Calculator
+
+Calculator.hello_pepsi()

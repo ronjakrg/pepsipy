@@ -266,6 +266,7 @@ class Calculator:
     raincloud = staticmethod(_raincloud)
 
     # Demonstration: Hello PEPSI!
+    @staticmethod
     def hello_pepsi():
         print("✨ Hello PEPSI! ✨")
         # Load data

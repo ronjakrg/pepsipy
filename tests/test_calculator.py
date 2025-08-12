@@ -54,7 +54,7 @@ def test_get_features_with_params():
 def test_get_features_without_params():
     calc = Calculator(dataset=PEPTIDES)
     res = calc.get_features()
-    # TODO Get number of available features from somewhere else
+    # TODO #74: Get number of available features from somewhere else
     assert len(PEPTIDES.columns) + 12 == len(res.columns)
 
 
@@ -68,7 +68,7 @@ def test_get_peptide_features_with_params():
 def test_get_peptide_features_without_params():
     calc = Calculator(seq="SVIDQSRVLNLGPITR")
     res = calc.get_peptide_features()
-    # TODO Get number of available features from somewhere else
+    # TODO #74: Get number of available features from somewhere else
     assert 13 == len(res.columns)
 
 
@@ -103,7 +103,7 @@ def test_get_plots_without_params():
     calc = Calculator(dataset=PEPTIDES, metadata=METADATA, seq="SVIDQSRVLNLGPITR")
     calc.get_features()
     plots = calc.get_plots()
-    # TODO Get number of available plots from somewhere else
+    # TODO #74: Get number of available plots from somewhere else
     assert 7 == len(plots)
 
 
@@ -112,5 +112,5 @@ def test_get_plots_as_tuple():
     calc.get_features()
     plots = calc.get_plots(as_tuple=True)
     assert 2 == len(plots)
-    # TODO Get number of available plots from somewhere else
+    # TODO #74: Get number of available plots from somewhere else
     assert 7 == len(plots[0] + plots[1])

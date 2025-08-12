@@ -162,12 +162,11 @@ class Calculator:
             raise ValueError(msg)
 
     # Features
-    def get_features(self):
+    def get_features(self) -> pd.DataFrame:
         """
         Computes selected features on the current dataset. Requires a dataset set by setup().
         Note: If no features were explicitly selected, all available features are computed with their default options.
         """
-        # TODO Give info that this method is for dataset only?
         self._ensure_attrs("dataset")
         if self.feature_params:
             params = self.feature_params
@@ -180,7 +179,7 @@ class Calculator:
         )
         return self.computed_features
 
-    def get_peptide_features(self):
+    def get_peptide_features(self) -> pd.DataFrame:
         """
         Computes selected features on the current peptide sequence of interest. Requires a sequence set by setup().
         Note: If no features were explicitly selected, all available features are computed with their default options.
@@ -213,7 +212,7 @@ class Calculator:
     extinction_coefficient = staticmethod(_extinction_coefficient)
 
     # Plots
-    def get_plots(self, as_tuple: bool = False):
+    def get_plots(self, as_tuple: bool = False) -> list | tuple:
         """
         Generates selected plots. Requires a sequence or a dataset set by setup().
         Note: If no plots were explicitly selected, all available plots are computed with their default options.
@@ -224,7 +223,7 @@ class Calculator:
         else:
             params = {"select_all": True}
 
-        # TODO Rethink these if statements
+        # TODO 74: Rethink these if statements
         if any(
             p in params.keys()
             for p in [

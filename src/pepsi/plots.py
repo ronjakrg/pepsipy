@@ -364,7 +364,7 @@ def _compare_feature(
 
 def _raincloud(
     df: pd.DataFrame,
-    group_by: str = "Group",  # TODO This should be None, so that one "None"-group exists
+    group_by: str = "Group",  # TODO #75: This should be None, so that one "None"-group exists
     feature: str = "Sequence length",
 ) -> go.Figure:
     """

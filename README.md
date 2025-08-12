@@ -8,17 +8,17 @@
 | frontend/dashboard/\_\_init\_\_.py              |        0 |        0 |    100% |           |
 | frontend/dashboard/migrations/\_\_init\_\_.py   |        0 |        0 |    100% |           |
 | frontend/dashboard/templatetags/\_\_init\_\_.py |        0 |        0 |    100% |           |
-| frontend/dashboard/templatetags/utils.py        |        8 |        4 |     50% |     13-16 |
-| frontend/dashboard/utils.py                     |       69 |       11 |     84% |80-87, 108, 119, 131, 133 |
-| frontend/dashboard/views.py                     |       64 |       10 |     84% |65-67, 104-105, 113-117 |
+| frontend/dashboard/templatetags/utils.py        |        8 |        8 |      0% |      1-16 |
+| frontend/dashboard/utils.py                     |       69 |       31 |     55% |78-87, 98-121, 131, 133, 142-143 |
+| frontend/dashboard/views.py                     |       65 |       53 |     18% |23-103, 107-108, 116-120 |
 | frontend/project/\_\_init\_\_.py                |        0 |        0 |    100% |           |
 | src/pepsi/\_\_init\_\_.py                       |        2 |        0 |    100% |           |
-| src/pepsi/calculator.py                         |       85 |       37 |     56% |59-64, 70, 73, 94-96, 120-122, 125-127, 134-137, 140-145, 152-156, 162-163, 186-187, 197-202, 213-217 |
-| src/pepsi/constants.py                          |       15 |        0 |    100% |           |
-| src/pepsi/features.py                           |      128 |        3 |     98% |37-42, 222 |
-| src/pepsi/plots.py                              |      167 |      150 |     10% |28-75, 90-173, 181-201, 210-226, 235-269, 287-313, 329-348, 359-474 |
-| src/pepsi/utils.py                              |       17 |        2 |     88% |     47-48 |
-|                                       **TOTAL** |  **555** |  **217** | **61%** |           |
+| src/pepsi/calculator.py                         |      116 |       18 |     84% |   271-306 |
+| src/pepsi/constants.py                          |       16 |        0 |    100% |           |
+| src/pepsi/features.py                           |      128 |        1 |     99% |       238 |
+| src/pepsi/plots.py                              |      164 |       32 |     80% |121-186, 304, 308, 314, 345, 351 |
+| src/pepsi/utils.py                              |       23 |        0 |    100% |           |
+|                                       **TOTAL** |  **591** |  **143** | **76%** |           |
 
 
 ## Setup coverage badge

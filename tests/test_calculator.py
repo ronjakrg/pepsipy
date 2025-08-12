@@ -1,5 +1,5 @@
 import pytest
-import pandas as pd
+import plotly.graph_objects as go
 
 from pepsi import Calculator
 from tests.constants import PEPTIDES, METADATA
@@ -40,7 +40,7 @@ def test_ensure_attrs():
     assert "not available" in str(e.value)
     with pytest.raises(ValueError) as e:
         calc.get_plots()
-    assert "No computed features have been found" in str(e.value)
+    assert "not available" in str(e.value)
 
 
 def test_get_features_with_params():
@@ -69,3 +69,47 @@ def test_get_peptide_features_without_params():
     res = calc.get_peptide_features()
     # TODO Get number of available features from somewhere else
     assert 13 == len(res.columns)
+
+
+def test_get_plots_for_seq_with_params():
+    calc = Calculator(
+        seq="SVIDQSRVLNLGPITR",
+        plot_params={"hydropathy_profile": True},
+    )
+    plots = calc.get_plots()
+    assert 1 == len(plots)
+    assert isinstance(plots[0], go.Figure)
+
+
+def test_get_plots_for_dataset_with_params():
+    calc = Calculator(
+        dataset=PEPTIDES,
+        metadata=METADATA,
+        feature_params={"molecular_weight": True},
+        plot_params={
+            "raincloud": True,
+            "raincloud_feature": "Molecular weight",
+            "raincloud_group_by": "Group",
+        },
+    )
+    calc.get_features()
+    plots = calc.get_plots()
+    assert 1 == len(plots)
+    assert isinstance(plots[0], go.Figure)
+
+
+def test_get_plots_without_params():
+    calc = Calculator(dataset=PEPTIDES, metadata=METADATA, seq="SVIDQSRVLNLGPITR")
+    calc.get_features()
+    plots = calc.get_plots()
+    # TODO Get number of available plots from somewhere else
+    assert 7 == len(plots)
+
+
+def test_get_plots_as_tuple():
+    calc = Calculator(dataset=PEPTIDES, metadata=METADATA, seq="SVIDQSRVLNLGPITR")
+    calc.get_features()
+    plots = calc.get_plots(as_tuple=True)
+    assert 2 == len(plots)
+    # TODO Get number of available plots from somewhere else
+    assert 7 == len(plots[0] + plots[1])

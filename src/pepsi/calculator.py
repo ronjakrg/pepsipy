@@ -156,7 +156,7 @@ class Calculator:
         missing = [a for a in attrs if getattr(self, a) is None]
         if missing:
             if "computed_features" in missing:
-                msg = "No computed features have been found. Feature visualisation requires that get_features() has been executed first."
+                msg = "Computed features are not available. Feature visualisation requires that get_features() has been executed first."
             else:
                 msg = f"The following information is not available: {missing}. Please execute the corresponding set or get methods first."
             raise ValueError(msg)
@@ -167,6 +167,7 @@ class Calculator:
         Computes selected features on the current dataset. Requires a dataset set by setup().
         Note: If no features were explicitly selected, all available features are computed with their default options.
         """
+        # TODO Give info that this method is for dataset only?
         self._ensure_attrs("dataset")
         if self.feature_params:
             params = self.feature_params
@@ -218,16 +219,36 @@ class Calculator:
         Note: If no plots were explicitly selected, all available plots are computed with their default options.
             as_tuple: If set to True, the peptide and dataset plots are returned seperated as tuple.
         """
-        self._ensure_attrs("computed_features")
-        enriched_dataset = pd.merge(
-            self.computed_features, self.metadata, on=self.key_metadata, how="left"
-        )
         if self.plot_params:
             params = self.plot_params
         else:
             params = {"select_all": True}
+
+        # TODO Rethink these if statements
+        if any(
+            p in params.keys()
+            for p in [
+                "aa_distribution",
+                "hydropathy_profile",
+                "classification",
+                "titration_curve",
+                "select_all",
+            ]
+        ):
+            self._ensure_attrs("seq")
+        if any(
+            p in params.keys()
+            for p in ["raincloud", "compare_feature", "compare_features", "select_all"]
+        ):
+            self._ensure_attrs("computed_features", "metadata")
+            current_features = pd.merge(
+                self.computed_features, self.metadata, on=self.key_metadata, how="left"
+            )
+        else:
+            current_features = self.dataset
+
         plot_tuple = _generate_plots(
-            df=enriched_dataset,
+            df=current_features,
             seq=self.seq,
             params=params,
         )

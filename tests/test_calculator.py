@@ -25,7 +25,7 @@ def test_set_feature_params():
     assert "self" not in calc.feature_params.keys()
 
 
-def test_set_feature_params():
+def test_set_plot_params():
     calc = Calculator()
     calc.set_plot_params(hydropathy_profile=True)
     assert ("hydropathy_profile", True) in calc.plot_params.items()

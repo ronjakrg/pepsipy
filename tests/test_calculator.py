@@ -38,6 +38,7 @@ def test_ensure_attrs():
     with pytest.raises(ValueError) as e:
         calc.get_features()
     assert "not available" in str(e.value)
+    calc.setup(dataset=PEPTIDES, seq="SVIDQSRVLNLGPITR")
     with pytest.raises(ValueError) as e:
         calc.get_plots()
     assert "not available" in str(e.value)

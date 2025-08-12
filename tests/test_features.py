@@ -1,5 +1,4 @@
 import pytest
-import pandas as pd
 
 from pepsi.features import (
     _seq_length,

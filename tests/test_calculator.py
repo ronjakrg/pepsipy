@@ -41,3 +41,17 @@ def test_ensure_attrs():
     with pytest.raises(ValueError) as e:
         calc.get_plots()
     assert "No computed features have been found" in str(e.value)
+
+
+def test_get_features_with_params():
+    calc = Calculator(dataset=PEPTIDES, feature_params={"gravy": True})
+    res = calc.get_features()
+    assert len(PEPTIDES.columns) + 1 == len(res.columns)
+    assert -0.3 == res["GRAVY"][0]
+
+
+def test_get_features_without_params():
+    calc = Calculator(dataset=PEPTIDES)
+    res = calc.get_features()
+    # TODO Get number of available features from somewhere else
+    assert len(PEPTIDES.columns) + 12 == len(res.columns)

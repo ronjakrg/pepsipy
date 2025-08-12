@@ -48,7 +48,7 @@ def normalize_color(
 
 def extract_related_kwargs(mapping: dict, params: dict) -> dict:
     """
-    Extracts entries whose external key appears in a given mappen from a dictionary. The found entries are returned with their internal key and values with None are ignored.
+    Extracts entries whose external key appears in a given mapping from a dictionary. The found entries are returned with their internal key and values with None are ignored.
         mapping: Dictionary which maps external keys to internal keys
         params: Dictionary containing external keys and values
     """

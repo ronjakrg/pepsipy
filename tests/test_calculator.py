@@ -55,3 +55,17 @@ def test_get_features_without_params():
     res = calc.get_features()
     # TODO Get number of available features from somewhere else
     assert len(PEPTIDES.columns) + 12 == len(res.columns)
+
+
+def test_get_peptide_features_with_params():
+    calc = Calculator(seq="SVIDQSRVLNLGPITR", feature_params={"gravy": True})
+    res = calc.get_peptide_features()
+    assert 2 == len(res.columns)
+    assert 0.075 == res["GRAVY"][0]
+
+
+def test_get_peptide_features_without_params():
+    calc = Calculator(seq="SVIDQSRVLNLGPITR")
+    res = calc.get_peptide_features()
+    # TODO Get number of available features from somewhere else
+    assert 13 == len(res.columns)

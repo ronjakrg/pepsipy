@@ -19,7 +19,7 @@ This work was conducted as part of the project 'Veni, Vidi, Visualization: Impro
 > [!CAUTION]
 > The release of the package on PyPI is still pending. See related [issue](https://github.com/pypi/support/issues/6869) for any updates.
 
-1. Make sure you have [pip](https://pip.pypa.io/en/stable/installation/)) installed
+1. Make sure you have [pip](https://pip.pypa.io/en/stable/installation/) installed
 2. Update pip in your console <br>
    ```python -m pip install --upgrade pip```
 3. Install PEPSI <br>

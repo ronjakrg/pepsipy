@@ -1,5 +1,4 @@
 -e ../
 
-Django
-plotly
-pytest-django
+Django==5.2.3
+pytest-django==4.11.1

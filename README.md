@@ -13,7 +13,7 @@
 | frontend/dashboard/views.py                     |       65 |       53 |     18% |23-103, 107-108, 116-120 |
 | frontend/project/\_\_init\_\_.py                |        0 |        0 |    100% |           |
 | src/pepsi/\_\_init\_\_.py                       |        2 |        0 |    100% |           |
-| src/pepsi/calculator.py                         |      116 |       18 |     84% |   271-306 |
+| src/pepsi/api.py                                |      116 |       18 |     84% |   271-306 |
 | src/pepsi/constants.py                          |       16 |        0 |    100% |           |
 | src/pepsi/features.py                           |      128 |        1 |     99% |       238 |
 | src/pepsi/plots.py                              |      164 |       32 |     80% |121-186, 304, 308, 314, 345, 351 |

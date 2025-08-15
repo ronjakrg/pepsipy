@@ -10,7 +10,7 @@
 PEPSI is an open-source Python package that provides methods for computing a wide range of peptide features, including sequence composition, charge, hydrophobicity, and other physicochemical properties. All features can be calculated on an entire dataset or on a single peptide sequence of interest. Additionally, PEPSI offers a selection of visualisations, such as hydropathy profile or amino acid classification.
 This work was conducted as part of the project 'Veni, Vidi, Visualization: Improving Analysis Communication for a Million-Dollar Machine' at the Data Analytics and Computational Statistics Chair, Hasso Plattner Institute.
 
-| 💻 Python package | 📊 Web-based dashboard] | Miscellaneous |
+| 💻 Python package | 📊 Web-based dashboard | Miscellaneous |
 |-------------------|-------------------------|-------|
 | [Installation](#installation)<br>[Usage](#usage) | [Installation](#installation-1)<br>[Usage](#usage-1) | [Third-party resources](#third-party-resources)<br>[License](#license) |
 

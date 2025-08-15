@@ -1,3 +1,3 @@
-from .calculator import Calculator
+from .api import Calculator
 
 __all__ = ["Calculator"]

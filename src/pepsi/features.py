@@ -45,22 +45,12 @@ def _compute_features(
 
     # Mapping from params to (column name, function)
     feature_mapping = {
+        "molecular_weight": ("Molecular weight", _molecular_weight),
         "three_letter_code": ("Three letter code", _three_letter_code),
         "molecular_formula": ("Molecular formula", _molecular_formula),
-        "molecular_weight": ("Molecular weight", _molecular_weight),
-        "isoelectric_point": (
-            "Isoelectric point",
-            partial(
-                _isoelectric_point,
-                **extract_related_kwargs(
-                    {"isoelectric_point_option": "option"},
-                    params,
-                ),
-            ),
-        ),
         "seq_length": ("Sequence length", _seq_length),
-        "gravy": ("GRAVY", _gravy),
         "aromaticity": ("Aromaticity", _aromaticity),
+        "aliphatic_index": ("Aliphatic index", _aliphatic_index),
         "charge_at_ph": (
             "Charge",
             partial(
@@ -81,8 +71,17 @@ def _compute_features(
                 ),
             ),
         ),
-        "boman_index": ("Boman index", _boman_index),
-        "aliphatic_index": ("Aliphatic index", _aliphatic_index),
+        "isoelectric_point": (
+            "Isoelectric point",
+            partial(
+                _isoelectric_point,
+                **extract_related_kwargs(
+                    {"isoelectric_point_option": "option"},
+                    params,
+                ),
+            ),
+        ),
+        "gravy": ("GRAVY", _gravy),
         "extinction_coefficient": (
             "Extinction coefficient",
             partial(
@@ -93,6 +92,7 @@ def _compute_features(
                 ),
             ),
         ),
+        "boman_index": ("Boman index", _boman_index),
     }
     # Filter features that got True in given params
     chosen_features = {

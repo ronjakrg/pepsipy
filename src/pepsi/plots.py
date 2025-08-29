@@ -524,7 +524,7 @@ def _mann_whitney_u_test(
         alternative: Chosen test alternative (two-sided, greater, less)
     """
     # Prepare data
-    if not group_a or group_b:
+    if not group_a or not group_b:
         all_groups = df[group_by].unique()
         if len(all_groups) < 2:
             raise ValueError(

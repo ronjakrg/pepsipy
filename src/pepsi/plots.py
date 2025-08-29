@@ -88,6 +88,19 @@ def _generate_plots(seq: str, df: pd.DataFrame, params: dict) -> list:
             )
             data_plots.append(_raincloud(df=df, **kwargs))
 
+        if params.get("mann_whitney") or select_all:
+            kwargs = extract_related_kwargs(
+                {
+                    "mann_whitney_feature": "feature",
+                    "mann_whitney_group_by": "group_by",
+                    "mann_whitney_group_a": "group_a",
+                    "mann_whitney_group_b": "group_b",
+                    "mann_whitney_alternative": "alternative",
+                },
+                params,
+            )
+            data_plots.append(_mann_whitney_u_test(df=df, **kwargs))
+
     return peptide_plots, data_plots
 
 
@@ -525,14 +538,7 @@ def _mann_whitney_u_test(
 
     # Execute test
     mw = mannwhitneyu(x, y_pos, alternative=alternative, method="auto")
-
-    # Process results
     p = float(mw.pvalue)
-
-    print(f"{num_x} unique sequences in {group_a}, {num_y} in {group_b}")
-    print(f"Median {group_a}: {round(np.median(x), 3)}")
-    print(f"Median {group_b}: {round(np.median(y_pos), 3)}")
-    print(f"p-value: {round(p, 3)}")
 
     # Boxplot
     fig = px.box(

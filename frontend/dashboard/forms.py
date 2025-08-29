@@ -314,11 +314,13 @@ class MannWhitneyForm(forms.Form):
         label="First comparison group",
         max_length=100,
         widget=forms.TextInput(attrs={"class": "form-control"}),
+        required=False,
     )
     mann_whitney_group_b = forms.CharField(
         label="Second comparison group",
         max_length=100,
         widget=forms.TextInput(attrs={"class": "form-control"}),
+        required=False,
     )
     mann_whitney_alternative = forms.ChoiceField(
         label="Alternative hypothesis",

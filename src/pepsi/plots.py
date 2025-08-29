@@ -4,6 +4,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 from scipy.stats import mannwhitneyu
+import warnings
 
 from pepsi.constants import (
     AA_WEIGHTS,
@@ -509,8 +510,8 @@ def _mann_whitney_u_test(
     df: pd.DataFrame,
     feature: str = "GRAVY",
     group_by: str = "Group",
-    group_a: str = "CTR",
-    group_b: str = "T1D",
+    group_a: str = "",
+    group_b: str = "",
     alternative: str = "two-sided",
 ) -> go.Figure:
     """
@@ -523,9 +524,21 @@ def _mann_whitney_u_test(
         alternative: Chosen test alternative (two-sided, greater, less)
     """
     # Prepare data
-    sub = df.loc[
-        df[group_by].isin([group_a, group_b]), [group_by, feature, "Sequence"]
-    ].copy()
+    if not group_a or group_b:
+        all_groups = df[group_by].unique()
+        if len(all_groups) < 2:
+            raise ValueError(
+                f"Not enough options for {group_by} in metadata, but 2 are required."
+            )
+        group_a, group_b = all_groups[:2]
+        warnings.warn(
+            f"{group_a} and {group_b} were selected for performing Mann-Whitney U test because at least one input was empty."
+        )
+        sub = df[[group_by, feature, "Sequence"]].copy()
+    else:
+        sub = df.loc[
+            df[group_by].isin([group_a, group_b]), [group_by, feature, "Sequence"]
+        ].copy()
     sub = sub.dropna(subset=[feature])
     sub = sub.drop_duplicates([group_by, "Sequence"], keep="first")
     x = sub.loc[sub[group_by] == group_a, feature].to_numpy()

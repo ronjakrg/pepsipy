@@ -104,7 +104,7 @@ def test_get_plots_without_params():
     calc.get_features()
     plots = calc.get_plots()
     # TODO #74: Get number of available plots from somewhere else
-    assert 7 == len(plots)
+    assert 8 == len(plots)
 
 
 def test_get_plots_as_tuple():
@@ -113,4 +113,4 @@ def test_get_plots_as_tuple():
     plots = calc.get_plots(as_tuple=True)
     assert 2 == len(plots)
     # TODO #74: Get number of available plots from somewhere else
-    assert 7 == len(plots[0] + plots[1])
+    assert 8 == len(plots[0] + plots[1])

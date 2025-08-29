@@ -28,6 +28,7 @@ from pepsi.plots import (
     _compare_features,
     _compare_feature,
     _raincloud,
+    _mann_whitney_u_test,
 )
 from pepsi.constants import PROJECT_PATH, DATA_PATH
 
@@ -140,6 +141,12 @@ class Calculator:
         raincloud: bool = False,
         raincloud_feature: str = "GRAVY",
         raincloud_group_by: str = None,
+        mann_whitney: bool = False,
+        mann_whitney_feature: str = "GRAVY",
+        mann_whitney_group_by: str = None,
+        mann_whitney_group_a: str = None,
+        mann_whitney_group_b: str = None,
+        mann_whitney_alternative: str = "two-sided",
     ):
         """
         Selects peptide and dataset plots and their related parameters.
@@ -237,7 +244,13 @@ class Calculator:
             self._ensure_attrs("seq")
         if any(
             p in params.keys()
-            for p in ["raincloud", "compare_feature", "compare_features", "select_all"]
+            for p in [
+                "raincloud",
+                "compare_feature",
+                "compare_features",
+                "mann_whitney",
+                "select_all",
+            ]
         ):
             self._ensure_attrs("computed_features", "metadata")
             current_features = pd.merge(
@@ -264,6 +277,7 @@ class Calculator:
     compare_features = staticmethod(_compare_features)
     compare_feature = staticmethod(_compare_feature)
     raincloud = staticmethod(_raincloud)
+    mann_whitney_u_test = staticmethod(_mann_whitney_u_test)
 
     # Demonstration: Hello PEPSI!
     @staticmethod

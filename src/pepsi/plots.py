@@ -38,9 +38,6 @@ def _generate_plots(seq: str, df: pd.DataFrame, params: dict) -> list:
             )
             peptide_plots.append(_aa_distribution(seq=seq, **kwargs))
 
-        if params.get("hydropathy_profile") or select_all:
-            peptide_plots.append(_hydropathy_profile(seq))
-
         if params.get("classification") or select_all:
             kwargs = extract_related_kwargs(
                 {
@@ -49,6 +46,9 @@ def _generate_plots(seq: str, df: pd.DataFrame, params: dict) -> list:
                 params,
             )
             peptide_plots.append(_classification(seq=seq, **kwargs))
+
+        if params.get("hydropathy_profile") or select_all:
+            peptide_plots.append(_hydropathy_profile(seq))
 
         if params.get("titration_curve") or select_all:
             peptide_plots.append(_titration_curve(seq))

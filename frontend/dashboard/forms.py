@@ -19,25 +19,32 @@ class ConfigForm(forms.Form):
     data_name = forms.CharField(
         label="Name of dataset in /data (.csv)",
         max_length=100,
-        initial="alzh-peptides.csv",
+        initial="peptides.csv",
         widget=forms.TextInput(attrs={"class": "form-control"}),
     )
     metadata_name = forms.CharField(
         label="Name of metadata file in /data (.csv)",
         max_length=100,
-        initial="alzh-metadata.csv",
+        initial="metadata.csv",
         widget=forms.TextInput(attrs={"class": "form-control"}),
     )
     seq = forms.CharField(
         label="Peptide sequence of interest",
         max_length=100,
-        initial="GQAGEYECVTHNGVNSAPDSR",
+        initial="SVIDQSRVLNLGPITR",
         widget=forms.TextInput(attrs={"class": "form-control"}),
         required=False,
     )
 
 
 # Feature forms
+class MolecularWeightForm(forms.Form):
+    selected = forms.BooleanField(
+        label="Molecular weight",
+        required=False,
+    )
+
+
 class ThreeLetterCodeForm(forms.Form):
     selected = forms.BooleanField(
         label="Three letter code",
@@ -60,33 +67,17 @@ class SeqLengthForm(forms.Form):
     )
 
 
-class MolecularWeightForm(forms.Form):
+class AromaticityForm(forms.Form):
     selected = forms.BooleanField(
-        label="Molecular weight",
+        label="Aromaticity",
         required=False,
     )
 
 
-class GravyForm(forms.Form):
+class AliphaticIndexForm(forms.Form):
     selected = forms.BooleanField(
-        label="GRAVY",
+        label="Aliphatic index",
         required=False,
-    )
-
-
-class IsoelectricPointForm(forms.Form):
-    selected = forms.BooleanField(
-        label="Isoelectric point",
-        required=False,
-    )
-    isoelectric_point_option = forms.ChoiceField(
-        label="Option",
-        choices=(
-            ("bjellqvist", "Bjellqvist"),
-            ("kozlowski", "IPC 2.0 by Kozlowski"),
-        ),
-        required=False,
-        widget=forms.Select(attrs={"class": "form-control"}),
     )
 
 
@@ -114,23 +105,25 @@ class ChargeDensityForm(forms.Form):
     )
 
 
-class BomanIndexForm(forms.Form):
+class IsoelectricPointForm(forms.Form):
     selected = forms.BooleanField(
-        label="Boman index",
+        label="Isoelectric point",
         required=False,
+    )
+    isoelectric_point_option = forms.ChoiceField(
+        label="Option",
+        choices=(
+            ("bjellqvist", "Bjellqvist"),
+            ("kozlowski", "IPC 2.0 by Kozlowski"),
+        ),
+        required=False,
+        widget=forms.Select(attrs={"class": "form-control"}),
     )
 
 
-class AromaticityForm(forms.Form):
+class GravyForm(forms.Form):
     selected = forms.BooleanField(
-        label="Aromaticity",
-        required=False,
-    )
-
-
-class AliphaticIndexForm(forms.Form):
-    selected = forms.BooleanField(
-        label="Aliphatic index",
+        label="GRAVY",
         required=False,
     )
 
@@ -148,6 +141,13 @@ class ExtinctionCoefficientForm(forms.Form):
         ),
         required=False,
         widget=forms.Select(attrs={"class": "form-control"}),
+    )
+
+
+class BomanIndexForm(forms.Form):
+    selected = forms.BooleanField(
+        label="Boman index",
+        required=False,
     )
 
 
@@ -178,13 +178,6 @@ class AaDistributionForm(forms.Form):
     )
 
 
-class HydropathyProfileForm(forms.Form):
-    selected = forms.BooleanField(
-        label="Hydropathy profile",
-        required=False,
-    )
-
-
 class ClassificationForm(forms.Form):
     selected = forms.BooleanField(
         label="Classification",
@@ -197,6 +190,13 @@ class ClassificationForm(forms.Form):
             ("charge", "Charge"),
         ),
         widget=forms.Select(attrs={"class": "form-control"}),
+    )
+
+
+class HydropathyProfileForm(forms.Form):
+    selected = forms.BooleanField(
+        label="Hydropathy profile",
+        required=False,
     )
 
 
@@ -338,23 +338,23 @@ class MannWhitneyForm(forms.Form):
 
 
 FORM_TO_FEATURE_FUNCTION = {
+    MolecularWeightForm: "molecular_weight",
     ThreeLetterCodeForm: "three_letter_code",
     MolecularFormulaForm: "molecular_formula",
     SeqLengthForm: "seq_length",
-    MolecularWeightForm: "molecular_weight",
-    GravyForm: "gravy",
-    IsoelectricPointForm: "isoelectric_point",
     AromaticityForm: "aromaticity",
+    AliphaticIndexForm: "aliphatic_index",
     ChargeForm: "charge_at_ph",
     ChargeDensityForm: "charge_density",
-    BomanIndexForm: "boman_index",
-    AliphaticIndexForm: "aliphatic_index",
+    IsoelectricPointForm: "isoelectric_point",
+    GravyForm: "gravy",
     ExtinctionCoefficientForm: "extinction_coefficient",
+    BomanIndexForm: "boman_index",
 }
 FORM_TO_PLOT_FUNCTION = {
     AaDistributionForm: "aa_distribution",
-    HydropathyProfileForm: "hydropathy_profile",
     ClassificationForm: "classification",
+    HydropathyProfileForm: "hydropathy_profile",
     TitrationCurveForm: "titration_curve",
     CompareFeaturesForm: "compare_features",
     CompareFeatureForm: "compare_feature",

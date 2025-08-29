@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 import plotly.express as px
+import plotly.graph_objects as go
 from scipy.stats import mannwhitneyu
 
 from pepsi.constants import COLORS
@@ -12,10 +13,16 @@ def _mann_whitney_u_test(
     group_by: str = "Group",
     group_a: str = "CTR",
     group_b: str = "T1D",
-    alternative: str = "two-sided",  # "two-sided", "greater", "less"
-) -> dict:
+    alternative: str = "two-sided",
+) -> go.Figure:
     """
-    TODO
+    Performs a Mann-Whitney U test on a feature between two groups and creates a box plot with a significance bracket and p-value.
+        df: pandas DataFrame that contains the features
+        feature: Feature to be compared
+        group_by: Metadata aspect (e.g. Group, Batch, ...) that peptides get grouped by
+        group_a: First comparison group
+        group_b: Second comparison group
+        alternative: Chosen test alternative (two-sided, greater, less)
     """
     # Prepare data
     sub = df.loc[
@@ -108,4 +115,4 @@ def _mann_whitney_u_test(
             y_pos + y_height + 2 * BOX_BRACKET_GAP * span,
         ]
     )
-    fig.show()
+    return fig

@@ -141,6 +141,7 @@ class Calculator:
         raincloud: bool = False,
         raincloud_feature: str = "GRAVY",
         raincloud_group_by: str = None,
+        raincloud_log_scaled: bool = True,
         mann_whitney: bool = False,
         mann_whitney_feature: str = "GRAVY",
         mann_whitney_group_by: str = None,

@@ -89,6 +89,7 @@ def _generate_plots(seq: str, df: pd.DataFrame, params: dict) -> list:
                 {
                     "raincloud_feature": "feature",
                     "raincloud_group_by": "group_by",
+                    "raincloud_log_scaled": "log_scaled",
                 },
                 params,
             )

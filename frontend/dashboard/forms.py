@@ -287,6 +287,15 @@ class RaincloudForm(forms.Form):
         choices=(),  # Overridden by __init__
         widget=forms.Select(attrs={"class": "form-control"}),
     )
+    raincloud_log_scaled = forms.ChoiceField(
+        label="Scale of x-axis",
+        choices=(
+            ("True", "Logarithmic (log10)"),
+            ("False", "Linear"),
+        ),
+        initial=("True", "Logarithmic (log10)"),
+        widget=forms.Select(attrs={"class": "form-control"}),
+    )
 
     def __init__(self, *args, metadata_choices=None, **kwargs):
         super().__init__(*args, **kwargs)

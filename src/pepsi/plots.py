@@ -17,7 +17,12 @@ from pepsi.constants import (
     CHARGE_CLASS_PER_AA,
 )
 from pepsi.features import _aa_frequency, _aa_classification, _charge_at_ph
-from pepsi.utils import get_column_name, normalize_color, extract_related_kwargs
+from pepsi.utils import (
+    get_column_name,
+    normalize_color,
+    extract_related_kwargs,
+    convert_exponential_to_suffix,
+)
 
 
 def _generate_plots(seq: str, df: pd.DataFrame, params: dict) -> list:
@@ -84,6 +89,7 @@ def _generate_plots(seq: str, df: pd.DataFrame, params: dict) -> list:
                 {
                     "raincloud_feature": "feature",
                     "raincloud_group_by": "group_by",
+                    "raincloud_log_scaled": "log_scaled",
                 },
                 params,
             )
@@ -378,8 +384,9 @@ def _compare_feature(
 
 def _raincloud(
     df: pd.DataFrame,
-    group_by: str = "Group",  # TODO #75: This should be None, so that one "None"-group exists
+    group_by: str = "Group",
     feature: str = "Sequence length",
+    log_scaled: bool = True,
 ) -> go.Figure:
     """
     Creates a raincloud plot (containing half violin, box and scatter) for displaying
@@ -387,8 +394,12 @@ def _raincloud(
         df: Dataframe that contains the features
         group_by: Metadata aspect (e.g. Group, Batch, ...) that peptides get grouped by
         feature: Feature to be shown in scatter plot
+        log_scaled: If True, the x-axis uses a logarithmic (log10) transformation of the intensity data.
     """
     intensity_col = get_column_name(df, "intensity")
+    if group_by == "Group" and group_by not in df.columns:
+        df["Group"] = "None"
+
     groups = df[group_by].unique()
 
     # Sizes & spacings
@@ -414,7 +425,11 @@ def _raincloud(
 
     for i, group in enumerate(groups):
         peptides = df[(df[group_by] == group) & (df[intensity_col].notna())].copy()
-        intensities = peptides[intensity_col]
+        if log_scaled:
+            intensities = np.log10(peptides[intensity_col])
+        else:
+            intensities = peptides[intensity_col]
+
         peptides["Color"] = peptides[feature].apply(
             lambda x: normalize_color(x, min_feature_val, max_feature_val, colorscale)
         )
@@ -436,6 +451,7 @@ def _raincloud(
             showlegend=False,
             fillcolor=COLORS_BY_NAME["lightgray"],
             line=dict(color=COLORS_BY_NAME["lightgray"]),
+            hoverinfo="skip",
         )
         scatter = go.Scatter(
             x=intensities,
@@ -444,7 +460,15 @@ def _raincloud(
             marker=dict(size=5, color=peptides["Color"]),
             showlegend=False,
             text=peptides[feature],
-            hovertemplate=f"Intensity=%{{x}}<br>{feature}=%{{text}}<extra></extra>",
+            customdata=np.stack(
+                [peptides[intensity_col], peptides["Sequence"]], axis=-1
+            ),
+            hovertemplate=(
+                "Intensity=%{customdata[0]}<br>"
+                f"{feature}=%{{text}}<br>"
+                "Sequence=%{customdata[1]}<br>"
+                f"{group_by}={group}<extra></extra>"
+            ),
         )
         box = go.Box(
             x=intensities,
@@ -456,6 +480,7 @@ def _raincloud(
             showlegend=False,
             fillcolor=COLORS_BY_NAME["transparent"],
             line=dict(color=COLORS_BY_NAME["darkgray"]),
+            hoverinfo="skip",
         )
         fig.add_trace(violin, row=i + 1, col=1)
         fig.add_trace(scatter, row=i + 1, col=1)
@@ -496,11 +521,25 @@ def _raincloud(
             showlegend=False,
         )
     )
+    # Adjust x-axis ticks to log10
+    if log_scaled:
+        valid_logscaled = np.log10(df[intensity_col].dropna())
+        min = int(np.floor(valid_logscaled.min()))
+        max = int(np.ceil(valid_logscaled.max()))
+        tickvals = list(range(min, max + 1))
+        ticktext = [convert_exponential_to_suffix(t) for t in tickvals]
+        fig.update_xaxes(
+            row=len(groups),
+            col=1,
+            tickvals=tickvals,
+            ticktext=ticktext,
+        )
+
     # Show y-axis title only on last subplot
     fig.update_xaxes(
         row=len(groups),
         col=1,
-        title_text="Intensity",
+        title_text="Intensity (log10)" if log_scaled else "Intensity",
     )
     fig.update_layout(title=f"Raincloud: Intensity and {feature} distribution")
     return fig

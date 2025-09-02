@@ -91,6 +91,7 @@ def test_get_plots_for_dataset_with_params():
             "raincloud": True,
             "raincloud_feature": "Molecular weight",
             "raincloud_group_by": "Group",
+            "raincloud_log_scaled": True,
         },
     )
     calc.get_features()

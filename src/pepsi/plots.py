@@ -386,7 +386,7 @@ def _raincloud(
     df: pd.DataFrame,
     group_by: str = "Group",
     feature: str = "Sequence length",
-    log_scaled: str = True,
+    log_scaled: bool = True,
 ) -> go.Figure:
     """
     Creates a raincloud plot (containing half violin, box and scatter) for displaying
@@ -394,7 +394,7 @@ def _raincloud(
         df: Dataframe that contains the features
         group_by: Metadata aspect (e.g. Group, Batch, ...) that peptides get grouped by
         feature: Feature to be shown in scatter plot
-        log_scaled: If true, the x-axis uses a logarithmic (log10) transformation of the intensity data.
+        log_scaled: If True, the x-axis uses a logarithmic (log10) transformation of the intensity data.
     """
     intensity_col = get_column_name(df, "intensity")
     if group_by == "Group" and group_by not in df.columns:

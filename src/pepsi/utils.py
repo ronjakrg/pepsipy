@@ -62,7 +62,7 @@ def extract_related_kwargs(mapping: dict, params: dict) -> dict:
 
 def convert_exponential_to_suffix(exp: int) -> str:
     """
-    Converts an exponent (e.g., 6 for 1.4e6) to a human-readable suffix (e.g., 6.4M)
+    Converts an exponent (e.g., 6 for 10e6) to a human-readable suffix (e.g., 1M)
     """
     value = 10**exp
     if value >= 10**12:

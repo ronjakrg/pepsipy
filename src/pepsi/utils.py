@@ -58,3 +58,20 @@ def extract_related_kwargs(mapping: dict, params: dict) -> dict:
         if val is not None:
             kwargs[internal_key] = val
     return kwargs
+
+
+def convert_exponential_to_suffix(exp: int) -> str:
+    """
+    Converts an exponent (e.g., 6 for 1.4e6) to a human-readable suffix (e.g., 6.4M)
+    """
+    value = 10**exp
+    if value >= 10**12:
+        return f"{value//10**12}T"
+    elif value >= 10**9:
+        return f"{value//10**9}B"
+    elif value >= 10**6:
+        return f"{value//10**6}M"
+    elif value >= 10**3:
+        return f"{value//10**3}k"
+    else:
+        return str(int(value))

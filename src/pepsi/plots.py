@@ -384,7 +384,7 @@ def _compare_feature(
 
 def _raincloud(
     df: pd.DataFrame,
-    group_by: str = "Group",  # TODO #75: This should be None, so that one "None"-group exists
+    group_by: str = "Group",
     feature: str = "Sequence length",
     log_scaled: str = True,
 ) -> go.Figure:
@@ -397,6 +397,9 @@ def _raincloud(
         log_scaled: If true, the x-axis uses a logarithmic (log10) transformation of the intensity data.
     """
     intensity_col = get_column_name(df, "intensity")
+    if group_by == "Group" and group_by not in df.columns:
+        df["Group"] = "None"
+
     groups = df[group_by].unique()
 
     # Sizes & spacings

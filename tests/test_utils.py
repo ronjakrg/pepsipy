@@ -67,6 +67,7 @@ def test_extract_related_kwargs():
     }
     assert expected == extract_related_kwargs(mapping, params)
 
+
 def test_convert_exponential_to_suffix():
     assert "10" == convert_exponential_to_suffix(1)
     assert "10k" == convert_exponential_to_suffix(4)

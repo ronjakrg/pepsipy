@@ -9,6 +9,7 @@ from pepsi.utils import (
     get_distinct_seq,
     normalize_color,
     extract_related_kwargs,
+    convert_exponential_to_suffix,
 )
 from tests.constants import PEPTIDES
 
@@ -65,3 +66,9 @@ def test_extract_related_kwargs():
         "param_3": "foo",
     }
     assert expected == extract_related_kwargs(mapping, params)
+
+def test_convert_exponential_to_suffix():
+    assert "10" == convert_exponential_to_suffix(1)
+    assert "10k" == convert_exponential_to_suffix(4)
+    assert "10M" == convert_exponential_to_suffix(7)
+    assert "10B" == convert_exponential_to_suffix(10)

@@ -154,11 +154,11 @@ class BomanIndexForm(forms.Form):
 # Plot forms
 class AaDistributionForm(forms.Form):
     selected = forms.BooleanField(
-        label="Frequency of amino acids",
+        label="Amino acid frequency",
         required=False,
     )
     aa_distribution_order_by = forms.ChoiceField(
-        label="Order of amino acids",
+        label="Order",
         choices=(
             ("frequency", "Frequency"),
             ("alphabetical", "Alphabetically"),
@@ -180,7 +180,7 @@ class AaDistributionForm(forms.Form):
 
 class ClassificationForm(forms.Form):
     selected = forms.BooleanField(
-        label="Classification",
+        label="Amino acid classification",
         required=False,
     )
     classification_classify_by = forms.ChoiceField(
@@ -209,7 +209,7 @@ class TitrationCurveForm(forms.Form):
 
 class CompareFeaturesForm(forms.Form):
     selected = forms.BooleanField(
-        label="Compare features across a metadata aspect",
+        label="Compare two features",
         required=False,
     )
     compare_features_a = forms.ChoiceField(
@@ -244,7 +244,7 @@ class CompareFeaturesForm(forms.Form):
 
 class CompareFeatureForm(forms.Form):
     selected = forms.BooleanField(
-        label="Compare a feature across a metadata aspect",
+        label="Compare one feature",
         required=False,
     )
     compare_feature_a = forms.ChoiceField(

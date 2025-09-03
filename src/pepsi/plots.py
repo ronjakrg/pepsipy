@@ -344,6 +344,8 @@ def _compare_features(
         title=f"Comparison of peptide features across each {group_by}",
         hover_name="Sequence",
     )
+    if feature_b == "GRAVY":
+        fig.add_hline(y=0)
     fig.update_traces(marker=dict(size=10))
     return fig
 

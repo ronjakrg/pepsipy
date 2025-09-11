@@ -199,7 +199,7 @@ def _aa_distribution(
 
     else:
         raise ValueError(f"Unknown option for sorting amino acids: {order_by}.")
-    fig.update_layout(title=f"Amino Acid Frequency of Sequence {seq}")
+    fig.update_layout(title=f"Amino acid frequency of sequence {seq}")
     fig.update_yaxes(tickmode="linear", tick0=0, dtick=1)
     return fig
 
@@ -209,20 +209,20 @@ def _hydropathy_profile(seq: str) -> go.Figure:
     Computes a hydropathy profile plot for a given sequence.
     Note: The input sequence must be pre-sanitized to compute only valid amino acids.
     """
-    df = pd.DataFrame({"Amino Acid": list(seq)})
-    df["Hydropathy Index"] = df["Amino Acid"].map(HYDROPATHY_INDICES)
+    df = pd.DataFrame({"Amino acid": list(seq)})
+    df["Hydropathy index"] = df["Amino acid"].map(HYDROPATHY_INDICES)
     df.index = df.index + 1
     baseline_df = pd.DataFrame(
-        {"Amino Acid": ["None"], "Hydropathy Index": [0.0]}, index=[0]
+        {"Amino acid": ["None"], "Hydropathy index": [0.0]}, index=[0]
     )
     df = pd.concat([baseline_df, df])
-    df.index.name = "Residue Number"
+    df.index.name = "Residue number"
 
     fig = px.line(
         df,
-        y="Hydropathy Index",
-        title=f"Hydropathy Plot of Sequence {seq}",
-        hover_data={"Amino Acid": True, "Hydropathy Index": True},
+        y="Hydropathy index",
+        title=f"Hydropathy plot of sequence {seq}",
+        hover_data={"Amino acid": True, "Hydropathy index": True},
     )
     fig.update_traces(line=dict(color=COLORS_BY_NAME["red"], width=3))
     fig.add_hline(

@@ -16,7 +16,7 @@ from pepsi.constants import (
     CHEMICAL_CLASS_PER_AA,
     CHARGE_CLASS_PER_AA,
 )
-from pepsi.features import _aa_frequency, _aa_classification, _charge_at_ph
+from pepsi.features import _aa_frequency, _aa_classification, _charge_at_ph, _seq_length
 from pepsi.utils import (
     get_column_name,
     normalize_color,
@@ -124,45 +124,39 @@ def _aa_distribution(
         show_all: Specification if all amino acids should be listed, even when not found in the sequence
     """
     freq = _aa_frequency(seq)
+    num = _seq_length(seq)
+    df = pd.DataFrame({"Amino acid": freq.keys(), "Frequency": freq.values()})
     if not show_all:
-        freq = {key: val for key, val in freq.items() if val > 0}
+        df = df[df["Frequency"] > 0]
+    df["Proportion"] = (df["Frequency"] / num * 100).round(3)
     if order_by in ["frequency", "alphabetical", "hydropathy", "weight"]:
         fig = px.bar(
-            x=list(freq.keys()),
-            y=list(freq.values()),
-            labels={
-                "x": "Amino Acid",
-                "y": "Frequency",
-            },
+            df,
+            x="Amino acid",
+            y="Frequency",
             color_discrete_sequence=COLORS,
+            custom_data=["Proportion"],
         )
         if order_by == "frequency":
             fig.update_xaxes(categoryorder="total ascending")
         elif order_by == "alphabetical":
             fig.update_xaxes(categoryorder="category ascending")
         elif order_by == "hydropathy":
-            sorted_aa = sorted(list(freq.keys()), key=lambda aa: HYDROPATHY_INDICES[aa])
+            sorted_aa = sorted(df["Amino acid"], key=lambda aa: HYDROPATHY_INDICES[aa])
             fig.update_xaxes(categoryorder="array", categoryarray=sorted_aa)
         elif order_by == "weight":
-            sorted_aa = sorted(list(freq.keys()), key=lambda aa: AA_WEIGHTS[aa])
+            sorted_aa = sorted(df["Amino acid"], key=lambda aa: AA_WEIGHTS[aa])
             fig.update_xaxes(categoryorder="array", categoryarray=sorted_aa)
+        fig.update_traces(
+            hovertemplate="Amino acid=%{x}<br>Frequency=%{y} (%{customdata} %)<extra></extra>",
+        )
 
     elif order_by in ["classes chemical", "classes charge"]:
-        # Prepare dataframe
-        df = pd.DataFrame(
-            [
-                {
-                    "Amino Acid": aa,
-                    "Frequency": count,
-                }
-                for aa, count in freq.items()
-            ]
-        )
         if order_by == "classes chemical":
-            df["Class"] = df["Amino Acid"].map(CHEMICAL_CLASS_PER_AA)
+            df["Class"] = df["Amino acid"].map(CHEMICAL_CLASS_PER_AA)
             classes = list(CHEMICAL_CLASS.keys())
         elif order_by == "classes charge":
-            df["Class"] = df["Amino Acid"].map(CHARGE_CLASS_PER_AA)
+            df["Class"] = df["Amino acid"].map(CHARGE_CLASS_PER_AA)
             classes = list(CHARGE_CLASS.keys())
 
         # Filter occuring classes
@@ -183,14 +177,15 @@ def _aa_distribution(
         # Create bar per class
         CLASS_TO_COLOR = dict(zip(classes, COLORS))
         for i, cls in enumerate(classes):
-            class_df = df[df["Class"] == cls].sort_values("Amino Acid")
+            class_df = df[df["Class"] == cls].sort_values("Amino acid")
             fig.add_trace(
                 go.Bar(
-                    x=class_df["Amino Acid"],
+                    x=class_df["Amino acid"],
                     y=class_df["Frequency"],
                     marker_color=CLASS_TO_COLOR[cls],
-                    hovertemplate="Amino Acid=%{x}<br>Frequency=%{y}<extra></extra>",
+                    hovertemplate="Amino acid=%{x}<br>Frequency=%{y} (%{customdata} %)<extra></extra>",
                     showlegend=False,
+                    customdata=class_df["Proportion"],
                 ),
                 row=1,
                 col=i + 1,
@@ -244,9 +239,11 @@ def _classification(seq: str, classify_by: str = "chemical") -> go.Figure:
         classify_by: Specification of how the amino acids should be classified, can be "chemical" or "charge".
     """
     classification = _aa_classification(seq, classify_by)
+    num = _seq_length(seq)
     df = pd.DataFrame(
         {"Class": classification.keys(), "Frequency": classification.values()}
     )
+    df["Proportion"] = (df["Frequency"] / num * 100).round(3)
     fig = px.bar(
         df,
         x="Class",
@@ -254,10 +251,12 @@ def _classification(seq: str, classify_by: str = "chemical") -> go.Figure:
         title=f"Classification ({classify_by}) of {seq}",
         color="Class",
         color_discrete_sequence=COLORS,
+        custom_data=["Proportion"],
     )
     fig.update_yaxes(tickmode="linear", tick0=0, dtick=1)
     fig.update_traces(
         showlegend=False,
+        hovertemplate="Class=%{x}<br>Frequency=%{y} (%{customdata} %)<extra></extra>",
     )
     return fig
 

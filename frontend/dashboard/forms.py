@@ -143,7 +143,6 @@ class BomanIndexForm(forms.Form):
     )
 
 
-# TODO Use labels from PLOTS constant
 # Plot forms
 class AaDistributionForm(forms.Form):
     selected = forms.BooleanField(

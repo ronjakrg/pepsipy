@@ -9,16 +9,16 @@
 | frontend/dashboard/migrations/\_\_init\_\_.py   |        0 |        0 |    100% |           |
 | frontend/dashboard/templatetags/\_\_init\_\_.py |        0 |        0 |    100% |           |
 | frontend/dashboard/templatetags/utils.py        |        8 |        8 |      0% |      1-16 |
-| frontend/dashboard/utils.py                     |       69 |       31 |     55% |79-88, 99-128, 138, 140, 149-150 |
+| frontend/dashboard/utils.py                     |       71 |       31 |     56% |73-82, 93-122, 132, 134, 143-144 |
 | frontend/dashboard/views.py                     |       65 |       53 |     18% |23-103, 107-108, 116-120 |
 | frontend/project/\_\_init\_\_.py                |        0 |        0 |    100% |           |
 | src/pepsi/\_\_init\_\_.py                       |        2 |        0 |    100% |           |
 | src/pepsi/api.py                                |      117 |       18 |     85% |   286-321 |
 | src/pepsi/constants.py                          |       16 |        0 |    100% |           |
-| src/pepsi/features.py                           |      128 |        1 |     99% |       238 |
-| src/pepsi/plots.py                              |      219 |       37 |     83% |142-149, 154-201, 323, 327, 333, 347, 366, 372, 402, 432, 570, 579, 588 |
+| src/pepsi/features.py                           |      141 |        1 |     99% |       153 |
+| src/pepsi/plots.py                              |      212 |       37 |     83% |58-65, 70-117, 239, 243, 249, 263, 282, 288, 318, 348, 486, 495, 504 |
 | src/pepsi/utils.py                              |       34 |        1 |     97% |        69 |
-|                                       **TOTAL** |  **658** |  **149** | **77%** |           |
+|                                       **TOTAL** |  **666** |  **149** | **78%** |           |
 
 
 ## Setup coverage badge

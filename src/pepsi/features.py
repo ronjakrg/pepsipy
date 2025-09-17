@@ -267,6 +267,7 @@ class Feature:
     label: str
     numeric: bool
     method: Callable
+    param_map: dict = None
 
 
 FEATURES = {
@@ -276,12 +277,27 @@ FEATURES = {
     "seq_length": Feature("Sequence length", True, _seq_length),
     "aromaticity": Feature("Aromaticity", True, _aromaticity),
     "aliphatic_index": Feature("Aliphatic index", True, _aliphatic_index),
-    "charge_at_ph": Feature("Charge", True, _charge_at_ph),
-    "charge_density": Feature("Charge density", True, _charge_density),
-    "isoelectric_point": Feature("Isoelectric point", True, _isoelectric_point),
+    "charge_at_ph": Feature(
+        "Charge", True, _charge_at_ph, {"charge_at_ph_level": "ph"}
+    ),
+    "charge_density": Feature(
+        "Charge density",
+        True,
+        _charge_density,
+        {"charge_density_level": "ph"},
+    ),
+    "isoelectric_point": Feature(
+        "Isoelectric point",
+        True,
+        _isoelectric_point,
+        {"isoelectric_point_option": "option"},
+    ),
     "gravy": Feature("GRAVY", True, _gravy),
     "extinction_coefficient": Feature(
-        "Extinction coefficient", True, _extinction_coefficient
+        "Extinction coefficient",
+        True,
+        _extinction_coefficient,
+        {"extinction_coefficient_oxidized": "oxidized"},
     ),
     "boman_index": Feature("Boman index", True, _boman_index),
 }
@@ -303,62 +319,20 @@ def _compute_features(
     else:
         sequences = get_distinct_seq(df)
 
-    # Mapping from params to (column name, function)
-    # TODO #74: Retrieve this dynamically from FEATURES
-    feature_mapping = {
-        "molecular_weight": ("Molecular weight", _molecular_weight),
-        "three_letter_code": ("Three letter code", _three_letter_code),
-        "molecular_formula": ("Molecular formula", _molecular_formula),
-        "seq_length": ("Sequence length", _seq_length),
-        "aromaticity": ("Aromaticity", _aromaticity),
-        "aliphatic_index": ("Aliphatic index", _aliphatic_index),
-        "charge_at_ph": (
-            "Charge",
-            partial(
-                _charge_at_ph,
-                **extract_related_kwargs(
-                    {"charge_at_ph_level": "ph"},
-                    params,
-                ),
-            ),
-        ),
-        "charge_density": (
-            "Charge density",
-            partial(
-                _charge_density,
-                **extract_related_kwargs(
-                    {"charge_density_level": "ph"},
-                    params,
-                ),
-            ),
-        ),
-        "isoelectric_point": (
-            "Isoelectric point",
-            partial(
-                _isoelectric_point,
-                **extract_related_kwargs(
-                    {"isoelectric_point_option": "option"},
-                    params,
-                ),
-            ),
-        ),
-        "gravy": ("GRAVY", _gravy),
-        "extinction_coefficient": (
-            "Extinction coefficient",
-            partial(
-                _extinction_coefficient,
-                **extract_related_kwargs(
-                    {"extinction_coefficient_oxidized": "oxidized"},
-                    params,
-                ),
-            ),
-        ),
-        "boman_index": ("Boman index", _boman_index),
-    }
-    # Filter features that got True in given params
+    # Feature mappings as (label, function call with optional params)
+    mappings = {}
+    for key, feature in FEATURES.items():
+        kwargs = (
+            extract_related_kwargs(feature.param_map, params)
+            if feature.param_map
+            else {}
+        )
+        func = feature.method if not kwargs else partial(feature.method, **kwargs)
+        mappings[key] = (feature.label, func)
+    # Filter selected features (feature = True)
     chosen_features = {
         col: func
-        for feature, (col, func) in feature_mapping.items()
+        for feature, (col, func) in mappings.items()
         if params.get(feature) or select_all
     }
 

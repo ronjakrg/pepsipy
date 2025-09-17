@@ -582,7 +582,7 @@ def _mann_whitney_u_test(
 class Plot:
     seq_based: bool
     method: Callable
-    param_map: dict = False
+    param_map: dict = None
 
 
 PLOTS = {

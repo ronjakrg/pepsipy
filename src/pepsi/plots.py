@@ -1,3 +1,5 @@
+from dataclasses import dataclass
+from typing import Callable
 import pandas as pd
 import numpy as np
 import plotly.express as px
@@ -25,93 +27,7 @@ from pepsi.utils import (
 )
 
 
-def _generate_plots(seq: str, df: pd.DataFrame, params: dict) -> list:
-    """
-    Computes all selected plots on a given pandas DataFrame. Returns a tuple of lists, containing the peptide-specific plots and the plots describing the whole dataset.
-    """
-    peptide_plots = []
-    data_plots = []
-    select_all = params.get("select_all")
-
-    if seq is not None:
-        if params.get("aa_distribution") or select_all:
-            kwargs = extract_related_kwargs(
-                {
-                    "aa_distribution_order_by": "order_by",
-                    "aa_distribution_show_all": "show_all",
-                },
-                params,
-            )
-            peptide_plots.append(_aa_distribution(seq=seq, **kwargs))
-
-        if params.get("classification") or select_all:
-            kwargs = extract_related_kwargs(
-                {
-                    "classification_classify_by": "classify_by",
-                },
-                params,
-            )
-            peptide_plots.append(_classification(seq=seq, **kwargs))
-
-        if params.get("hydropathy_profile") or select_all:
-            peptide_plots.append(_hydropathy_profile(seq))
-
-        if params.get("titration_curve") or select_all:
-            peptide_plots.append(_titration_curve(seq))
-
-    if df is not None:
-        if params.get("compare_features") or select_all:
-            kwargs = extract_related_kwargs(
-                {
-                    "compare_features_a": "feature_a",
-                    "compare_features_b": "feature_b",
-                    "compare_features_group_by": "group_by",
-                    "compare_features_intensity_threshold": "intensity_threshold",
-                },
-                params,
-            )
-            data_plots.append(_compare_features(df=df, **kwargs))
-
-        if params.get("compare_feature") or select_all:
-            kwargs = extract_related_kwargs(
-                {
-                    "compare_feature_group_by": "group_by",
-                    "compare_feature_a": "feature",
-                    "compare_feature_intensity_threshold": "intensity_threshold",
-                },
-                params,
-            )
-
-            data_plots.append(_compare_feature(df=df, **kwargs))
-
-        if params.get("raincloud") or select_all:
-            kwargs = extract_related_kwargs(
-                {
-                    "raincloud_feature": "feature",
-                    "raincloud_group_by": "group_by",
-                    "raincloud_log_scaled": "log_scaled",
-                },
-                params,
-            )
-            data_plots.append(_raincloud(df=df, **kwargs))
-
-        if params.get("mann_whitney") or select_all:
-            kwargs = extract_related_kwargs(
-                {
-                    "mann_whitney_feature": "feature",
-                    "mann_whitney_group_by": "group_by",
-                    "mann_whitney_group_a": "group_a",
-                    "mann_whitney_group_b": "group_b",
-                    "mann_whitney_alternative": "alternative",
-                },
-                params,
-            )
-            data_plots.append(_mann_whitney_u_test(df=df, **kwargs))
-
-    return peptide_plots, data_plots
-
-
-# Peptide-specific plots
+# Sequence-based
 def _aa_distribution(
     seq: str,
     order_by: str = "frequency",
@@ -261,7 +177,7 @@ def _classification(seq: str, classify_by: str = "chemical") -> go.Figure:
     return fig
 
 
-# Dataset-specific plots
+# Dataset-wide
 def _titration_curve(seq: str) -> go.Figure:
     """
     Computes a graph showing the net charge of a given sequence per pH level.
@@ -660,3 +576,90 @@ def _mann_whitney_u_test(
         ]
     )
     return fig
+
+
+@dataclass
+class Plot:
+    seq_based: bool
+    method: Callable
+    param_map: dict = None
+
+
+PLOTS = {
+    # Sequence-based
+    "aa_distribution": Plot(
+        True,
+        _aa_distribution,
+        {
+            "aa_distribution_order_by": "order_by",
+            "aa_distribution_show_all": "show_all",
+        },
+    ),
+    "classification": Plot(
+        True,
+        _classification,
+        {"classification_classify_by": "classify_by"},
+    ),
+    "hydropathy_profile": Plot(True, _hydropathy_profile),
+    "titration_curve": Plot(True, _titration_curve),
+    # Dataset-wide
+    "compare_features": Plot(
+        False,
+        _compare_features,
+        {
+            "compare_features_a": "feature_a",
+            "compare_features_b": "feature_b",
+            "compare_features_group_by": "group_by",
+            "compare_features_intensity_threshold": "intensity_threshold",
+        },
+    ),
+    "compare_feature": Plot(
+        False,
+        _compare_feature,
+        {
+            "compare_feature_group_by": "group_by",
+            "compare_feature_a": "feature",
+            "compare_feature_intensity_threshold": "intensity_threshold",
+        },
+    ),
+    "raincloud": Plot(
+        False,
+        _raincloud,
+        {
+            "raincloud_feature": "feature",
+            "raincloud_group_by": "group_by",
+        },
+    ),
+    "mann_whitney": Plot(
+        False,
+        _mann_whitney_u_test,
+        {
+            "mann_whitney_feature": "feature",
+            "mann_whitney_group_by": "group_by",
+            "mann_whitney_group_a": "group_a",
+            "mann_whitney_group_b": "group_b",
+            "mann_whitney_alternative": "alternative",
+        },
+    ),
+}
+
+
+def _generate_plots(seq: str, df: pd.DataFrame, params: dict) -> list:
+    """
+    Computes all selected plots on a given pandas DataFrame. Returns a tuple of lists, containing the peptide-specific plots and the plots describing the whole dataset.
+    """
+    seq_plots = []
+    data_plots = []
+    select_all = params.get("select_all")
+    for key, plot in PLOTS.items():
+        if params.get(key) or select_all:
+            kwargs = (
+                extract_related_kwargs(plot.param_map, params) if plot.param_map else {}
+            )
+            if plot.seq_based and seq is not None:
+                kwargs["seq"] = seq
+                seq_plots.append(plot.method(**kwargs))
+            if not plot.seq_based and df is not None:
+                kwargs["df"] = df
+                data_plots.append(plot.method(**kwargs))
+    return seq_plots, data_plots

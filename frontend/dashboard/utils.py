@@ -12,6 +12,7 @@ from .forms import (
     RaincloudForm,
     MannWhitneyForm,
 )
+from pepsi.features import FEATURES
 
 
 def load_data(name: str) -> pd.DataFrame:
@@ -52,20 +53,13 @@ def get_params(forms: list, mapping: dict) -> dict:
 
 def get_match_for_seq(data: pd.DataFrame, seq: str) -> dict:
     """
-    Matches the given sequence to a row of computed sequences.
+    Matches the given sequence to a row of computed sequences and removes all columns that do not correspond to a feature.
     Returns the number of matches and the found features as dict.
     """
+    ALLOWED = {f.label for f in FEATURES.values()} | {"Sequence"}
     matched = data[data["Sequence"] == seq]
     num_matches = len(matched)
-    matched = matched.drop(
-        columns=[
-            "Sample",
-            "Protein ID",
-            "Intensity",
-            "PEP",
-        ],
-        errors="ignore",
-    )
+    matched = matched.loc[:, matched.columns.isin(ALLOWED)]
     if not matched.empty:
         return (num_matches, matched.iloc[0].to_dict())
     else:

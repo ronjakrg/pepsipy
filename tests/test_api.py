@@ -2,6 +2,8 @@ import pytest
 import plotly.graph_objects as go
 
 from pepsi import Calculator
+from pepsi.features import FEATURES
+from pepsi.plots import PLOTS
 from tests.constants import PEPTIDES, METADATA
 
 
@@ -54,8 +56,7 @@ def test_get_features_with_params():
 def test_get_features_without_params():
     calc = Calculator(dataset=PEPTIDES)
     res = calc.get_features()
-    # TODO #74: Get number of available features from somewhere else
-    assert len(PEPTIDES.columns) + 12 == len(res.columns)
+    assert len(FEATURES) + len(PEPTIDES.columns) == len(res.columns)
 
 
 def test_get_peptide_features_with_params():
@@ -68,8 +69,7 @@ def test_get_peptide_features_with_params():
 def test_get_peptide_features_without_params():
     calc = Calculator(seq="SVIDQSRVLNLGPITR")
     res = calc.get_peptide_features()
-    # TODO #74: Get number of available features from somewhere else
-    assert 13 == len(res.columns)
+    assert len(FEATURES) + 1 == len(res.columns)
 
 
 def test_get_plots_for_seq_with_params():
@@ -104,8 +104,7 @@ def test_get_plots_without_params():
     calc = Calculator(dataset=PEPTIDES, metadata=METADATA, seq="SVIDQSRVLNLGPITR")
     calc.get_features()
     plots = calc.get_plots()
-    # TODO #74: Get number of available plots from somewhere else
-    assert 8 == len(plots)
+    assert len(PLOTS) == len(plots)
 
 
 def test_get_plots_as_tuple():
@@ -113,5 +112,4 @@ def test_get_plots_as_tuple():
     calc.get_features()
     plots = calc.get_plots(as_tuple=True)
     assert 2 == len(plots)
-    # TODO #74: Get number of available plots from somewhere else
-    assert 8 == len(plots[0] + plots[1])
+    assert len(PLOTS) == len(plots[0] + plots[1])

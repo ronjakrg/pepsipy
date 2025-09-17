@@ -1,17 +1,10 @@
 from django import forms
 
+from pepsi.features import FEATURES
+
 # Numeric features available for comparison
-numeric_feature_choices = (
-    ("Molecular weight", "Molecular weight"),
-    ("Isoelectric point", "Isoelectric point"),
-    ("Sequence length", "Sequence length"),
-    ("GRAVY", "GRAVY"),
-    ("Aromaticity", "Aromaticity"),
-    ("Charge", "Charge"),
-    ("Charge density", "Charge density"),
-    ("Boman index", "Boman index"),
-    ("Aliphatic index", "Aliphatic index"),
-    ("Extinction coefficient", "Extinction coefficient"),
+numeric_feature_choices = tuple(
+    (f.label, f.label) for f in FEATURES.values() if f.numeric
 )
 
 
@@ -40,50 +33,49 @@ class ConfigForm(forms.Form):
 # Feature forms
 class MolecularWeightForm(forms.Form):
     selected = forms.BooleanField(
-        label="Molecular weight",
+        label=FEATURES["molecular_weight"].label,
         required=False,
     )
 
 
 class ThreeLetterCodeForm(forms.Form):
     selected = forms.BooleanField(
-        label="Three letter code",
+        label=FEATURES["three_letter_code"].label,
         required=False,
     )
-    func = "three_letter_code"
 
 
 class MolecularFormulaForm(forms.Form):
     selected = forms.BooleanField(
-        label="Molecular formula",
+        label=FEATURES["molecular_formula"].label,
         required=False,
     )
 
 
 class SeqLengthForm(forms.Form):
     selected = forms.BooleanField(
-        label="Sequence length",
+        label=FEATURES["seq_length"].label,
         required=False,
     )
 
 
 class AromaticityForm(forms.Form):
     selected = forms.BooleanField(
-        label="Aromaticity",
+        label=FEATURES["aromaticity"].label,
         required=False,
     )
 
 
 class AliphaticIndexForm(forms.Form):
     selected = forms.BooleanField(
-        label="Aliphatic index",
+        label=FEATURES["aliphatic_index"].label,
         required=False,
     )
 
 
 class ChargeForm(forms.Form):
     selected = forms.BooleanField(
-        label="Charge",
+        label=FEATURES["charge_at_ph"].label,
         required=False,
     )
     charge_at_ph_level = forms.FloatField(
@@ -95,7 +87,7 @@ class ChargeForm(forms.Form):
 
 class ChargeDensityForm(forms.Form):
     selected = forms.BooleanField(
-        label="Charge density",
+        label=FEATURES["charge_density"].label,
         required=False,
     )
     charge_density_level = forms.FloatField(
@@ -107,7 +99,7 @@ class ChargeDensityForm(forms.Form):
 
 class IsoelectricPointForm(forms.Form):
     selected = forms.BooleanField(
-        label="Isoelectric point",
+        label=FEATURES["isoelectric_point"].label,
         required=False,
     )
     isoelectric_point_option = forms.ChoiceField(
@@ -123,14 +115,14 @@ class IsoelectricPointForm(forms.Form):
 
 class GravyForm(forms.Form):
     selected = forms.BooleanField(
-        label="GRAVY",
+        label=FEATURES["gravy"].label,
         required=False,
     )
 
 
 class ExtinctionCoefficientForm(forms.Form):
     selected = forms.BooleanField(
-        label="Extinction coefficient",
+        label=FEATURES["extinction_coefficient"].label,
         required=False,
     )
     extinction_coefficient_oxidized = forms.ChoiceField(
@@ -146,7 +138,7 @@ class ExtinctionCoefficientForm(forms.Form):
 
 class BomanIndexForm(forms.Form):
     selected = forms.BooleanField(
-        label="Boman index",
+        label=FEATURES["boman_index"].label,
         required=False,
     )
 

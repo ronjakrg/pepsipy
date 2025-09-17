@@ -3,6 +3,7 @@ import plotly.graph_objects as go
 
 from pepsi import Calculator
 from pepsi.features import FEATURES
+from pepsi.plots import PLOTS
 from tests.constants import PEPTIDES, METADATA
 
 
@@ -102,8 +103,7 @@ def test_get_plots_without_params():
     calc = Calculator(dataset=PEPTIDES, metadata=METADATA, seq="SVIDQSRVLNLGPITR")
     calc.get_features()
     plots = calc.get_plots()
-    # TODO #74: Get number of available plots from somewhere else
-    assert 7 == len(plots)
+    assert len(PLOTS) == len(plots)
 
 
 def test_get_plots_as_tuple():
@@ -111,5 +111,4 @@ def test_get_plots_as_tuple():
     calc.get_features()
     plots = calc.get_plots(as_tuple=True)
     assert 2 == len(plots)
-    # TODO #74: Get number of available plots from somewhere else
-    assert 7 == len(plots[0] + plots[1])
+    assert len(PLOTS) == len(plots[0] + plots[1])

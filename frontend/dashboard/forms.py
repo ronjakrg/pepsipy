@@ -142,15 +142,15 @@ class BomanIndexForm(forms.Form):
         required=False,
     )
 
-
+# TODO Use labels from PLOTS constant
 # Plot forms
 class AaDistributionForm(forms.Form):
     selected = forms.BooleanField(
-        label="Frequency of amino acids",
+        label="Amino acid frequency",
         required=False,
     )
     aa_distribution_order_by = forms.ChoiceField(
-        label="Order of amino acids",
+        label="Order",
         choices=(
             ("frequency", "Frequency"),
             ("alphabetical", "Alphabetically"),
@@ -172,7 +172,7 @@ class AaDistributionForm(forms.Form):
 
 class ClassificationForm(forms.Form):
     selected = forms.BooleanField(
-        label="Classification",
+        label="Amino acid classification",
         required=False,
     )
     classification_classify_by = forms.ChoiceField(
@@ -201,7 +201,7 @@ class TitrationCurveForm(forms.Form):
 
 class CompareFeaturesForm(forms.Form):
     selected = forms.BooleanField(
-        label="Compare features across a metadata aspect",
+        label="Compare two features",
         required=False,
     )
     compare_features_a = forms.ChoiceField(
@@ -224,7 +224,7 @@ class CompareFeaturesForm(forms.Form):
     compare_features_intensity_threshold = forms.FloatField(
         label="Intensity threshold",
         required=False,
-        initial=0.01,
+        initial=0,
         widget=forms.NumberInput(attrs={"class": "form-control"}),
     )
 
@@ -236,7 +236,7 @@ class CompareFeaturesForm(forms.Form):
 
 class CompareFeatureForm(forms.Form):
     selected = forms.BooleanField(
-        label="Compare a feature across a metadata aspect",
+        label="Compare one feature",
         required=False,
     )
     compare_feature_a = forms.ChoiceField(
@@ -253,7 +253,7 @@ class CompareFeatureForm(forms.Form):
     compare_feature_intensity_threshold = forms.FloatField(
         label="Intensity threshold",
         required=False,
-        initial=0.01,
+        initial=0,
         widget=forms.NumberInput(attrs={"class": "form-control"}),
     )
 
@@ -279,14 +279,66 @@ class RaincloudForm(forms.Form):
         choices=(),  # Overridden by __init__
         widget=forms.Select(attrs={"class": "form-control"}),
     )
+    raincloud_log_scaled = forms.ChoiceField(
+        label="Scale of x-axis",
+        choices=(
+            ("True", "Logarithmic (log10)"),
+            ("False", "Linear"),
+        ),
+        initial=("True", "Logarithmic (log10)"),
+        widget=forms.Select(attrs={"class": "form-control"}),
+    )
 
     def __init__(self, *args, metadata_choices=None, **kwargs):
         super().__init__(*args, **kwargs)
         if metadata_choices is not None:
             self.fields["raincloud_group_by"].choices = metadata_choices
 
+class MannWhitneyForm(forms.Form):
+    selected = forms.BooleanField(
+        label="Mann-Whitney U test",
+        required=False,
+    )
+    mann_whitney_feature = forms.ChoiceField(
+        label="Feature",
+        choices=numeric_feature_choices,
+        initial=("GRAVY", "GRAVY"),
+        widget=forms.Select(attrs={"class": "form-control"}),
+    )
+    mann_whitney_group_by = forms.ChoiceField(
+        label="Group by metadata aspect",
+        choices=(),  # Overridden by __init__
+        widget=forms.Select(attrs={"class": "form-control"}),
+    )
+    mann_whitney_group_a = forms.CharField(
+        label="First comparison group",
+        max_length=100,
+        widget=forms.TextInput(attrs={"class": "form-control"}),
+        required=False,
+    )
+    mann_whitney_group_b = forms.CharField(
+        label="Second comparison group",
+        max_length=100,
+        widget=forms.TextInput(attrs={"class": "form-control"}),
+        required=False,
+    )
+    mann_whitney_alternative = forms.ChoiceField(
+        label="Alternative hypothesis",
+        choices=(
+            ("two-sided", "Two-sided"),
+            ("greater", "Greater"),
+            ("less", "Less"),
+        ),
+        required=False,
+        widget=forms.Select(attrs={"class": "form-control"}),
+    )
 
-# TODO 74: Retrieve these automatically from FEATURES based on f.numeric
+    def __init__(self, *args, metadata_choices=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        if metadata_choices is not None:
+            self.fields["mann_whitney_group_by"].choices = metadata_choices
+
+
 FORM_TO_FEATURE_FUNCTION = {
     MolecularWeightForm: "molecular_weight",
     ThreeLetterCodeForm: "three_letter_code",
@@ -309,4 +361,5 @@ FORM_TO_PLOT_FUNCTION = {
     CompareFeaturesForm: "compare_features",
     CompareFeatureForm: "compare_feature",
     RaincloudForm: "raincloud",
+    MannWhitneyForm: "mann_whitney",
 }

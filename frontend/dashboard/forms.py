@@ -142,6 +142,7 @@ class BomanIndexForm(forms.Form):
         required=False,
     )
 
+
 # TODO Use labels from PLOTS constant
 # Plot forms
 class AaDistributionForm(forms.Form):
@@ -293,6 +294,7 @@ class RaincloudForm(forms.Form):
         super().__init__(*args, **kwargs)
         if metadata_choices is not None:
             self.fields["raincloud_group_by"].choices = metadata_choices
+
 
 class MannWhitneyForm(forms.Form):
     selected = forms.BooleanField(

@@ -640,8 +640,7 @@ PLOTS = {
             "mann_whitney_group_b": "group_b",
             "mann_whitney_alternative": "alternative",
         },
-    )
-
+    ),
 }
 
 

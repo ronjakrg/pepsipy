@@ -3,8 +3,10 @@ __pycache__/
 .coverage
 *.egg-info/
 /data/*
+!/data/peptides.csv
+!/data/metadata.csv
 /build/*
 /results/*
-/external/*
-/src/pepsi/external/*
+/frontend/tmp/*
 /dist/*
+/.venv/*

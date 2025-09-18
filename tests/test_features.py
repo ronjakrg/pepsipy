@@ -1,8 +1,6 @@
 import pytest
-import requests
 
-from constants import TEST_DATA
-from pepsi.features import (
+from pepsipy.features import (
     _seq_length,
     _aa_frequency,
     _gravy,
@@ -14,7 +12,13 @@ from pepsi.features import (
     _compute_features,
     _aromaticity,
     _aa_classification,
+    _charge_at_ph,
+    _charge_density,
+    _boman_index,
+    _aliphatic_index,
+    _extinction_coefficient,
 )
+from tests.constants import PEPTIDES
 
 # Any function that calls one of these functions is already covered by a test for invalid amino acids.
 INVALID_SEQ = "ABC"
@@ -35,11 +39,13 @@ def test_invalid_amino_acid(func, seq):
 
 
 def test_seq_length():
+    # Benchmark values from ExPASy (Gasteiger et al., 2005)
     assert 20 == _seq_length("ACDEFGHIKLMNPQRSTVWY")
     assert 50 == _seq_length("LHVEDNDEGSPMYMTRCVAWEHITINTNKHYQLYIMWRDGMWYDRMIPAQ")
 
 
 def test_aa_frequency():
+    # Benchmark values from ExPASy (Gasteiger et al., 2005)
     freq = _aa_frequency("AAACCDEEFFF")
     assert {
         "A": 3,
@@ -67,13 +73,15 @@ def test_aa_frequency():
 
 
 def test_molecular_weight():
-    assert pytest.approx(799.832) == _molecular_weight("PEPTIDE")
-    assert pytest.approx(5730, rel=1e-3) == _molecular_weight(
+    # Benchmark values from ExPASy (Gasteiger et al., 2005)
+    assert pytest.approx(799.83) == _molecular_weight("PEPTIDE")
+    assert pytest.approx(5724.67, rel=1e-3) == _molecular_weight(
         "AGSCCDCILIQNNADMDTDYVCGLVTQMRHGVLEPHILWWAIMWSCHEMI"
     )
 
 
 def test_three_letter_code():
+    # Benchmark values from Sequence Manipulation Suite (Stothard, 2000)
     assert "ProGluProThrIleAspGlu" == _three_letter_code("PEPTIDE")
     assert (
         "LeuTrpTrpTyrPheMetLysProGluLysLeuAlaGlyGluAsnLysGluProLeuGlnMetMetIleHisTyrIleTyrHisValCysCysTrpAsnGluPheGlyCysAspProGlyValGluLysPheArgProGluMetAlaLeu"
@@ -82,6 +90,7 @@ def test_three_letter_code():
 
 
 def test_one_letter_code():
+    # Benchmark values from Sequence Manipulation Suite (Stothard, 2000)
     assert "PEPTIDE" == _one_letter_code("ProGluProThrIleAspGlu")
     assert "YLCSIKSTPPLVFGQVDNVHFCMEIPKSFDVRENSRWVDDALEFVYYQVG" == _one_letter_code(
         "TyrLeuCysSerIleLysSerThrProProLeuValPheGlyGlnValAspAsnValHisPheCysMetGluIleProLysSerPheAspValArgGluAsnSerArgTrpValAspAspAlaLeuGluPheValTyrTyrGlnValGly"
@@ -95,6 +104,7 @@ def test_one_letter_code():
 
 
 def test_gravy():
+    # Benchmark values from ExPASy (Gasteiger et al., 2005)
     assert pytest.approx(-1.414) == _gravy("PEPTIDE")
     assert pytest.approx(-0.744) == _gravy(
         "ENFNDTHIIVINCNHVCAECRDTPGWHKCKVPIRMQQMRKWPAESNTRYI"
@@ -102,7 +112,9 @@ def test_gravy():
 
 
 def test_molecular_formula():
+    # Benchmark value from Nomenclature and symbolism for amino acids and peptides (IUPAC et al., 1984)
     assert "C5H9NO4" == _molecular_formula("E")
+    # Benchmark values from ExPASy (Gasteiger et al., 2005)
     assert "C34H53N7O15" == _molecular_formula("PEPTIDE")
     assert "C266H401N69O78S5" == _molecular_formula(
         "WQNTDTSMIESSPIGHKDHRTLPTYQWERCWGKSVMELIVCSIWTLYICE"
@@ -110,39 +122,32 @@ def test_molecular_formula():
 
 
 def test_isoelectric_point():
-    # Warning: This method is currently disabled to decrease the project's size.
-    # assert type(_isoelectric_point("PEPTIDE", "kozlowski")) is float
+    assert type(_isoelectric_point("PEPTIDE", "kozlowski")) is float
     assert type(_isoelectric_point("PEPTIDE", "bjellqvist")) is float
     with pytest.raises(ValueError) as e:
         _isoelectric_point("PEPTIDE", "foo")
     assert "Unknown option" in str(e.value)
 
 
-def test_external_ipc2_availability():
-    url = "https://ipc2.mimuw.edu.pl/ipc-2.0.1.zip"
-    res = requests.head(url, allow_redirects=True, timeout=5)
-    assert 200 == res.status_code
-
-
-def test_compute_features():
-    options = {
-        "three_letter_code": False,
-        "molecular_formula": False,
-        "seq_length": False,
-        "molecular_weight": False,
-        "gravy": True,
-        "isoelectric_point": False,
-        "isoelectric_point_option": "bjellqvist",
-        "aromaticity": False,
-    }
-    res = _compute_features(df=TEST_DATA, params=options)
+def test_compute_features_with_dataset():
+    params = {"gravy": True}
+    res = _compute_features(df=PEPTIDES, params=params)
     assert "GRAVY" in res.columns
     assert "Molecular weight" not in res.columns
     res_grouped = res.groupby("Sequence")["GRAVY"].nunique()
     assert (res_grouped <= 1).all()
 
 
+def test_compute_features_with_seq():
+    params = {"gravy": True}
+    res = _compute_features(seq="PEPTIDE", params=params)
+    assert "GRAVY" in res.columns
+    assert "Molecular weight" not in res.columns
+    assert len(res) == 1
+
+
 def test_aromaticity():
+    # Benchmark values from Sequence Manipulation Suite (Stothard, 2000)
     assert pytest.approx(0.0) == _aromaticity("PEPTIDE")
     assert pytest.approx(0.08) == _aromaticity(
         "PKMMDHQPIKTYWCMIGKPNREEIEIAKKMMAEMTDNDWPLHQMPFCSKL"
@@ -150,6 +155,7 @@ def test_aromaticity():
 
 
 def test_aa_classification():
+    # Benchmark values from (Pommié et al., 2004)
     assert {
         "Aliphatic": 7,
         "Sulfur": 4,
@@ -171,3 +177,38 @@ def test_aa_classification():
     with pytest.raises(ValueError) as e:
         _aa_classification("PEPTIDE", "foo")
     assert "Unknown option" in str(e.value)
+
+
+def test_charge_at_ph():
+    assert type(_charge_at_ph("PEPTIDE", 7.0)) is float
+
+
+def test_charge_density():
+    # Benchmark values from modlAMP (Müller et al., 2017)
+    assert pytest.approx(-0.00375, abs=1e-5) == _charge_density("PEPTIDE", 7.0)
+    assert pytest.approx(0.00036, abs=1e-5) == _charge_density(
+        "LWSKKWMGGTQDRDVACGHFGKMWILEDTQLGSEKGLSSNTRSYRYQQHP", 7.0
+    )
+
+
+def test_boman_index():
+    assert type(_boman_index("PEPTIDE")) is float
+
+
+def test_aliphatic_index():
+    # Benchmark values from ExPASy (Gasteiger et al., 2005)
+    assert pytest.approx(55.71) == _aliphatic_index("PEPTIDE")
+    assert pytest.approx(70.20) == _aliphatic_index(
+        "DPTWFWLEFSLYEERSMDGAPGDGLYFQDDMLDFCLKQKINIVWHRYLKY"
+    )
+
+
+def test_extinction_efficient():
+    # Benchmark values from ExPASy (Gasteiger et al., 2005)
+    assert 0 == _extinction_coefficient("PEPTIDE", oxidized=False)
+    assert 34490 == _extinction_coefficient(
+        "HLDQWLPALKQLWLRMAIMWMTWMHDPLPCLNWSMCLQGIWATKNYASGQ", oxidized=False
+    )
+    assert 34615 == _extinction_coefficient(
+        "HLDQWLPALKQLWLRMAIMWMTWMHDPLPCLNWSMCLQGIWATKNYASGQ", oxidized=True
+    )

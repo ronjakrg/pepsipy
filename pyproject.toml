@@ -4,32 +4,38 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
 where = ["src"]
-
-[tool.setuptools.package-data]
-"pepsi" = ["external/**"]
+include = ["pepsipy*"]
 
 [project]
-name = "pepsi"
-version = "0.1.0"
+name = "pepsipy"
+version = "1.0.0"
 authors = [
   { name="Ronja Krueger", email="ronja.krueger@student.hpi.de" }
 ]
-description = "A package to calculate peptide features."
+description = "A library to calculate peptide features."
 readme = "README.md"
 requires-python = ">=3.11"
+dependencies = [
+  "numpy==2.3.0",
+  "pandas==2.3.0",
+  "plotly==6.1.2",
+  "kaleido==0.2.1",
+  "scikit-learn==1.7.0",
+  "modlamp==4.3.2",
+]
 classifiers = [
   "Programming Language :: Python :: 3",
   "Operating System :: OS Independent",
 ]
 license = "MIT"
-keywords = ["peptide", "proteomics"]
+keywords = ["bioinformatics", "peptides"]
 
 [project.urls]
-Repository = "https://github.com/ronjakrg/thesis-pepsi-package"
-Issues = "https://github.com/ronjakrg/thesis-pepsi-package/issues"
+Repository = "https://github.com/ronjakrg/pepsipy"
+Issues = "https://github.com/ronjakrg/pepsipy/issues"
 
 [project.scripts]
-run = "pepsi.__main__:main"
+run = "pepsipy.__main__:main"
 
 [tool.coverage.run]
 source = ["src", "frontend"]
@@ -48,3 +54,10 @@ omit = [
   "wsgi.py",
   "forms.py",
 ]
+
+[tool.black]
+extend-exclude = '''
+(
+  (^|/)external(/|$)
+)
+'''

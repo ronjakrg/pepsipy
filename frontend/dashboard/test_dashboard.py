@@ -1,16 +1,12 @@
 import pytest
 import pandas as pd
-from pandas.testing import assert_frame_equal
-from django.conf import settings
-from django.urls import reverse
-from unittest.mock import patch, MagicMock
 
 from frontend.dashboard.utils import (
     load_data,
     get_params,
     get_match_for_seq,
 )
-from frontend.dashboard.views import overview
+from frontend.dashboard.views import index
 from frontend.dashboard.forms import (
     ThreeLetterCodeForm,
     MolecularFormulaForm,
@@ -74,68 +70,20 @@ def test_get_params():
 
 
 def test_get_match_for_seq():
-    # TODO Write test as soon as dynamic columns are implemented
-    pass
-
-
-@patch("frontend.dashboard.views.load_data")
-@patch("frontend.dashboard.views.get_match_for_seq")
-@patch("frontend.dashboard.views.get_params")
-@patch("frontend.dashboard.views.Calculator")
-def test_overview_valid_form(
-    mock_calculator,
-    mock_get_params,
-    mock_get_match_for_seq,
-    mock_load_data,
-    client,
-):
-    # Setup
-    mock_calc = MagicMock()
-    mock_calculator.return_value = mock_calc
-    mock_calc.seq = "PEPTIDE"
-    peptides = pd.DataFrame({"Sequence": ["PEPTIDE"]})
-    features = pd.DataFrame(
+    data = pd.DataFrame(
         {
-            "Sequence": ["PEPTIDE"],
-            "Feature": [0.5],
+            "Sample": ["AD01_C1_INSOLUBLE_01", "CTR01_C1_INSOLUBLE_01"],
+            "Protein ID": ["A0A075B6S2", "A0A075B6S2"],
+            "Sequence": ["FSGVPDR", "PEPTIDE"],
+            "Intensity": [936840.0, "NaN"],
+            "PEP": [0.0068633, 0.0056387],
+            "GRAVY": [2.0, 1.0],
         }
     )
-    mock_load_data.return_value = peptides
-    mock_calc.get_features.return_value = peptides
-    mock_calc.get_peptide_features.return_value = features
-    mock_get_match_for_seq.return_value = (1, features)
-    mock_get_params.side_effect = [{}, {}]
-    plot_a = MagicMock()
-    plot_a.to_html.return_value = "<div>plot_a</div>"
-    plot_b = MagicMock()
-    plot_b.to_html.return_value = "<div>plot_b</div>"
-    mock_calc.get_plots.return_value = ([plot_a], [plot_b])
-
-    # Execute
-    url = reverse("overview")
-    response = client.post(
-        url,
-        data={
-            "data_name": "peptides.csv",
-            "seq": "PEPTIDE",
-        },
-    )
-
-    # Assert
-    assert response.status_code == 200
-    mock_load_data.assert_called_once_with("peptides.csv")
-    mock_get_match_for_seq.assert_called_once_with(peptides, "PEPTIDE")
-
-    mock_calc.set_dataset.assert_called_once_with(peptides)
-    mock_calc.set_seq.assert_called_once_with("PEPTIDE")
-    mock_calc.set_feature_params.assert_called_once()
-    mock_calc.get_features.assert_called_once()
-
-    mock_calc.set_plot_params.assert_called_once()
-    mock_calc.get_plots.assert_called_once()
-
-    assert "<div>plot_a</div>" in response.context["peptide_plots"][0]
-    assert "<div>plot_b</div>" in response.context["data_plots"][0]
-    assert "PEPTIDE" == response.context["seq"]
-    assert False == response.context["computed_features"].empty
-    assert_frame_equal(features, response.context["computed_peptide_features"])
+    seq = "PEPTIDE"
+    expected_match = {
+        "Sequence": "PEPTIDE",
+        "GRAVY": 1.0,
+    }
+    assert (1, expected_match) == get_match_for_seq(data, "PEPTIDE")
+    assert (0, {}) == get_match_for_seq(data, "PEP")

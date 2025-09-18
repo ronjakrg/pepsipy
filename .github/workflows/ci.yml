@@ -31,7 +31,7 @@ jobs:
         run: |
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-      - name: Install package and download external data
+      - name: Install package
         run: |
           pip install .
 
@@ -41,7 +41,7 @@ jobs:
           coverage xml
 
       - name: Check code formatting with black
-        run: black --check --diff src tests setup.py frontend
+        run: black --check --diff src tests frontend
 
       - name: Coverage comment
         uses: py-cov-action/python-coverage-comment-action@v3

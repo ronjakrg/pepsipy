@@ -61,8 +61,8 @@ This work was conducted as part of the project 'Veni, Vidi, Visualization: Impro
    ```
 3. Create and activate a virtual environment and install all necessary requirements<br>
    ```
-   python -m venv venv
-   source venv/bin/activate
+   python -m venv .venv
+   source .venv/bin/activate
    pip install -r requirements.txt
    ```
 4. Start the server<br>

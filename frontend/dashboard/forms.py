@@ -1,17 +1,10 @@
 from django import forms
 
+from pepsi.features import FEATURES
+
 # Numeric features available for comparison
-numeric_feature_choices = (
-    ("Molecular weight", "Molecular weight"),
-    ("Isoelectric point", "Isoelectric point"),
-    ("Sequence length", "Sequence length"),
-    ("GRAVY", "GRAVY"),
-    ("Aromaticity", "Aromaticity"),
-    ("Charge", "Charge"),
-    ("Charge density", "Charge density"),
-    ("Boman index", "Boman index"),
-    ("Aliphatic index", "Aliphatic index"),
-    ("Extinction coefficient", "Extinction coefficient"),
+numeric_feature_choices = tuple(
+    (f.label, f.label) for f in FEATURES.values() if f.numeric
 )
 
 
@@ -38,45 +31,75 @@ class ConfigForm(forms.Form):
 
 
 # Feature forms
-class ThreeLetterCodeForm(forms.Form):
+class MolecularWeightForm(forms.Form):
     selected = forms.BooleanField(
-        label="Three letter code",
+        label=FEATURES["molecular_weight"].label,
         required=False,
     )
-    func = "three_letter_code"
+
+
+class ThreeLetterCodeForm(forms.Form):
+    selected = forms.BooleanField(
+        label=FEATURES["three_letter_code"].label,
+        required=False,
+    )
 
 
 class MolecularFormulaForm(forms.Form):
     selected = forms.BooleanField(
-        label="Molecular formula",
+        label=FEATURES["molecular_formula"].label,
         required=False,
     )
 
 
 class SeqLengthForm(forms.Form):
     selected = forms.BooleanField(
-        label="Sequence length",
+        label=FEATURES["seq_length"].label,
         required=False,
     )
 
 
-class MolecularWeightForm(forms.Form):
+class AromaticityForm(forms.Form):
     selected = forms.BooleanField(
-        label="Molecular weight",
+        label=FEATURES["aromaticity"].label,
         required=False,
     )
 
 
-class GravyForm(forms.Form):
+class AliphaticIndexForm(forms.Form):
     selected = forms.BooleanField(
-        label="GRAVY",
+        label=FEATURES["aliphatic_index"].label,
         required=False,
+    )
+
+
+class ChargeForm(forms.Form):
+    selected = forms.BooleanField(
+        label=FEATURES["charge_at_ph"].label,
+        required=False,
+    )
+    charge_at_ph_level = forms.FloatField(
+        label="pH level",
+        required=False,
+        widget=forms.NumberInput(attrs={"class": "form-control"}),
+    )
+
+
+class ChargeDensityForm(forms.Form):
+    selected = forms.BooleanField(
+        label=FEATURES["charge_density"].label,
+        required=False,
+    )
+    charge_density_level = forms.FloatField(
+        label="pH level",
+        required=False,
+        widget=forms.NumberInput(attrs={"class": "form-control"}),
     )
 
 
 class IsoelectricPointForm(forms.Form):
     selected = forms.BooleanField(
-        label="Isoelectric point",
+        label=FEATURES["isoelectric_point"].label,
         required=False,
     )
     isoelectric_point_option = forms.ChoiceField(
@@ -90,54 +113,16 @@ class IsoelectricPointForm(forms.Form):
     )
 
 
-class ChargeForm(forms.Form):
+class GravyForm(forms.Form):
     selected = forms.BooleanField(
-        label="Charge",
-        required=False,
-    )
-    charge_at_ph_level = forms.FloatField(
-        label="pH level",
-        required=False,
-        widget=forms.NumberInput(attrs={"class": "form-control"}),
-    )
-
-
-class ChargeDensityForm(forms.Form):
-    selected = forms.BooleanField(
-        label="Charge density",
-        required=False,
-    )
-    charge_density_level = forms.FloatField(
-        label="pH level",
-        required=False,
-        widget=forms.NumberInput(attrs={"class": "form-control"}),
-    )
-
-
-class BomanIndexForm(forms.Form):
-    selected = forms.BooleanField(
-        label="Boman index",
-        required=False,
-    )
-
-
-class AromaticityForm(forms.Form):
-    selected = forms.BooleanField(
-        label="Aromaticity",
-        required=False,
-    )
-
-
-class AliphaticIndexForm(forms.Form):
-    selected = forms.BooleanField(
-        label="Aliphatic index",
+        label=FEATURES["gravy"].label,
         required=False,
     )
 
 
 class ExtinctionCoefficientForm(forms.Form):
     selected = forms.BooleanField(
-        label="Extinction coefficient",
+        label=FEATURES["extinction_coefficient"].label,
         required=False,
     )
     extinction_coefficient_oxidized = forms.ChoiceField(
@@ -151,14 +136,21 @@ class ExtinctionCoefficientForm(forms.Form):
     )
 
 
+class BomanIndexForm(forms.Form):
+    selected = forms.BooleanField(
+        label=FEATURES["boman_index"].label,
+        required=False,
+    )
+
+
 # Plot forms
 class AaDistributionForm(forms.Form):
     selected = forms.BooleanField(
-        label="Frequency of amino acids",
+        label="Amino acid frequency",
         required=False,
     )
     aa_distribution_order_by = forms.ChoiceField(
-        label="Order of amino acids",
+        label="Order",
         choices=(
             ("frequency", "Frequency"),
             ("alphabetical", "Alphabetically"),
@@ -178,16 +170,9 @@ class AaDistributionForm(forms.Form):
     )
 
 
-class HydropathyProfileForm(forms.Form):
-    selected = forms.BooleanField(
-        label="Hydropathy profile",
-        required=False,
-    )
-
-
 class ClassificationForm(forms.Form):
     selected = forms.BooleanField(
-        label="Classification",
+        label="Amino acid classification",
         required=False,
     )
     classification_classify_by = forms.ChoiceField(
@@ -200,6 +185,13 @@ class ClassificationForm(forms.Form):
     )
 
 
+class HydropathyProfileForm(forms.Form):
+    selected = forms.BooleanField(
+        label="Hydropathy profile",
+        required=False,
+    )
+
+
 class TitrationCurveForm(forms.Form):
     selected = forms.BooleanField(
         label="Titration curve (charge vs. pH)",
@@ -209,7 +201,7 @@ class TitrationCurveForm(forms.Form):
 
 class CompareFeaturesForm(forms.Form):
     selected = forms.BooleanField(
-        label="Compare features across a metadata aspect",
+        label="Compare two features",
         required=False,
     )
     compare_features_a = forms.ChoiceField(
@@ -232,7 +224,7 @@ class CompareFeaturesForm(forms.Form):
     compare_features_intensity_threshold = forms.FloatField(
         label="Intensity threshold",
         required=False,
-        initial=0.01,
+        initial=0,
         widget=forms.NumberInput(attrs={"class": "form-control"}),
     )
 
@@ -244,7 +236,7 @@ class CompareFeaturesForm(forms.Form):
 
 class CompareFeatureForm(forms.Form):
     selected = forms.BooleanField(
-        label="Compare a feature across a metadata aspect",
+        label="Compare one feature",
         required=False,
     )
     compare_feature_a = forms.ChoiceField(
@@ -261,7 +253,7 @@ class CompareFeatureForm(forms.Form):
     compare_feature_intensity_threshold = forms.FloatField(
         label="Intensity threshold",
         required=False,
-        initial=0.01,
+        initial=0,
         widget=forms.NumberInput(attrs={"class": "form-control"}),
     )
 
@@ -287,6 +279,15 @@ class RaincloudForm(forms.Form):
         choices=(),  # Overridden by __init__
         widget=forms.Select(attrs={"class": "form-control"}),
     )
+    raincloud_log_scaled = forms.ChoiceField(
+        label="Scale of x-axis",
+        choices=(
+            ("True", "Logarithmic (log10)"),
+            ("False", "Linear"),
+        ),
+        initial=("True", "Logarithmic (log10)"),
+        widget=forms.Select(attrs={"class": "form-control"}),
+    )
 
     def __init__(self, *args, metadata_choices=None, **kwargs):
         super().__init__(*args, **kwargs)
@@ -294,26 +295,72 @@ class RaincloudForm(forms.Form):
             self.fields["raincloud_group_by"].choices = metadata_choices
 
 
+class MannWhitneyForm(forms.Form):
+    selected = forms.BooleanField(
+        label="Mann-Whitney U test",
+        required=False,
+    )
+    mann_whitney_feature = forms.ChoiceField(
+        label="Feature",
+        choices=numeric_feature_choices,
+        initial=("GRAVY", "GRAVY"),
+        widget=forms.Select(attrs={"class": "form-control"}),
+    )
+    mann_whitney_group_by = forms.ChoiceField(
+        label="Group by metadata aspect",
+        choices=(),  # Overridden by __init__
+        widget=forms.Select(attrs={"class": "form-control"}),
+    )
+    mann_whitney_group_a = forms.CharField(
+        label="First comparison group",
+        max_length=100,
+        widget=forms.TextInput(attrs={"class": "form-control"}),
+        required=False,
+    )
+    mann_whitney_group_b = forms.CharField(
+        label="Second comparison group",
+        max_length=100,
+        widget=forms.TextInput(attrs={"class": "form-control"}),
+        required=False,
+    )
+    mann_whitney_alternative = forms.ChoiceField(
+        label="Alternative hypothesis",
+        choices=(
+            ("two-sided", "Two-sided"),
+            ("greater", "Greater"),
+            ("less", "Less"),
+        ),
+        required=False,
+        widget=forms.Select(attrs={"class": "form-control"}),
+    )
+
+    def __init__(self, *args, metadata_choices=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        if metadata_choices is not None:
+            self.fields["mann_whitney_group_by"].choices = metadata_choices
+
+
 FORM_TO_FEATURE_FUNCTION = {
+    MolecularWeightForm: "molecular_weight",
     ThreeLetterCodeForm: "three_letter_code",
     MolecularFormulaForm: "molecular_formula",
     SeqLengthForm: "seq_length",
-    MolecularWeightForm: "molecular_weight",
-    GravyForm: "gravy",
-    IsoelectricPointForm: "isoelectric_point",
     AromaticityForm: "aromaticity",
+    AliphaticIndexForm: "aliphatic_index",
     ChargeForm: "charge_at_ph",
     ChargeDensityForm: "charge_density",
-    BomanIndexForm: "boman_index",
-    AliphaticIndexForm: "aliphatic_index",
+    IsoelectricPointForm: "isoelectric_point",
+    GravyForm: "gravy",
     ExtinctionCoefficientForm: "extinction_coefficient",
+    BomanIndexForm: "boman_index",
 }
 FORM_TO_PLOT_FUNCTION = {
     AaDistributionForm: "aa_distribution",
-    HydropathyProfileForm: "hydropathy_profile",
     ClassificationForm: "classification",
+    HydropathyProfileForm: "hydropathy_profile",
     TitrationCurveForm: "titration_curve",
     CompareFeaturesForm: "compare_features",
     CompareFeatureForm: "compare_feature",
     RaincloudForm: "raincloud",
+    MannWhitneyForm: "mann_whitney",
 }

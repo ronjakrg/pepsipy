@@ -10,7 +10,9 @@ from .forms import (
     ChargeForm,
     ChargeDensityForm,
     RaincloudForm,
+    MannWhitneyForm,
 )
+from pepsi.features import FEATURES
 
 
 def load_data(name: str) -> pd.DataFrame:
@@ -51,20 +53,13 @@ def get_params(forms: list, mapping: dict) -> dict:
 
 def get_match_for_seq(data: pd.DataFrame, seq: str) -> dict:
     """
-    Matches the given sequence to a row of computed sequences.
+    Matches the given sequence to a row of computed sequences and removes all columns that do not correspond to a feature.
     Returns the number of matches and the found features as dict.
     """
+    ALLOWED = {f.label for f in FEATURES.values()} | {"Sequence"}
     matched = data[data["Sequence"] == seq]
     num_matches = len(matched)
-    matched = matched.drop(
-        columns=[
-            "Sample",
-            "Protein ID",
-            "Intensity",
-            "PEP",
-        ],
-        errors="ignore",
-    )
+    matched = matched.loc[:, matched.columns.isin(ALLOWED)]
     if not matched.empty:
         return (num_matches, matched.iloc[0].to_dict())
     else:
@@ -101,7 +96,12 @@ def make_forms(post_data: QueryDict, classes: list, metadata_choices: dict = Non
         kwargs = {"prefix": prefix}
         is_bound = any(key.startswith(f"{prefix}-") for key in post_data.keys())
         # Include initial values at run time
-        if cls in (CompareFeatureForm, CompareFeaturesForm, RaincloudForm):
+        if cls in (
+            CompareFeatureForm,
+            CompareFeaturesForm,
+            RaincloudForm,
+            MannWhitneyForm,
+        ):
             kwargs["metadata_choices"] = metadata_choices
             group_option = ("Group", "Group")
             if group_option in metadata_choices:
@@ -109,6 +109,7 @@ def make_forms(post_data: QueryDict, classes: list, metadata_choices: dict = Non
                     "compare_feature_group_by": group_option,
                     "compare_features_group_by": group_option,
                     "raincloud_group_by": group_option,
+                    "mann_whitney_group_by": group_option,
                 }
         if not is_bound:
             if cls == ChargeForm:

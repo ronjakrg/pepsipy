@@ -1,9 +1,12 @@
+from dataclasses import dataclass
+from typing import Callable
 import pandas as pd
 import numpy as np
 import plotly.express as px
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
-from plotly.colors import sample_colorscale
+from scipy.stats import mannwhitneyu
+import warnings
 
 from pepsi.constants import (
     AA_WEIGHTS,
@@ -15,83 +18,16 @@ from pepsi.constants import (
     CHEMICAL_CLASS_PER_AA,
     CHARGE_CLASS_PER_AA,
 )
-from pepsi.features import _aa_frequency, _aa_classification, _charge_at_ph
-from pepsi.utils import get_column_name, normalize_color, extract_related_kwargs
+from pepsi.features import _aa_frequency, _aa_classification, _charge_at_ph, _seq_length
+from pepsi.utils import (
+    get_column_name,
+    normalize_color,
+    extract_related_kwargs,
+    convert_exponential_to_suffix,
+)
 
 
-def _generate_plots(seq: str, df: pd.DataFrame, params: dict) -> list:
-    """
-    Computes all selected plots on a given pandas DataFrame. Returns a tuple of lists, containing the peptide-specific plots and the plots describing the whole dataset.
-    """
-    peptide_plots = []
-    data_plots = []
-    select_all = params.get("select_all")
-
-    if seq is not None:
-        if params.get("aa_distribution") or select_all:
-            kwargs = extract_related_kwargs(
-                {
-                    "aa_distribution_order_by": "order_by",
-                    "aa_distribution_show_all": "show_all",
-                },
-                params,
-            )
-            peptide_plots.append(_aa_distribution(seq=seq, **kwargs))
-
-        if params.get("hydropathy_profile") or select_all:
-            peptide_plots.append(_hydropathy_profile(seq))
-
-        if params.get("classification") or select_all:
-            kwargs = extract_related_kwargs(
-                {
-                    "classification_classify_by": "classify_by",
-                },
-                params,
-            )
-            peptide_plots.append(_classification(seq=seq, **kwargs))
-
-        if params.get("titration_curve") or select_all:
-            peptide_plots.append(_titration_curve(seq))
-
-    if df is not None:
-        if params.get("compare_features") or select_all:
-            kwargs = extract_related_kwargs(
-                {
-                    "compare_features_a": "feature_a",
-                    "compare_features_b": "feature_b",
-                    "compare_features_group_by": "group_by",
-                    "compare_features_intensity_threshold": "intensity_threshold",
-                },
-                params,
-            )
-            data_plots.append(_compare_features(df=df, **kwargs))
-
-        if params.get("compare_feature") or select_all:
-            kwargs = extract_related_kwargs(
-                {
-                    "compare_feature_group_by": "group_by",
-                    "compare_feature_a": "feature",
-                    "compare_feature_intensity_threshold": "intensity_threshold",
-                },
-                params,
-            )
-
-            data_plots.append(_compare_feature(df=df, **kwargs))
-
-        if params.get("raincloud") or select_all:
-            kwargs = extract_related_kwargs(
-                {
-                    "raincloud_feature": "feature",
-                    "raincloud_group_by": "group_by",
-                },
-                params,
-            )
-            data_plots.append(_raincloud(df=df, **kwargs))
-
-    return peptide_plots, data_plots
-
-
-# Peptide-specific plots
+# Sequence-based
 def _aa_distribution(
     seq: str,
     order_by: str = "frequency",
@@ -104,45 +40,39 @@ def _aa_distribution(
         show_all: Specification if all amino acids should be listed, even when not found in the sequence
     """
     freq = _aa_frequency(seq)
+    num = _seq_length(seq)
+    df = pd.DataFrame({"Amino acid": freq.keys(), "Frequency": freq.values()})
     if not show_all:
-        freq = {key: val for key, val in freq.items() if val > 0}
+        df = df[df["Frequency"] > 0]
+    df["Proportion"] = (df["Frequency"] / num * 100).round(3)
     if order_by in ["frequency", "alphabetical", "hydropathy", "weight"]:
         fig = px.bar(
-            x=list(freq.keys()),
-            y=list(freq.values()),
-            labels={
-                "x": "Amino Acid",
-                "y": "Frequency",
-            },
+            df,
+            x="Amino acid",
+            y="Frequency",
             color_discrete_sequence=COLORS,
+            custom_data=["Proportion"],
         )
         if order_by == "frequency":
             fig.update_xaxes(categoryorder="total ascending")
         elif order_by == "alphabetical":
             fig.update_xaxes(categoryorder="category ascending")
         elif order_by == "hydropathy":
-            sorted_aa = sorted(list(freq.keys()), key=lambda aa: HYDROPATHY_INDICES[aa])
+            sorted_aa = sorted(df["Amino acid"], key=lambda aa: HYDROPATHY_INDICES[aa])
             fig.update_xaxes(categoryorder="array", categoryarray=sorted_aa)
         elif order_by == "weight":
-            sorted_aa = sorted(list(freq.keys()), key=lambda aa: AA_WEIGHTS[aa])
+            sorted_aa = sorted(df["Amino acid"], key=lambda aa: AA_WEIGHTS[aa])
             fig.update_xaxes(categoryorder="array", categoryarray=sorted_aa)
+        fig.update_traces(
+            hovertemplate="Amino acid=%{x}<br>Frequency=%{y} (%{customdata} %)<extra></extra>",
+        )
 
     elif order_by in ["classes chemical", "classes charge"]:
-        # Prepare dataframe
-        df = pd.DataFrame(
-            [
-                {
-                    "Amino Acid": aa,
-                    "Frequency": count,
-                }
-                for aa, count in freq.items()
-            ]
-        )
         if order_by == "classes chemical":
-            df["Class"] = df["Amino Acid"].map(CHEMICAL_CLASS_PER_AA)
+            df["Class"] = df["Amino acid"].map(CHEMICAL_CLASS_PER_AA)
             classes = list(CHEMICAL_CLASS.keys())
         elif order_by == "classes charge":
-            df["Class"] = df["Amino Acid"].map(CHARGE_CLASS_PER_AA)
+            df["Class"] = df["Amino acid"].map(CHARGE_CLASS_PER_AA)
             classes = list(CHARGE_CLASS.keys())
 
         # Filter occuring classes
@@ -163,14 +93,15 @@ def _aa_distribution(
         # Create bar per class
         CLASS_TO_COLOR = dict(zip(classes, COLORS))
         for i, cls in enumerate(classes):
-            class_df = df[df["Class"] == cls].sort_values("Amino Acid")
+            class_df = df[df["Class"] == cls].sort_values("Amino acid")
             fig.add_trace(
                 go.Bar(
-                    x=class_df["Amino Acid"],
+                    x=class_df["Amino acid"],
                     y=class_df["Frequency"],
                     marker_color=CLASS_TO_COLOR[cls],
-                    hovertemplate="Amino Acid=%{x}<br>Frequency=%{y}<extra></extra>",
+                    hovertemplate="Amino acid=%{x}<br>Frequency=%{y} (%{customdata} %)<extra></extra>",
                     showlegend=False,
+                    customdata=class_df["Proportion"],
                 ),
                 row=1,
                 col=i + 1,
@@ -184,7 +115,7 @@ def _aa_distribution(
 
     else:
         raise ValueError(f"Unknown option for sorting amino acids: {order_by}.")
-    fig.update_layout(title=f"Amino Acid Frequency of Sequence {seq}")
+    fig.update_layout(title=f"Amino acid frequency of sequence {seq}")
     fig.update_yaxes(tickmode="linear", tick0=0, dtick=1)
     return fig
 
@@ -194,20 +125,20 @@ def _hydropathy_profile(seq: str) -> go.Figure:
     Computes a hydropathy profile plot for a given sequence.
     Note: The input sequence must be pre-sanitized to compute only valid amino acids.
     """
-    df = pd.DataFrame({"Amino Acid": list(seq)})
-    df["Hydropathy Index"] = df["Amino Acid"].map(HYDROPATHY_INDICES)
+    df = pd.DataFrame({"Amino acid": list(seq)})
+    df["Hydropathy index"] = df["Amino acid"].map(HYDROPATHY_INDICES)
     df.index = df.index + 1
     baseline_df = pd.DataFrame(
-        {"Amino Acid": ["None"], "Hydropathy Index": [0.0]}, index=[0]
+        {"Amino acid": ["None"], "Hydropathy index": [0.0]}, index=[0]
     )
     df = pd.concat([baseline_df, df])
-    df.index.name = "Residue Number"
+    df.index.name = "Residue number"
 
     fig = px.line(
         df,
-        y="Hydropathy Index",
-        title=f"Hydropathy Plot of Sequence {seq}",
-        hover_data={"Amino Acid": True, "Hydropathy Index": True},
+        y="Hydropathy index",
+        title=f"Hydropathy plot of sequence {seq}",
+        hover_data={"Amino acid": True, "Hydropathy index": True},
     )
     fig.update_traces(line=dict(color=COLORS_BY_NAME["red"], width=3))
     fig.add_hline(
@@ -224,9 +155,11 @@ def _classification(seq: str, classify_by: str = "chemical") -> go.Figure:
         classify_by: Specification of how the amino acids should be classified, can be "chemical" or "charge".
     """
     classification = _aa_classification(seq, classify_by)
+    num = _seq_length(seq)
     df = pd.DataFrame(
         {"Class": classification.keys(), "Frequency": classification.values()}
     )
+    df["Proportion"] = (df["Frequency"] / num * 100).round(3)
     fig = px.bar(
         df,
         x="Class",
@@ -234,15 +167,17 @@ def _classification(seq: str, classify_by: str = "chemical") -> go.Figure:
         title=f"Classification ({classify_by}) of {seq}",
         color="Class",
         color_discrete_sequence=COLORS,
+        custom_data=["Proportion"],
     )
     fig.update_yaxes(tickmode="linear", tick0=0, dtick=1)
     fig.update_traces(
         showlegend=False,
+        hovertemplate="Class=%{x}<br>Frequency=%{y} (%{customdata} %)<extra></extra>",
     )
     return fig
 
 
-# Dataset-specific plots
+# Dataset-wide
 def _titration_curve(seq: str) -> go.Figure:
     """
     Computes a graph showing the net charge of a given sequence per pH level.
@@ -324,6 +259,8 @@ def _compare_features(
         title=f"Comparison of peptide features across each {group_by}",
         hover_name="Sequence",
     )
+    if feature_b == "GRAVY":
+        fig.add_hline(y=0)
     fig.update_traces(marker=dict(size=10))
     return fig
 
@@ -364,8 +301,9 @@ def _compare_feature(
 
 def _raincloud(
     df: pd.DataFrame,
-    group_by: str = "Group",  # TODO #75: This should be None, so that one "None"-group exists
+    group_by: str = "Group",
     feature: str = "Sequence length",
+    log_scaled: bool = True,
 ) -> go.Figure:
     """
     Creates a raincloud plot (containing half violin, box and scatter) for displaying
@@ -373,8 +311,12 @@ def _raincloud(
         df: Dataframe that contains the features
         group_by: Metadata aspect (e.g. Group, Batch, ...) that peptides get grouped by
         feature: Feature to be shown in scatter plot
+        log_scaled: If True, the x-axis uses a logarithmic (log10) transformation of the intensity data.
     """
     intensity_col = get_column_name(df, "intensity")
+    if group_by == "Group" and group_by not in df.columns:
+        df["Group"] = "None"
+
     groups = df[group_by].unique()
 
     # Sizes & spacings
@@ -400,7 +342,11 @@ def _raincloud(
 
     for i, group in enumerate(groups):
         peptides = df[(df[group_by] == group) & (df[intensity_col].notna())].copy()
-        intensities = peptides[intensity_col]
+        if log_scaled:
+            intensities = np.log10(peptides[intensity_col])
+        else:
+            intensities = peptides[intensity_col]
+
         peptides["Color"] = peptides[feature].apply(
             lambda x: normalize_color(x, min_feature_val, max_feature_val, colorscale)
         )
@@ -422,6 +368,7 @@ def _raincloud(
             showlegend=False,
             fillcolor=COLORS_BY_NAME["lightgray"],
             line=dict(color=COLORS_BY_NAME["lightgray"]),
+            hoverinfo="skip",
         )
         scatter = go.Scatter(
             x=intensities,
@@ -430,7 +377,15 @@ def _raincloud(
             marker=dict(size=5, color=peptides["Color"]),
             showlegend=False,
             text=peptides[feature],
-            hovertemplate=f"Intensity=%{{x}}<br>{feature}=%{{text}}<extra></extra>",
+            customdata=np.stack(
+                [peptides[intensity_col], peptides["Sequence"]], axis=-1
+            ),
+            hovertemplate=(
+                "Intensity=%{customdata[0]}<br>"
+                f"{feature}=%{{text}}<br>"
+                "Sequence=%{customdata[1]}<br>"
+                f"{group_by}={group}<extra></extra>"
+            ),
         )
         box = go.Box(
             x=intensities,
@@ -442,6 +397,7 @@ def _raincloud(
             showlegend=False,
             fillcolor=COLORS_BY_NAME["transparent"],
             line=dict(color=COLORS_BY_NAME["darkgray"]),
+            hoverinfo="skip",
         )
         fig.add_trace(violin, row=i + 1, col=1)
         fig.add_trace(scatter, row=i + 1, col=1)
@@ -482,11 +438,228 @@ def _raincloud(
             showlegend=False,
         )
     )
+    # Adjust x-axis ticks to log10
+    if log_scaled:
+        valid_logscaled = np.log10(df[intensity_col].dropna())
+        min = int(np.floor(valid_logscaled.min()))
+        max = int(np.ceil(valid_logscaled.max()))
+        tickvals = list(range(min, max + 1))
+        ticktext = [convert_exponential_to_suffix(t) for t in tickvals]
+        fig.update_xaxes(
+            row=len(groups),
+            col=1,
+            tickvals=tickvals,
+            ticktext=ticktext,
+        )
+
     # Show y-axis title only on last subplot
     fig.update_xaxes(
         row=len(groups),
         col=1,
-        title_text="Intensity",
+        title_text="Intensity (log10)" if log_scaled else "Intensity",
     )
     fig.update_layout(title=f"Raincloud: Intensity and {feature} distribution")
     return fig
+
+
+def _mann_whitney_u_test(
+    df: pd.DataFrame,
+    feature: str = "GRAVY",
+    group_by: str = "Group",
+    group_a: str = "",
+    group_b: str = "",
+    alternative: str = "two-sided",
+) -> go.Figure:
+    """
+    Performs a Mann-Whitney U test on a feature between two groups and creates a box plot with a significance bracket and p-value.
+        df: pandas DataFrame that contains the features
+        feature: Feature to be compared
+        group_by: Metadata aspect (e.g. Group, Batch, ...) that peptides get grouped by
+        group_a: First comparison group
+        group_b: Second comparison group
+        alternative: Chosen test alternative (two-sided, greater, less)
+    """
+    # Prepare data
+    if not group_a or not group_b:
+        all_groups = df[group_by].unique()
+        if len(all_groups) < 2:
+            raise ValueError(
+                f"Not enough options for {group_by} in metadata, but 2 are required."
+            )
+        group_a, group_b = all_groups[:2]
+        warnings.warn(
+            f"{group_a} and {group_b} were selected for performing Mann-Whitney U test because at least one input was empty."
+        )
+        sub = df[[group_by, feature, "Sequence"]].copy()
+    else:
+        sub = df.loc[
+            df[group_by].isin([group_a, group_b]), [group_by, feature, "Sequence"]
+        ].copy()
+    sub = sub.dropna(subset=[feature])
+    sub = sub.drop_duplicates([group_by, "Sequence"], keep="first")
+    x = sub.loc[sub[group_by] == group_a, feature].to_numpy()
+    y_pos = sub.loc[sub[group_by] == group_b, feature].to_numpy()
+    num_x, num_y = len(x), len(y_pos)
+    if num_x < 2 or num_y < 2:
+        raise ValueError(
+            f"Not enough values: {group_a}={num_x}, {group_b}={num_y} (at least 2 per group required)."
+        )
+
+    # Execute test
+    mw = mannwhitneyu(x, y_pos, alternative=alternative, method="auto")
+    p = float(mw.pvalue)
+
+    # Boxplot
+    fig = px.box(
+        sub,
+        x=group_by,
+        y=feature,
+        color=group_by,
+        color_discrete_sequence=COLORS,
+        title=f"Mann-Whitney U test of {feature}: {group_a} vs {group_b}",
+        hover_name="Sequence",
+    )
+
+    # Significance bracket
+    BOX_BRACKET_GAP = 0.05
+    BRACKET_HEIGHT = 0.03
+
+    feature_min = float(sub[feature].min())
+    feature_max = float(sub[feature].max())
+    span = max(feature_max - feature_min, 1.0)
+    y_pos = feature_max + BOX_BRACKET_GAP * span
+    y_height = BRACKET_HEIGHT * span
+    x_group_a, x_group_b = group_a, group_b
+
+    fig.add_shape(  # Left part
+        type="line",
+        xref="x",
+        yref="y",
+        x0=x_group_a,
+        x1=x_group_a,
+        y0=y_pos,
+        y1=y_pos + y_height,
+    )
+    fig.add_shape(  # Middle part
+        type="line",
+        xref="x",
+        yref="y",
+        x0=x_group_a,
+        x1=x_group_b,
+        y0=y_pos + (y_height * 0.88),
+        y1=y_pos + (y_height * 0.88),
+    )
+    fig.add_shape(  # Right part
+        type="line",
+        xref="x",
+        yref="y",
+        x0=x_group_b,
+        x1=x_group_b,
+        y0=y_pos + y_height,
+        y1=y_pos,
+    )
+    fig.add_annotation(
+        x=0.5,
+        xref="paper",
+        y=y_pos + y_height,
+        yref="y",
+        text=f"p = {round(p, 3)}",
+        showarrow=False,
+        align="center",
+        yanchor="bottom",
+    )
+
+    fig.update_yaxes(
+        range=[
+            feature_min - BOX_BRACKET_GAP * span,
+            y_pos + y_height + 2 * BOX_BRACKET_GAP * span,
+        ]
+    )
+    return fig
+
+
+@dataclass
+class Plot:
+    seq_based: bool
+    method: Callable
+    param_map: dict = None
+
+
+PLOTS = {
+    # Sequence-based
+    "aa_distribution": Plot(
+        True,
+        _aa_distribution,
+        {
+            "aa_distribution_order_by": "order_by",
+            "aa_distribution_show_all": "show_all",
+        },
+    ),
+    "classification": Plot(
+        True,
+        _classification,
+        {"classification_classify_by": "classify_by"},
+    ),
+    "hydropathy_profile": Plot(True, _hydropathy_profile),
+    "titration_curve": Plot(True, _titration_curve),
+    # Dataset-wide
+    "compare_features": Plot(
+        False,
+        _compare_features,
+        {
+            "compare_features_a": "feature_a",
+            "compare_features_b": "feature_b",
+            "compare_features_group_by": "group_by",
+            "compare_features_intensity_threshold": "intensity_threshold",
+        },
+    ),
+    "compare_feature": Plot(
+        False,
+        _compare_feature,
+        {
+            "compare_feature_group_by": "group_by",
+            "compare_feature_a": "feature",
+            "compare_feature_intensity_threshold": "intensity_threshold",
+        },
+    ),
+    "raincloud": Plot(
+        False,
+        _raincloud,
+        {
+            "raincloud_feature": "feature",
+            "raincloud_group_by": "group_by",
+        },
+    ),
+    "mann_whitney": Plot(
+        False,
+        _mann_whitney_u_test,
+        {
+            "mann_whitney_feature": "feature",
+            "mann_whitney_group_by": "group_by",
+            "mann_whitney_group_a": "group_a",
+            "mann_whitney_group_b": "group_b",
+            "mann_whitney_alternative": "alternative",
+        },
+    ),
+}
+
+
+def _generate_plots(seq: str, df: pd.DataFrame, params: dict) -> list:
+    """
+    Computes all selected plots on a given pandas DataFrame. Returns a tuple of lists, containing the peptide-specific plots and the plots describing the whole dataset.
+    """
+    seq_plots = []
+    data_plots = []
+    select_all = params.get("select_all")
+    for key, plot in PLOTS.items():
+        if params.get(key) or select_all:
+            kwargs = (
+                extract_related_kwargs(plot.param_map, params) if plot.param_map else {}
+            )
+            if plot.seq_based and seq is not None:
+                kwargs["seq"] = seq
+                seq_plots.append(plot.method(**kwargs))
+            if not plot.seq_based and df is not None:
+                kwargs["df"] = df
+                data_plots.append(plot.method(**kwargs))
+    return seq_plots, data_plots

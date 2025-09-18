@@ -18,7 +18,12 @@ from pepsipy.constants import (
     CHEMICAL_CLASS_PER_AA,
     CHARGE_CLASS_PER_AA,
 )
-from pepsipy.features import _aa_frequency, _aa_classification, _charge_at_ph, _seq_length
+from pepsipy.features import (
+    _aa_frequency,
+    _aa_classification,
+    _charge_at_ph,
+    _seq_length,
+)
 from pepsipy.utils import (
     get_column_name,
     normalize_color,

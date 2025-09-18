@@ -7,13 +7,21 @@ where = ["src"]
 
 [project]
 name = "pepsipy"
-version = "0.1.0"
+version = "1.0.0"
 authors = [
   { name="Ronja Krueger", email="ronja.krueger@student.hpi.de" }
 ]
 description = "A library to calculate peptide features."
 readme = "README.md"
 requires-python = ">=3.11"
+dependencies = [
+  "numpy==2.3.0",
+  "pandas==2.3.0",
+  "plotly==6.1.2",
+  "kaleido==0.2.1",
+  "scikit-learn==1.7.0",
+  "modlamp==4.3.2",
+]
 classifiers = [
   "Programming Language :: Python :: 3",
   "Operating System :: OS Independent",

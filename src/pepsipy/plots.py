@@ -8,7 +8,7 @@ from plotly.subplots import make_subplots
 from scipy.stats import mannwhitneyu
 import warnings
 
-from pepsi.constants import (
+from pepsipy.constants import (
     AA_WEIGHTS,
     COLORS,
     COLORS_BY_NAME,
@@ -18,8 +18,13 @@ from pepsi.constants import (
     CHEMICAL_CLASS_PER_AA,
     CHARGE_CLASS_PER_AA,
 )
-from pepsi.features import _aa_frequency, _aa_classification, _charge_at_ph, _seq_length
-from pepsi.utils import (
+from pepsipy.features import (
+    _aa_frequency,
+    _aa_classification,
+    _charge_at_ph,
+    _seq_length,
+)
+from pepsipy.utils import (
     get_column_name,
     normalize_color,
     extract_related_kwargs,

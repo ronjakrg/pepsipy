@@ -1,9 +1,9 @@
 import pytest
 import plotly.graph_objects as go
 
-from pepsi import Calculator
-from pepsi.features import FEATURES
-from pepsi.plots import PLOTS
+from pepsipy import Calculator
+from pepsipy.features import FEATURES
+from pepsipy.plots import PLOTS
 from tests.constants import PEPTIDES, METADATA
 
 

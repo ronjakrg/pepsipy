@@ -12,7 +12,7 @@ from .forms import (
     RaincloudForm,
     MannWhitneyForm,
 )
-from pepsi.features import FEATURES
+from pepsipy.features import FEATURES
 
 
 def load_data(name: str) -> pd.DataFrame:

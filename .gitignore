@@ -9,3 +9,4 @@ __pycache__/
 /results/*
 /frontend/tmp/*
 /dist/*
+/.venv/*

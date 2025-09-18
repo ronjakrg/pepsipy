@@ -1,7 +1,7 @@
 import pandas as pd
 from plotly.colors import sample_colorscale
 
-from pepsi.constants import AA_LETTERS
+from pepsipy.constants import AA_LETTERS
 
 
 def sanitize_seq(seq: str) -> str:

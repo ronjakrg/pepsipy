@@ -11,7 +11,7 @@ from modlamp.descriptors import GlobalDescriptor
 import numpy as np
 import pandas as pd
 
-from pepsi.constants import (
+from pepsipy.constants import (
     AA_FORMULA,
     AA_LETTERS,
     AA_THREE_LETTER_CODE,
@@ -22,7 +22,7 @@ from pepsi.constants import (
     CHEMICAL_CLASS,
     CHARGE_CLASS,
 )
-from pepsi.utils import (
+from pepsipy.utils import (
     sanitize_seq,
     get_distinct_seq,
     extract_related_kwargs,

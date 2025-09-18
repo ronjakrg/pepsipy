@@ -3,7 +3,7 @@ import pytest
 import pandas as pd
 from plotly import exceptions
 
-from pepsi.utils import (
+from pepsipy.utils import (
     sanitize_seq,
     get_column_name,
     get_distinct_seq,

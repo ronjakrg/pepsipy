@@ -1,7 +1,7 @@
 import pandas as pd
 import plotly.io as pio
 
-from pepsi.features import (
+from pepsipy.features import (
     _compute_features,
     _seq_length,
     _aa_frequency,
@@ -19,7 +19,7 @@ from pepsi.features import (
     _aliphatic_index,
     _extinction_coefficient,
 )
-from pepsi.plots import (
+from pepsipy.plots import (
     _generate_plots,
     _aa_distribution,
     _hydropathy_profile,
@@ -30,12 +30,12 @@ from pepsi.plots import (
     _raincloud,
     _mann_whitney_u_test,
 )
-from pepsi.constants import PROJECT_PATH, DATA_PATH
+from pepsipy.constants import PROJECT_PATH, DATA_PATH
 
 
 class Calculator:
     """
-    The central interface for using the PEPSI package. Computes peptide-specific of dataset-specific features and plots based on defined parameters.
+    The central interface for using the PEPSIPy library. Computes peptide-specific of dataset-specific features and plots based on defined parameters.
         dataset: pandas DataFrame containing the peptidomic data. The column 'Sequence' must contain the amino acid sequences. Columns 'Protein ID', 'Intensity' and 'PEP' are optional. To link the metadata file, the first metadata column must be added to the dataset.
         metadata: pandas DataFrame containing the metadata. The first column must contain unique identifiers (used as the key). All other columns can provide additional information for each key (e.g., group, batch, ...).
         seq: Amino acid sequence of interest

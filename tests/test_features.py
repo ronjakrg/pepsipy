@@ -1,6 +1,6 @@
 import pytest
 
-from pepsi.features import (
+from pepsipy.features import (
     _seq_length,
     _aa_frequency,
     _gravy,

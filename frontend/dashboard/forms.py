@@ -1,6 +1,6 @@
 from django import forms
 
-from pepsi.features import FEATURES
+from pepsipy.features import FEATURES
 
 # Numeric features available for comparison
 numeric_feature_choices = tuple(

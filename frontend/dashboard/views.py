@@ -5,7 +5,7 @@ from django.http import FileResponse, JsonResponse
 from pathlib import Path
 
 from frontend.project import settings
-from pepsi import Calculator
+from pepsipy import Calculator
 
 from .forms import ConfigForm, FORM_TO_FEATURE_FUNCTION, FORM_TO_PLOT_FUNCTION
 from .utils import (

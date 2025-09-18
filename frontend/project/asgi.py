@@ -1,5 +1,5 @@
 """
-ASGI config for pepsi project.
+ASGI config for project.
 
 It exposes the ASGI callable as a module-level variable named ``application``.
 

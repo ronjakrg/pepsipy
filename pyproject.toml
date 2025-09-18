@@ -11,7 +11,7 @@ version = "0.1.0"
 authors = [
   { name="Ronja Krueger", email="ronja.krueger@student.hpi.de" }
 ]
-description = "A package to calculate peptide features."
+description = "A library to calculate peptide features."
 readme = "README.md"
 requires-python = ">=3.11"
 classifiers = [
@@ -19,14 +19,14 @@ classifiers = [
   "Operating System :: OS Independent",
 ]
 license = "MIT"
-keywords = ["bioinformatics", "peptide"]
+keywords = ["bioinformatics", "peptides"]
 
 [project.urls]
-Repository = "https://github.com/ronjakrg/thesis-pepsi-package"
-Issues = "https://github.com/ronjakrg/thesis-pepsi-package/issues"
+Repository = "https://github.com/ronjakrg/pepsipy"
+Issues = "https://github.com/ronjakrg/pepsipy/issues"
 
 [project.scripts]
-run = "pepsi.__main__:main"
+run = "pepsipy.__main__:main"
 
 [tool.coverage.run]
 source = ["src", "frontend"]

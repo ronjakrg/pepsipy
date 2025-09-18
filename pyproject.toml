@@ -8,7 +8,7 @@ include = ["pepsipy*"]
 
 [project]
 name = "pepsipy"
-version = "1.0.1"
+version = "1.0.0"
 authors = [
   { name="Ronja Krueger", email="ronja.krueger@student.hpi.de" }
 ]

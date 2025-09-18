@@ -1,7 +1,7 @@
 # PEPSI: PEPtide Sequence Information
 
-[![CI](https://github.com/ronjakrg/thesis-pepsi-package/actions/workflows/ci.yml/badge.svg)](https://github.com/ronjakrg/thesis-pepsi-package/actions/workflows/ci.yml)
-[![Coverage badge](https://github.com/ronjakrg/thesis-pepsi-package/raw/python-coverage-comment-action-data/badge.svg)](https://github.com/ronjakrg/thesis-pepsi-package/tree/python-coverage-comment-action-data/)
+[![CI](https://github.com/ronjakrg/pepsipy/actions/workflows/ci.yml/badge.svg)](https://github.com/ronjakrg/pepsipy/actions/workflows/ci.yml)
+[![Coverage badge](https://github.com/ronjakrg/pepsipy/raw/python-coverage-comment-action-data/badge.svg)](https://github.com/ronjakrg/pepsipy/tree/python-coverage-comment-action-data/)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 PEPSIPy (**PEP**tide **S**equence **I**nformation for **Py**thon) is an open-source Python library that provides methods for computing a wide range of peptide features, including sequence composition, charge, hydrophobicity, and other physicochemical properties. All features can be calculated on an entire dataset or on a single peptide sequence of interest. Additionally, PEPSI offers a selection of visualisations, such as hydropathy profile or amino acid classification. <br>
@@ -15,17 +15,15 @@ This work was conducted as part of the project 'Veni, Vidi, Visualization: Impro
 ## Installation
 
 1. Make sure you have [pip](https://pip.pypa.io/en/stable/installation/) installed
-2. Update pip in your console <br>
-   ```python -m pip install --upgrade pip```
-3. Install PEPSI <br>
-   ```pip install pepsi```
-4. Import and use PEPSI in your project!
+2. Install PEPSI <br>
+   ```pip install pepsipy```
+3. Import and use PEPSI in your project!
 
 ## Usage
 1. Initialize a calculator instance
    ```
    import pandas as pd
-   from pepsi import Calculator
+   from pepsipy import Calculator
    calc = Calculator(
       dataset=pd.read_csv("data/peptides.csv"),
       metadata=pd.read_csv("data/metadata.csv"),
@@ -85,7 +83,7 @@ This work was conducted as part of the project 'Veni, Vidi, Visualization: Impro
 | Type    | Name                                                           | DOI                                                                  | Saved in                                     |
 |---------|----------------------------------------------------------------|----------------------------------------------------------------------|----------------------------------------------|
 | Dataset | Urinary peptidomics in youths with and without type 1 diabetes | [10.1074/mcp.RA119.001858](https://doi.org/10.1074/mcp.RA119.001858) | - `/data/peptides.csv`<br>- `/data/metadata.csv` |
-| Code    | Isoelectric Point Calculator 2.0                               | [10.1093/nar/gkab295](https://doi.org/10.1093/nar/gkab295)           | - `/src/pepsi/external/ipc-2.0.1`               |
+| Code    | Isoelectric Point Calculator 2.0                               | [10.1093/nar/gkab295](https://doi.org/10.1093/nar/gkab295)           | - `/src/pepsipy/external/ipc-2.0.1`               |
 
 ## License
 This project is licensed under the [MIT License](./LICENSE).

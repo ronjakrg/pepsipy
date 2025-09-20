@@ -68,7 +68,7 @@ def get_match_for_seq(data: pd.DataFrame, seq: str) -> dict:
 
 def clear_tmp():
     """
-    Deletes all files from temporary directory /tmp.
+    Deletes all files from temporary directory /tmp, except the .gitkeep file.
     """
     path = settings.TMP_DIR
     if os.path.exists(path):
@@ -79,6 +79,8 @@ def clear_tmp():
                 item.unlink()
         if os.path.exists(path / "plots"):
             for item in (path / "plots").iterdir():
+                if item.name == ".gitkeep":
+                    continue
                 item.unlink()
 
 

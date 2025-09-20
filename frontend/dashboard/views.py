@@ -116,6 +116,8 @@ def download_plots(request):
     path = settings.TMP_DIR / "plots.zip"
     with zipfile.ZipFile(path, "w") as zipf:
         for file in Path(settings.TMP_DIR / "plots").glob("*"):
+            if file.name == ".gitkeep":
+                continue
             zipf.write(file, arcname=file.name)
     return FileResponse(
         open(path, "rb"), content_type="application/zip", filename="plots.zip"

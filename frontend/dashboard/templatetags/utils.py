@@ -7,7 +7,7 @@ register = template.Library()
 @register.filter
 def insert_break(value, num):
     """
-    Inserts a <wbr> tag after a given number of characters.
+    Inserts <wbr> tags between character groups for optional line breaks.
         value: Input value
         num: Number of characters between optional breaks
     """

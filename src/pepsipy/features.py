@@ -262,6 +262,16 @@ def _extinction_coefficient(seq: str, oxidized: bool = False) -> int:
     return extinction
 
 
+def _instability_index(seq: str) -> float:
+    """
+    Computes the instability index based on (Guruprasad et al., 1990) of a given sequence.
+        seq: Given sequence
+    """
+    desc = GlobalDescriptor(seq)
+    desc.instability_index()
+    return float(round(desc.descriptor[0][0], 2))
+
+
 @dataclass
 class Feature:
     label: str
@@ -300,6 +310,7 @@ FEATURES = {
         {"extinction_coefficient_oxidized": "oxidized"},
     ),
     "boman_index": Feature("Boman index", True, _boman_index),
+    "instability_index": Feature("Instability index", True, _instability_index),
 }
 
 

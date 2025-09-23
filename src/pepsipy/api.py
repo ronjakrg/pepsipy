@@ -18,6 +18,7 @@ from pepsipy.features import (
     _boman_index,
     _aliphatic_index,
     _extinction_coefficient,
+    _instability_index,
 )
 from pepsipy.plots import (
     PLOTS,
@@ -113,6 +114,7 @@ class Calculator:
         aliphatic_index: bool = False,
         extinction_coefficient: bool = False,
         extinction_coefficient_oxidized: bool = False,
+        instability_index: bool = False,
     ):
         """
         Selects peptide features and their related parameters.
@@ -219,6 +221,7 @@ class Calculator:
     boman_index = staticmethod(_boman_index)
     aliphatic_index = staticmethod(_aliphatic_index)
     extinction_coefficient = staticmethod(_extinction_coefficient)
+    instability_index = staticmethod(_instability_index)
 
     # Plots
     def get_plots(self, as_tuple: bool = False) -> list | tuple:

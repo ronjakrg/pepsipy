@@ -1,16 +1,18 @@
 from django import template
+from django.utils.safestring import mark_safe
 
 register = template.Library()
 
 
 @register.filter
-def insert_break(value, arg):
+def insert_break(value, num):
     """
-    Inserts a <br>-Tag after a given number of characters.
+    Inserts a <wbr> tag after a given number of characters.
         value: Input value
-        arg: Number of characters between breaks
+        num: Number of characters between optional breaks
     """
-    number = int(arg)
+    step = int(num)
     if not isinstance(value, str):
         value = str(value)
-    return "<br>".join(value[i : i + number] for i in range(0, len(value), number))
+    parts = [value[i : i + step] for i in range(0, len(value), step)]
+    return mark_safe("<wbr>".join(parts))

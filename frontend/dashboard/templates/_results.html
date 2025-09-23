@@ -9,7 +9,7 @@
                 <img src="{% static 'img/bookmark.svg' %}" class="me-1" width="18" height="18">
                 <b>Results for Peptide of Interest</b>
             </h5>
-            <table class="table w-auto">
+            <table class="table w-100">
                 <tbody>
                 {% for pair in paired_peptide_features %}
                     <tr>
@@ -17,7 +17,7 @@
                             <th class="table-cell" scope="row"><b>{{ label }}</b></th>
                             <td class="table-cell">
                                 {% if label == "Three letter code" %}
-                                    {{ value|insert_break:"30"|safe }}
+                                    {{ value|insert_break:"3"|safe }}
                                 {% else %}
                                     {{ value }}
                                     {% if label == "Molecular weight" %}<span> Da</span>{% endif %}
@@ -32,7 +32,7 @@
                 </tbody>
             </table>
         </div>
-        <div class="col">
+        <div class="col-auto ms-4">
             <div class="d-flex align-items-center justify-content-end gap-2">
                 <a class="btn btn-purple d-inline-flex align-items-center" href="{% url 'download_data' %}?filename=features">
                     <img src="{% static 'img/download.svg' %}" class="me-1" width="14" height="14">

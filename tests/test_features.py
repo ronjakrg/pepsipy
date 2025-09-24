@@ -17,6 +17,7 @@ from pepsipy.features import (
     _boman_index,
     _aliphatic_index,
     _extinction_coefficient,
+    _instability_index,
 )
 from tests.constants import PEPTIDES
 
@@ -212,3 +213,7 @@ def test_extinction_efficient():
     assert 34615 == _extinction_coefficient(
         "HLDQWLPALKQLWLRMAIMWMTWMHDPLPCLNWSMCLQGIWATKNYASGQ", oxidized=True
     )
+
+
+def test_instability_index():
+    assert type(_instability_index("PEPTIDE")) is float

@@ -18,8 +18,10 @@ from pepsipy.features import (
     _boman_index,
     _aliphatic_index,
     _extinction_coefficient,
+    _instability_index,
 )
 from pepsipy.plots import (
+    PLOTS,
     _generate_plots,
     _aa_distribution,
     _hydropathy_profile,
@@ -112,6 +114,7 @@ class Calculator:
         aliphatic_index: bool = False,
         extinction_coefficient: bool = False,
         extinction_coefficient_oxidized: bool = False,
+        instability_index: bool = False,
     ):
         """
         Selects peptide features and their related parameters.
@@ -218,6 +221,7 @@ class Calculator:
     boman_index = staticmethod(_boman_index)
     aliphatic_index = staticmethod(_aliphatic_index)
     extinction_coefficient = staticmethod(_extinction_coefficient)
+    instability_index = staticmethod(_instability_index)
 
     # Plots
     def get_plots(self, as_tuple: bool = False) -> list | tuple:
@@ -231,28 +235,17 @@ class Calculator:
         else:
             params = {"select_all": True}
 
-        # TODO 74: Rethink these if statements
-        if any(
-            p in params.keys()
-            for p in [
-                "aa_distribution",
-                "hydropathy_profile",
-                "classification",
-                "titration_curve",
-                "select_all",
-            ]
-        ):
+        selected = [
+            feature
+            for key, feature in PLOTS.items()
+            if params.get(key) or params.get("select_all")
+        ]
+        has_seq_based = any(f.seq_based for f in selected)
+        has_dataset_based = any(not f.seq_based for f in selected)
+
+        if has_seq_based:
             self._ensure_attrs("seq")
-        if any(
-            p in params.keys()
-            for p in [
-                "raincloud",
-                "compare_feature",
-                "compare_features",
-                "mann_whitney",
-                "select_all",
-            ]
-        ):
+        if has_dataset_based:
             self._ensure_attrs("computed_features", "metadata")
             current_features = pd.merge(
                 self.computed_features, self.metadata, on=self.key_metadata, how="left"

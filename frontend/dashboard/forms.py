@@ -143,6 +143,13 @@ class BomanIndexForm(forms.Form):
     )
 
 
+class InstabilityIndexForm(forms.Form):
+    selected = forms.BooleanField(
+        label=FEATURES["instability_index"].label,
+        required=False,
+    )
+
+
 # Plot forms
 class AaDistributionForm(forms.Form):
     selected = forms.BooleanField(
@@ -353,6 +360,7 @@ FORM_TO_FEATURE_FUNCTION = {
     GravyForm: "gravy",
     ExtinctionCoefficientForm: "extinction_coefficient",
     BomanIndexForm: "boman_index",
+    InstabilityIndexForm: "instability_index",
 }
 FORM_TO_PLOT_FUNCTION = {
     AaDistributionForm: "aa_distribution",

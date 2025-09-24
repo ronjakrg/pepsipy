@@ -1,5 +1,6 @@
 # PEPSI: PEPtide Sequence Information
 
+[![PyPI](https://img.shields.io/pypi/v/pepsipy.svg)](https://pypi.org/project/pepsipy/)
 [![CI](https://github.com/ronjakrg/pepsipy/actions/workflows/ci.yml/badge.svg)](https://github.com/ronjakrg/pepsipy/actions/workflows/ci.yml)
 [![Coverage badge](https://github.com/ronjakrg/pepsipy/raw/python-coverage-comment-action-data/badge.svg)](https://github.com/ronjakrg/pepsipy/tree/python-coverage-comment-action-data/)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)

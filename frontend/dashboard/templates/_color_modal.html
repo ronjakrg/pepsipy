@@ -1,0 +1,75 @@
+{% load static %}
+
+<script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+<link rel="stylesheet" href="{% static 'css/base.css' %}">
+
+<div class="modal fade" id="colorModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="colorModalLabel">Customize Color Scheme for Visualizations</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <form id="colorForm">
+                <!-- Option 1 -->
+                 <div class="form-check">
+                    <input class="form-check-input" type="radio" name="colorScheme" id="scheme1" value="1">
+                    <label class="form-check-label" for="scheme1">
+                        <span class="me-2">Scheme 1</span>
+                        <span class="color-box" style="background:#CE5A5A;"></span>
+                        <span class="color-box" style="background:#4A536A;"></span>
+                        <span class="color-box" style="background:#87A8B9;"></span>
+                        <span class="color-box" style="background:#F1A765;"></span>
+                        <span class="color-box" style="background:#A7A1B2;"></span>
+                        <span class="color-box" style="background:#8E3F25;"></span>
+                        <span class="color-box" style="background:#511D43;"></span>
+                    </label>
+                </div>
+                <!-- Option 2 -->
+                 <div class="form-check">
+                    <input class="form-check-input" type="radio" name="colorScheme" id="scheme2" value="2">
+                    <label class="form-check-label" for="scheme2">
+                        <span class="me-2">Scheme 2</span>
+                        <span class="color-box" style="background:#a2191f;"></span>
+                        <span class="color-box" style="background:#8a3800;"></span>
+                        <span class="color-box" style="background:#684e00;"></span>
+                        <span class="color-box" style="background:#0e6027;"></span>
+                        <span class="color-box" style="background:#005d5d;"></span>
+                        <span class="color-box" style="background:#0043ce;"></span>
+                        <span class="color-box" style="background:#6929c4;"></span>
+                    </label>
+                </div>
+                <!-- Custom Schema -->
+                <div class="form-check mt-2">
+                    <input class="form-check-input" type="radio" name="colorScheme" id="customScheme" value="custom">
+                    <label class="form-check-label" for="customScheme">
+                        <span>Custom scheme</span>
+                    </label>
+                </div>
+                <div id="customColors">
+                    <!-- Custom Color 1 -->
+                    <span class="me-2"></span>
+                    <label class="color-box ms-3" for="customColor1" style="background:red;">
+                        <input type="color" name="customColor1" id="customColor1" class="custom-color-input" value="#ff0000">
+                    </label>
+                    <!-- Custom Color 2-7 -->
+                    {% for i in "234567" %}
+                        <label class="color-box" for="customColor{{ i }}" style="background:black;">
+                            <input type="color" 
+                                name="customColor{{ i }}" 
+                                id="customColor{{ i }}" 
+                                class="custom-color-input" 
+                                value="#ff0000">
+                        </label>
+                    {% endfor %}
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-grey" data-bs-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-purple" id="saveColors">Save</button>
+        </div>
+    </div>
+  </div>
+</div>

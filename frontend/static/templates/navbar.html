@@ -1,13 +1,19 @@
 {% load static %}
 <nav class="navbar bg-primary sticky-top">
   <div class="container-fluid position-relative d-flex align-items-center">
-    <a class="navbar-brand position-absolute top-50 start-50 translate-middle text-white" href="/">
+    <a class="navbar-brand mx-auto text-white" href="/">
       <b>PEPSI Dashboard</b>
     </a>
-    <div class="ms-auto">
-      <a class="nav-link text-white p-0" href="https://github.com/ronjakrg/pepsipy/">
-        <img src="{% static 'img/github.svg' %}" alt="GitHub" width="30" height="30" class="d-inline-block align-text-top">
-      </a>
-    </div>
+    <a class="nav-link text-white d-flex align-items-center p-0"
+      href=""
+      data-bs-toggle="modal"
+      data-bs-target="#colorModal">
+        <span class="me-2">Customize</span>
+        <img src="{% static 'img/palette.svg' %}" alt="Customize Icon" width="30" height="30" class="d-inline-block align-text-top me-3">
+    </a>
+    <a class="nav-link text-white d-flex align-items-center p-0" href="https://github.com/ronjakrg/pepsipy/">
+      <span class="me-2">GitHub</span>
+      <img src="{% static 'img/github.svg' %}" alt="GitHub Icon" width="30" height="30" class="d-inline-block align-text-top">
+    </a>
   </div>
 </nav>

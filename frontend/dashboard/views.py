@@ -15,6 +15,7 @@ from .utils import (
     clear_tmp,
     make_forms,
     get_paired_list,
+    update_tuple_in_paired_list,
 )
 
 
@@ -69,6 +70,7 @@ def index(request):
                 res.to_csv(settings.TMP_DIR / "peptide_features.csv", index=False)
                 computed_peptide_features = res.iloc[0].to_dict()
             paired_peptide_features = get_paired_list(computed_peptide_features)
+            # TODO paired_peptide_features = update_tuple_in_paired_list(...)
 
         # Generate plots
         calc.set_plot_params(**get_params(plot_forms, FORM_TO_PLOT_FUNCTION))

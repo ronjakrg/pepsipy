@@ -144,3 +144,23 @@ def get_paired_list(dict: dict) -> list:
     """
     items = list(dict.items())
     return [items[i : i + 2] for i in range(0, len(items), 2)]
+
+
+def update_tuple_in_paired_list(
+    paired_list: list,
+    target_label: str,
+    value: Any,
+) -> list:
+    """
+    Finds the target label in paired list and updates its value.
+        paired_list: Paired list of tuples
+        target_label: Label of tuple that gets updated
+        value: New value
+    """
+    for i, pair in enumerate(paired_list):
+        for j, (label, _) in enumerate(pair):
+            if label == target_label:
+                print("###", label)
+                print("###", value)
+                paired_list[i][j] = (label, value)
+    return paired_list

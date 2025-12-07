@@ -84,9 +84,10 @@ def test_get_match_for_seq():
     seq = "PEPTIDE"
     expected_match = {
         "Sequence": "PEPTIDE",
+        "Protein ID": "A0A075B6S2",
         "GRAVY": 1.0,
     }
-    assert (1, expected_match) == get_match_for_seq(data, "PEPTIDE")
+    assert (1, expected_match) == get_match_for_seq(data, seq)
     assert (0, {}) == get_match_for_seq(data, "PEP")
 
 

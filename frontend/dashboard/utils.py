@@ -56,7 +56,7 @@ def get_match_for_seq(data: pd.DataFrame, seq: str) -> dict:
     Matches the given sequence to a row of computed sequences and removes all columns that do not correspond to a feature.
     Returns the number of matches and the found features as dict.
     """
-    ALLOWED = {f.label for f in FEATURES.values()} | {"Sequence"}
+    ALLOWED = {f.label for f in FEATURES.values()} | {"Sequence", "Protein ID"}
     matched = data[data["Sequence"] == seq]
     num_matches = len(matched)
     matched = matched.loc[:, matched.columns.isin(ALLOWED)]

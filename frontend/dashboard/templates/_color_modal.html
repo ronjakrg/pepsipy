@@ -10,8 +10,9 @@
             <h5 class="modal-title" id="colorModalLabel">Customize Color Scheme for Visualizations</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-        <div class="modal-body">
-            <form id="colorForm">
+        <form action="save_colors_from_modal" method="post">
+            {% csrf_token %}
+            <div class="modal-body">
                 <!-- Option 1 -->
                  <div class="form-check">
                     <input class="form-check-input" type="radio" name="colorScheme" id="scheme1" value="1">
@@ -64,12 +65,12 @@
                         </label>
                     {% endfor %}
                 </div>
-            </form>
-        </div>
-        <div class="modal-footer">
-            <button type="button" class="btn btn-grey" data-bs-dismiss="modal">Cancel</button>
-            <button type="button" class="btn btn-purple" id="saveColors">Save</button>
-        </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-grey" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-purple" name="saveColors">Save</button>
+            </div>
+        </form>
     </div>
   </div>
 </div>

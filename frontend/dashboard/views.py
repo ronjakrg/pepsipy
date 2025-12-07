@@ -1,6 +1,6 @@
 import zipfile
 import pandas as pd
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.http import FileResponse, JsonResponse
 from pathlib import Path
 
@@ -120,3 +120,11 @@ def download_plots(request):
     return FileResponse(
         open(path, "rb"), content_type="application/zip", filename="plots.zip"
     )
+
+
+def save_colors_from_modal(request):
+    if request.method == "POST":
+        print(request.POST)
+    return redirect("index")
+    # TODO Keep content of index.html
+    # TODO Save correct colors, not placeholder

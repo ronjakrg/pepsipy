@@ -9,16 +9,16 @@
 | frontend/dashboard/migrations/\_\_init\_\_.py   |        0 |        0 |    100% |           |
 | frontend/dashboard/templatetags/\_\_init\_\_.py |        0 |        0 |    100% |           |
 | frontend/dashboard/templatetags/utils.py        |       10 |       10 |      0% |      1-18 |
-| frontend/dashboard/utils.py                     |       73 |       33 |     55% |73-84, 95-124, 134, 136, 145-146 |
-| frontend/dashboard/views.py                     |       65 |       53 |     18% |23-103, 107-108, 116-120 |
+| frontend/dashboard/utils.py                     |       79 |       33 |     58% |73-84, 95-124, 134, 136, 145-146 |
+| frontend/dashboard/views.py                     |       67 |       55 |     18% |24-111, 115-116, 124-128 |
 | frontend/project/\_\_init\_\_.py                |        0 |        0 |    100% |           |
 | src/pepsipy/\_\_init\_\_.py                     |        2 |        0 |    100% |           |
-| src/pepsipy/api.py                              |      121 |       18 |     85% |   279-314 |
+| src/pepsipy/api.py                              |      113 |       18 |     84% |   279-314 |
 | src/pepsipy/constants.py                        |       16 |        0 |    100% |           |
-| src/pepsipy/features.py                         |      145 |        1 |     99% |       153 |
-| src/pepsipy/plots.py                            |      212 |       37 |     83% |63-70, 75-122, 244, 248, 254, 268, 287, 293, 323, 353, 491, 500, 509 |
+| src/pepsipy/features.py                         |      142 |        1 |     99% |       153 |
+| src/pepsipy/plots.py                            |      210 |       37 |     82% |63-70, 75-122, 244, 248, 254, 268, 287, 293, 323, 353, 491, 500, 509 |
 | src/pepsipy/utils.py                            |       34 |        1 |     97% |        69 |
-|                                       **TOTAL** |  **678** |  **153** | **77%** |           |
+|                                       **TOTAL** |  **673** |  **155** | **77%** |           |
 
 
 ## Setup coverage badge

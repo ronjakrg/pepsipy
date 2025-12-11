@@ -1,8 +1,9 @@
 import zipfile
 import pandas as pd
-from django.shortcuts import redirect, render
+from django.shortcuts import render
 from django.http import FileResponse, JsonResponse
 from pathlib import Path
+import yaml
 
 from frontend.project import settings
 from pepsipy import Calculator
@@ -16,6 +17,7 @@ from .utils import (
     make_forms,
     get_paired_list,
 )
+from .constants import USER_COLORS_PATH
 
 
 def index(request):
@@ -30,6 +32,7 @@ def index(request):
     feature_forms = []
     plot_forms = []
     results_ready = False
+    user_colors_dict = {}
 
     calc = Calculator()
     config_form = ConfigForm(request.POST or None)
@@ -88,6 +91,14 @@ def index(request):
             i += 1
         results_ready = True
 
+    if USER_COLORS_PATH.exists():
+        with open(USER_COLORS_PATH, "r") as f:
+            user_colors_dict = yaml.safe_load(f)
+    user_colors_list = [
+        user_colors_dict.get(f"customColor{i}", "#000000") for i in range(1, 8)
+    ]
+    # TODO Check if this works when /user_files doesn't exist
+
     context = {
         "config_form": config_form,
         "feature_forms": feature_forms,
@@ -99,6 +110,8 @@ def index(request):
         "num_matches": num_matches,
         "peptide_plots": html_peptide_plots,
         "data_plots": html_data_plots,
+        "user_colors_dict": user_colors_dict,
+        "user_colors_list": user_colors_list,
     }
     return render(request, "index.html", context)
 
@@ -122,9 +135,18 @@ def download_plots(request):
     )
 
 
+# Called via AJAX from color modal
 def save_colors_from_modal(request):
     if request.method == "POST":
-        print(request.POST)
-    return redirect("index")
-    # TODO Keep content of index.html
-    # TODO Save correct colors, not placeholder
+        colors = {k: v for k, v in request.POST.items() if k != "csrfmiddlewaretoken"}
+        print("#####", colors)
+
+        USER_COLORS_PATH.parent.mkdir(parents=True, exist_ok=True)
+        with open(USER_COLORS_PATH, "w") as f:
+            yaml.dump(colors, f)
+        try:
+            request.session["saved_colors"] = colors
+        except Exception:
+            pass
+        return JsonResponse({"status": "ok", "colors": colors})
+    return JsonResponse({"status": "error", "message": "Invalid method"}, status=405)

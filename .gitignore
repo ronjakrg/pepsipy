@@ -10,3 +10,4 @@ __pycache__/
 /frontend/tmp/*
 /dist/*
 /.venv/*
+**/db.sqlite3

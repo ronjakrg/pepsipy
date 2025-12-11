@@ -5,6 +5,7 @@ from frontend.dashboard.utils import (
     load_data,
     get_params,
     get_match_for_seq,
+    update_tuple_in_paired_list,
 )
 from frontend.dashboard.views import index
 from frontend.dashboard.forms import (
@@ -83,7 +84,22 @@ def test_get_match_for_seq():
     seq = "PEPTIDE"
     expected_match = {
         "Sequence": "PEPTIDE",
+        "Protein ID": "A0A075B6S2",
         "GRAVY": 1.0,
     }
-    assert (1, expected_match) == get_match_for_seq(data, "PEPTIDE")
+    assert (1, expected_match) == get_match_for_seq(data, seq)
     assert (0, {}) == get_match_for_seq(data, "PEP")
+
+
+def test_update_tuple_in_paired_list():
+    data = [
+        [("Protein ID", "P07911-2"), ("Sequence", "SVIDQSRVLNLGPITR")],
+        [("Molecular weight", 1768.05), ("Sequence length", 16)],
+    ]
+    expected = [
+        [("Protein ID", "P07911-2, P10586-2"), ("Sequence", "SVIDQSRVLNLGPITR")],
+        [("Molecular weight", 1768.05), ("Sequence length", 16)],
+    ]
+    assert expected == update_tuple_in_paired_list(
+        data, "Protein ID", "P07911-2, P10586-2"
+    )

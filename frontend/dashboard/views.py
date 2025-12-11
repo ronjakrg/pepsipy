@@ -15,6 +15,7 @@ from .utils import (
     clear_tmp,
     make_forms,
     get_paired_list,
+    update_tuple_in_paired_list,
 )
 
 
@@ -68,7 +69,14 @@ def index(request):
                 res = calc.get_peptide_features()
                 res.to_csv(settings.TMP_DIR / "peptide_features.csv", index=False)
                 computed_peptide_features = res.iloc[0].to_dict()
+
             paired_peptide_features = get_paired_list(computed_peptide_features)
+            associated_protein_ids = computed_features.loc[
+                computed_features["Sequence"] == seq, "Protein ID"
+            ].unique()
+            paired_peptide_features = update_tuple_in_paired_list(
+                paired_peptide_features, "Protein ID", ", ".join(associated_protein_ids)
+            )
 
         # Generate plots
         calc.set_plot_params(**get_params(plot_forms, FORM_TO_PLOT_FUNCTION))

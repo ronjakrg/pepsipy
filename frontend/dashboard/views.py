@@ -58,7 +58,6 @@ def index(request):
         )
     else:
         context_user_colors_list = COLOR_SCHEME_1
-    # TODO Check if this works when /user_files doesn't exist
 
     if request.method == "POST" and "calculate" in request.POST:
         # Clear tmp directory

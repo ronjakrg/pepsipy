@@ -54,9 +54,9 @@
                 <div id="customColors">
                     <!-- Custom Color 1 -->
                     <span class="me-2"></span>
-                    <label class="color-box ms-3" for="customColor1" style="background: {{ context_user_colors_dict.customColor1|default:'#000000' }};">
+                    <label class="color-box ms-3" for="customColor1" style="background: {{ context_user_colors_dict.customColor1|default:'#CE5A5A' }};">
                         <input type="color" name="customColor1" id="customColor1" class="custom-color-input"
-                            value="{{ context_user_colors_dict.customColor1|default:'#000000' }}">
+                            value="{{ context_user_colors_dict.customColor1|default:'#CE5A5A' }}">
                     </label>
                     <!-- Custom Color 2-7 -->
                     {% for color in context_user_colors_list|slice:"1:" %}

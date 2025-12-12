@@ -10,4 +10,5 @@ __pycache__/
 /frontend/tmp/*
 /dist/*
 /.venv/*
-**/db.sqlite3
+*.sqlite3
+user_files/**

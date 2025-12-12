@@ -165,7 +165,7 @@ def update_tuple_in_paired_list(
                 paired_list[i][j] = (label, value)
     return paired_list
 
-  
+
 def load_user_color_scheme(path: str):
     """
     Loads the colors.yaml config and returns
@@ -187,4 +187,3 @@ def load_user_color_scheme(path: str):
         selected_colors = None
 
     return context_dict, context_list, selected_colors
-  

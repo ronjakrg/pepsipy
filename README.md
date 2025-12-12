@@ -6,19 +6,20 @@
 |------------------------------------------------ | -------: | -------: | ------: | --------: |
 | frontend/\_\_init\_\_.py                        |        0 |        0 |    100% |           |
 | frontend/dashboard/\_\_init\_\_.py              |        0 |        0 |    100% |           |
+| frontend/dashboard/constants.py                 |        7 |        0 |    100% |           |
 | frontend/dashboard/migrations/\_\_init\_\_.py   |        0 |        0 |    100% |           |
 | frontend/dashboard/templatetags/\_\_init\_\_.py |        0 |        0 |    100% |           |
 | frontend/dashboard/templatetags/utils.py        |       10 |       10 |      0% |      1-18 |
-| frontend/dashboard/utils.py                     |       79 |       33 |     58% |73-84, 95-124, 134, 136, 145-146 |
-| frontend/dashboard/views.py                     |       67 |       55 |     18% |24-111, 115-116, 124-128 |
+| frontend/dashboard/utils.py                     |       94 |       45 |     52% |75-86, 97-126, 136, 138, 147-148, 176-189 |
+| frontend/dashboard/views.py                     |       83 |       68 |     18% |27-130, 134-135, 143-147, 154-161 |
 | frontend/project/\_\_init\_\_.py                |        0 |        0 |    100% |           |
 | src/pepsipy/\_\_init\_\_.py                     |        2 |        0 |    100% |           |
-| src/pepsipy/api.py                              |      113 |       18 |     84% |   279-314 |
+| src/pepsipy/api.py                              |      115 |       19 |     83% |238, 287-322 |
 | src/pepsipy/constants.py                        |       16 |        0 |    100% |           |
 | src/pepsipy/features.py                         |      142 |        1 |     99% |       153 |
-| src/pepsipy/plots.py                            |      210 |       37 |     82% |63-70, 75-122, 244, 248, 254, 268, 287, 293, 323, 353, 491, 500, 509 |
+| src/pepsipy/plots.py                            |      211 |       37 |     82% |65-72, 77-124, 254, 258, 264, 278, 299, 305, 336, 366, 506, 515, 524 |
 | src/pepsipy/utils.py                            |       34 |        1 |     97% |        69 |
-|                                       **TOTAL** |  **673** |  **155** | **77%** |           |
+|                                       **TOTAL** |  **714** |  **181** | **75%** |           |
 
 
 ## Setup coverage badge

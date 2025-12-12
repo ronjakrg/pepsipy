@@ -3,6 +3,7 @@ import pandas as pd
 from django.shortcuts import render
 from django.http import FileResponse, JsonResponse
 from pathlib import Path
+import yaml
 
 from frontend.project import settings
 from pepsipy import Calculator
@@ -16,7 +17,9 @@ from .utils import (
     make_forms,
     get_paired_list,
     update_tuple_in_paired_list,
+    load_user_color_scheme,
 )
+from .constants import USER_COLORS_PATH, COLOR_SCHEME_1
 
 
 def index(request):
@@ -31,6 +34,11 @@ def index(request):
     feature_forms = []
     plot_forms = []
     results_ready = False
+    # For HTML color input fields
+    context_user_colors_dict = {}
+    context_user_colors_list = []
+    # For using colors in plots
+    selected_colors = None
 
     calc = Calculator()
     config_form = ConfigForm(request.POST or None)
@@ -44,6 +52,13 @@ def index(request):
         plot_forms = make_forms(
             request.POST, FORM_TO_PLOT_FUNCTION.keys(), metadata_choices
         )
+
+    if USER_COLORS_PATH.exists():
+        context_user_colors_dict, context_user_colors_list, selected_colors = (
+            load_user_color_scheme(USER_COLORS_PATH)
+        )
+    else:
+        context_user_colors_list = COLOR_SCHEME_1
 
     if request.method == "POST" and "calculate" in request.POST:
         # Clear tmp directory
@@ -80,7 +95,9 @@ def index(request):
 
         # Generate plots
         calc.set_plot_params(**get_params(plot_forms, FORM_TO_PLOT_FUNCTION))
-        peptide_plots, data_plots = calc.get_plots(as_tuple=True)
+        peptide_plots, data_plots = calc.get_plots(
+            as_tuple=True, colors=selected_colors
+        )
         i = 1
         for plot in peptide_plots:
             plot.write_image(
@@ -107,6 +124,8 @@ def index(request):
         "num_matches": num_matches,
         "peptide_plots": html_peptide_plots,
         "data_plots": html_data_plots,
+        "context_user_colors_dict": context_user_colors_dict,
+        "context_user_colors_list": context_user_colors_list,
     }
     return render(request, "index.html", context)
 
@@ -128,3 +147,15 @@ def download_plots(request):
     return FileResponse(
         open(path, "rb"), content_type="application/zip", filename="plots.zip"
     )
+
+
+# Called via AJAX from color modal
+def save_colors_from_modal(request):
+    if request.method == "POST":
+        colors = {k: v for k, v in request.POST.items() if k != "csrfmiddlewaretoken"}
+
+        USER_COLORS_PATH.parent.mkdir(parents=True, exist_ok=True)
+        with open(USER_COLORS_PATH, "w") as f:
+            yaml.dump(colors, f)
+        return JsonResponse({"status": "ok", "colors": colors})
+    return JsonResponse({"status": "error", "message": "Invalid method"}, status=405)

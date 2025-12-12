@@ -7,7 +7,13 @@
   <script type="text/javascript" src="{% static 'js/plotly-3.0.1.min.js' %}"></script>
   <script type="text/javascript" src="{% static 'js/index.js' %}"></script>
 {% endblock %}
+
 {% block content %}
+
+{% block navbar %}
+  {% include "navbar.html" %}
+{% endblock %}
+
 <div class="container-fluid my-5 px-5">
   <form method="post" class="row">
     {% csrf_token %}

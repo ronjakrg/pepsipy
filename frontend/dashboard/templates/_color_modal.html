@@ -1,0 +1,109 @@
+{% load static %}
+
+<script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+<link rel="stylesheet" href="{% static 'css/base.css' %}">
+
+<div class="modal fade" id="color-modal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="color-modal-label">Customize Color Scheme for Visualizations</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form id="color-modal-form" method="POST">
+            {% csrf_token %}
+            <div class="modal-body">
+                <!-- Scheme 1 -->
+                 <div class="form-check">
+                    <input class="form-check-input" type="radio" name="colorScheme" id="scheme1" value="1"
+                        {% if context_user_colors_dict.colorScheme == "1" %}checked{% endif %}>
+                    <label class="form-check-label" for="scheme1">
+                        <span class="me-2">Scheme 1</span>
+                        <span class="color-box" style="background:#CE5A5A;"></span>
+                        <span class="color-box" style="background:#4A536A;"></span>
+                        <span class="color-box" style="background:#87A8B9;"></span>
+                        <span class="color-box" style="background:#F1A765;"></span>
+                        <span class="color-box" style="background:#A7A1B2;"></span>
+                        <span class="color-box" style="background:#8E3F25;"></span>
+                        <span class="color-box" style="background:#511D43;"></span>
+                    </label>
+                </div>
+                <!-- Scheme 2 -->
+                 <div class="form-check">
+                    <input class="form-check-input" type="radio" name="colorScheme" id="scheme2" value="2"
+                        {% if context_user_colors_dict.colorScheme == "2" %}checked{% endif %}>
+                    <label class="form-check-label" for="scheme2">
+                        <span class="me-2">Scheme 2</span>
+                        <span class="color-box" style="background:#a2191f;"></span>
+                        <span class="color-box" style="background:#8a3800;"></span>
+                        <span class="color-box" style="background:#684e00;"></span>
+                        <span class="color-box" style="background:#0e6027;"></span>
+                        <span class="color-box" style="background:#005d5d;"></span>
+                        <span class="color-box" style="background:#0043ce;"></span>
+                        <span class="color-box" style="background:#6929c4;"></span>
+                    </label>
+                </div>
+                <!-- Custom Scheme -->
+                <div class="form-check mt-2">
+                    <input class="form-check-input" type="radio" name="colorScheme" id="customScheme" value="custom"
+                        {% if context_user_colors_dict.colorScheme == "custom" %}checked{% endif %}>
+                    <label class="form-check-label" for="customScheme">
+                        <span>Custom scheme</span>
+                    </label>
+                </div>
+                <div id="customColors">
+                    <!-- Custom Color 1 -->
+                    <span class="me-2"></span>
+                    <label class="color-box ms-3" for="customColor1" style="background: {{ context_user_colors_dict.customColor1|default:'#CE5A5A' }};">
+                        <input type="color" name="customColor1" id="customColor1" class="custom-color-input"
+                            value="{{ context_user_colors_dict.customColor1|default:'#CE5A5A' }}">
+                    </label>
+                    <!-- Custom Color 2-7 -->
+                    {% for color in context_user_colors_list|slice:"1:" %}
+                        {% with i=forloop.counter|add:"1" %}
+                            <label class="color-box" for="customColor{{ i }}" style="background: {{ color }};">
+                                <input type="color" 
+                                    name="customColor{{ i }}" 
+                                    id="customColor{{ i }}" 
+                                    class="custom-color-input" 
+                                    value="{{ color }}">
+                            </label>
+                        {% endwith %}
+                    {% endfor %}
+                </div>
+            </div>
+            <small class="ms-3">Your new color settings will appear after recalculating the analysis.</small>
+            <div class="modal-footer mt-3">
+                <button type="button" class="btn btn-grey" data-bs-dismiss="modal">Cancel</button>
+                <button id="save-colors-btn" type="submit" class="btn btn-purple" data-bs-dismiss="modal">Save</button>
+            </div>
+        </form>
+    </div>
+  </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const colorForm = document.getElementById('color-modal-form');
+        if (!colorForm) return;
+
+        colorForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const formData = new FormData(colorForm);
+
+            fetch("{% url 'save_colors_from_modal' %}", {
+                method: "POST",
+                body: formData,
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}'
+                }
+            })
+            .then(response => response.json())
+            .then(json => {
+                console.log(json);
+            })
+            .catch(err => console.error(err));
+        });
+    });
+</script>

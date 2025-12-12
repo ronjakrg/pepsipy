@@ -13,7 +13,7 @@
         <form id="color-modal-form" method="POST">
             {% csrf_token %}
             <div class="modal-body">
-                <!-- Option 1 -->
+                <!-- Scheme 1 -->
                  <div class="form-check">
                     <input class="form-check-input" type="radio" name="colorScheme" id="scheme1" value="1"
                         {% if context_user_colors_dict.colorScheme == "1" %}checked{% endif %}>
@@ -28,7 +28,7 @@
                         <span class="color-box" style="background:#511D43;"></span>
                     </label>
                 </div>
-                <!-- Option 2 -->
+                <!-- Scheme 2 -->
                  <div class="form-check">
                     <input class="form-check-input" type="radio" name="colorScheme" id="scheme2" value="2"
                         {% if context_user_colors_dict.colorScheme == "2" %}checked{% endif %}>
@@ -43,7 +43,7 @@
                         <span class="color-box" style="background:#6929c4;"></span>
                     </label>
                 </div>
-                <!-- Custom Schema -->
+                <!-- Custom Scheme -->
                 <div class="form-check mt-2">
                     <input class="form-check-input" type="radio" name="colorScheme" id="customScheme" value="custom"
                         {% if context_user_colors_dict.colorScheme == "custom" %}checked{% endif %}>

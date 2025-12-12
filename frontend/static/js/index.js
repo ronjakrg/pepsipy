@@ -12,9 +12,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const colorInputs = document.querySelectorAll('.custom-color-input');
   colorInputs.forEach(input => {
     input.addEventListener('input', (event) => {
-            const newColor = event.target.value;
-            const labelElement = event.target.parentElement;
-            labelElement.style.backgroundColor = newColor;
-        });
+        const newColor = event.target.value;
+        const labelElement = event.target.parentElement;
+        labelElement.style.backgroundColor = newColor;
+      });
   });
 });

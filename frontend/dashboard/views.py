@@ -149,9 +149,5 @@ def save_colors_from_modal(request):
         USER_COLORS_PATH.parent.mkdir(parents=True, exist_ok=True)
         with open(USER_COLORS_PATH, "w") as f:
             yaml.dump(colors, f)
-        try:
-            request.session["saved_colors"] = colors
-        except Exception:
-            pass
         return JsonResponse({"status": "ok", "colors": colors})
     return JsonResponse({"status": "error", "message": "Invalid method"}, status=405)

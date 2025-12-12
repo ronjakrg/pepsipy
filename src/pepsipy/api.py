@@ -234,7 +234,7 @@ class Calculator:
         Note: If no plots were explicitly selected, all available plots are computed with their default options.
             as_tuple: If set to True, the peptide and dataset plots are returned seperated as tuple.
         """
-        if not colors:
+        if colors is None:
             colors = COLORS
 
         if self.plot_params:

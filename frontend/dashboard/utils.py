@@ -166,7 +166,7 @@ def update_tuple_in_paired_list(
     return paired_list
 
   
-  def load_user_color_scheme(path: str):
+def load_user_color_scheme(path: str):
     """
     Loads the colors.yaml config and returns
         context_dict: Contains all entries as dict

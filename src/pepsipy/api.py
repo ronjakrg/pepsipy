@@ -32,7 +32,7 @@ from pepsipy.plots import (
     _raincloud,
     _mann_whitney_u_test,
 )
-from pepsipy.constants import PROJECT_PATH, DATA_PATH
+from pepsipy.constants import COLORS, PROJECT_PATH, DATA_PATH
 
 
 class Calculator:
@@ -224,12 +224,19 @@ class Calculator:
     instability_index = staticmethod(_instability_index)
 
     # Plots
-    def get_plots(self, as_tuple: bool = False) -> list | tuple:
+    def get_plots(
+        self,
+        as_tuple: bool = False,
+        colors: list = COLORS,
+    ) -> list | tuple:
         """
         Generates selected plots. Requires a sequence or a dataset set by setup().
         Note: If no plots were explicitly selected, all available plots are computed with their default options.
             as_tuple: If set to True, the peptide and dataset plots are returned seperated as tuple.
         """
+        if not colors:
+            colors = COLORS
+
         if self.plot_params:
             params = self.plot_params
         else:
@@ -257,6 +264,7 @@ class Calculator:
             df=current_features,
             seq=self.seq,
             params=params,
+            colors=colors,
         )
         if as_tuple:
             return plot_tuple

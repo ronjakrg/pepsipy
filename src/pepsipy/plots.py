@@ -37,12 +37,14 @@ def _aa_distribution(
     seq: str,
     order_by: str = "frequency",
     show_all: bool = False,
+    colors: list = COLORS,
 ) -> go.Figure:
     """
     Computes a bar plot showing the frequency distribution for a given sequence.
         seq: Given sequence
         order_by: Specification of how the amino acids should be sorted, can be any of "frequency", "alphabetical", "classes chemical", "classes charge", "hydropathy" or "weight".
         show_all: Specification if all amino acids should be listed, even when not found in the sequence
+        colors: List of color codes (in hexadecimal format) to use in the plot
     """
     freq = _aa_frequency(seq)
     num = _seq_length(seq)
@@ -55,7 +57,7 @@ def _aa_distribution(
             df,
             x="Amino acid",
             y="Frequency",
-            color_discrete_sequence=COLORS,
+            color_discrete_sequence=colors,
             custom_data=["Proportion"],
         )
         if order_by == "frequency":
@@ -96,7 +98,7 @@ def _aa_distribution(
             shared_yaxes=True,
         )
         # Create bar per class
-        CLASS_TO_COLOR = dict(zip(classes, COLORS))
+        CLASS_TO_COLOR = dict(zip(classes, colors))
         for i, cls in enumerate(classes):
             class_df = df[df["Class"] == cls].sort_values("Amino acid")
             fig.add_trace(
@@ -125,10 +127,12 @@ def _aa_distribution(
     return fig
 
 
-def _hydropathy_profile(seq: str) -> go.Figure:
+def _hydropathy_profile(seq: str, colors: list = COLORS) -> go.Figure:
     """
     Computes a hydropathy profile plot for a given sequence.
     Note: The input sequence must be pre-sanitized to compute only valid amino acids.
+        seq: Given sequence
+        colors: List of color codes (in hexadecimal format) to use in the plot
     """
     df = pd.DataFrame({"Amino acid": list(seq)})
     df["Hydropathy index"] = df["Amino acid"].map(HYDROPATHY_INDICES)
@@ -145,7 +149,7 @@ def _hydropathy_profile(seq: str) -> go.Figure:
         title=f"Hydropathy plot of sequence {seq}",
         hover_data={"Amino acid": True, "Hydropathy index": True},
     )
-    fig.update_traces(line=dict(color=COLORS_BY_NAME["red"], width=3))
+    fig.update_traces(line=dict(color=colors[0], width=3))
     fig.add_hline(
         y=0,
         line_dash="dash",
@@ -153,11 +157,14 @@ def _hydropathy_profile(seq: str) -> go.Figure:
     return fig
 
 
-def _classification(seq: str, classify_by: str = "chemical") -> go.Figure:
+def _classification(
+    seq: str, classify_by: str = "chemical", colors: list = COLORS
+) -> go.Figure:
     """
     Computes a bar plot showing the frequency of each amino acid class based on (Pommié et al., 2004).
         seq: Given sequence
         classify_by: Specification of how the amino acids should be classified, can be "chemical" or "charge".
+        colors: List of color codes (in hexadecimal format) to use in the plot
     """
     classification = _aa_classification(seq, classify_by)
     num = _seq_length(seq)
@@ -171,7 +178,7 @@ def _classification(seq: str, classify_by: str = "chemical") -> go.Figure:
         y="Frequency",
         title=f"Classification ({classify_by}) of {seq}",
         color="Class",
-        color_discrete_sequence=COLORS,
+        color_discrete_sequence=colors,
         custom_data=["Proportion"],
     )
     fig.update_yaxes(tickmode="linear", tick0=0, dtick=1)
@@ -183,10 +190,11 @@ def _classification(seq: str, classify_by: str = "chemical") -> go.Figure:
 
 
 # Dataset-wide
-def _titration_curve(seq: str) -> go.Figure:
+def _titration_curve(seq: str, colors: list = COLORS) -> go.Figure:
     """
     Computes a graph showing the net charge of a given sequence per pH level.
         seq: Given sequence
+        colors: List of color codes (in hexadecimal format) to use in the plot
     """
     ph_vals = np.arange(0.0, 14.0 + 0.1, 0.1)
     df = pd.DataFrame({"pH": ph_vals})
@@ -197,7 +205,7 @@ def _titration_curve(seq: str) -> go.Figure:
         y="Charge",
         title="Titration curve (charge vs. pH)",
     )
-    fig.update_traces(line=dict(color=COLORS_BY_NAME["red"], width=3))
+    fig.update_traces(line=dict(color=colors[0], width=3))
     fig.add_hline(y=0, line_dash="dash")
 
     min_charge = int(np.floor(df["Charge"].min()))
@@ -217,7 +225,7 @@ def _titration_curve(seq: str) -> go.Figure:
                 x=ph,
                 y=charge,
                 mode="markers",
-                marker=dict(size=8, color=COLORS_BY_NAME["blue"]),
+                marker=dict(size=8, color=colors[1]),
                 hovertemplate="pH=%{x:.1f}<br>Charge=%{y:.0f}<extra></extra>",
                 showlegend=False,
             )
@@ -231,6 +239,7 @@ def _compare_features(
     feature_b: str = "Molecular weight",
     group_by: str = None,
     intensity_threshold: float = None,
+    colors: list = COLORS,
 ) -> go.Figure:
     """
     Creates a scatter plot to compare two features across a metadata aspect.
@@ -239,6 +248,7 @@ def _compare_features(
         feature_a: Feature shown on x-axis
         feature_b: Feature shown on y-axis
         intensity_threshold: Peptides with intensities below this threshold are not included
+        colors: List of color codes (in hexadecimal format) to use in the plot
     """
     if feature_a not in df.columns:
         raise ValueError(
@@ -258,7 +268,7 @@ def _compare_features(
         x=feature_a,
         y=feature_b,
         color=group_by,
-        color_discrete_sequence=COLORS,
+        color_discrete_sequence=colors,
         symbol=group_by,
         symbol_sequence=["square", "circle", "arrow-up", "star"],
         title=f"Comparison of peptide features across each {group_by}",
@@ -275,6 +285,7 @@ def _compare_feature(
     feature: str = "Sequence length",
     group_by: str = None,
     intensity_threshold: float = None,
+    colors: list = COLORS,
 ) -> go.Figure:
     """
     Creates box plots for each group to compare a feature between metadata aspect.
@@ -282,6 +293,7 @@ def _compare_feature(
         group_by: Metadata aspect (e.g. Group, Batch, ...) that peptides get grouped by
         feature: Feature to be compared
         intensity_threshold: Peptides with intensities below this threshold are not included
+        colors: List of color codes (in hexadecimal format) to use in the plot
     """
     if feature not in df.columns:
         raise ValueError(
@@ -297,7 +309,7 @@ def _compare_feature(
         x=group_by,
         y=feature,
         color=group_by,
-        color_discrete_sequence=COLORS,
+        color_discrete_sequence=colors,
         title=f"Distribution of {feature} across each {group_by}",
         hover_name="Sequence",
     )
@@ -309,6 +321,7 @@ def _raincloud(
     group_by: str = "Group",
     feature: str = "Sequence length",
     log_scaled: bool = True,
+    colors: list = None,
 ) -> go.Figure:
     """
     Creates a raincloud plot (containing half violin, box and scatter) for displaying
@@ -474,6 +487,7 @@ def _mann_whitney_u_test(
     group_a: str = "",
     group_b: str = "",
     alternative: str = "two-sided",
+    colors: list = COLORS,
 ) -> go.Figure:
     """
     Performs a Mann-Whitney U test on a feature between two groups and creates a box plot with a significance bracket and p-value.
@@ -483,6 +497,7 @@ def _mann_whitney_u_test(
         group_a: First comparison group
         group_b: Second comparison group
         alternative: Chosen test alternative (two-sided, greater, less)
+        colors: List of color codes (in hexadecimal format) to use in the plot
     """
     # Prepare data
     if not group_a or not group_b:
@@ -520,7 +535,7 @@ def _mann_whitney_u_test(
         x=group_by,
         y=feature,
         color=group_by,
-        color_discrete_sequence=COLORS,
+        color_discrete_sequence=colors,
         title=f"Mann-Whitney U test of {feature}: {group_a} vs {group_b}",
         hover_name="Sequence",
     )
@@ -649,7 +664,12 @@ PLOTS = {
 }
 
 
-def _generate_plots(seq: str, df: pd.DataFrame, params: dict) -> list:
+def _generate_plots(
+    seq: str,
+    df: pd.DataFrame,
+    params: dict,
+    colors: list = COLORS,
+) -> list:
     """
     Computes all selected plots on a given pandas DataFrame. Returns a tuple of lists, containing the peptide-specific plots and the plots describing the whole dataset.
     """
@@ -661,6 +681,7 @@ def _generate_plots(seq: str, df: pd.DataFrame, params: dict) -> list:
             kwargs = (
                 extract_related_kwargs(plot.param_map, params) if plot.param_map else {}
             )
+            kwargs["colors"] = colors
             if plot.seq_based and seq is not None:
                 kwargs["seq"] = seq
                 seq_plots.append(plot.method(**kwargs))

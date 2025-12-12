@@ -16,8 +16,9 @@ from .utils import (
     clear_tmp,
     make_forms,
     get_paired_list,
+    load_user_color_scheme,
 )
-from .constants import USER_COLORS_PATH
+from .constants import USER_COLORS_PATH, COLOR_SCHEME_1
 
 
 def index(request):
@@ -32,7 +33,11 @@ def index(request):
     feature_forms = []
     plot_forms = []
     results_ready = False
-    user_colors_dict = {}
+    # For HTML color input fields
+    context_user_colors_dict = {}
+    context_user_colors_list = []
+    # For using colors in plots
+    selected_colors = None
 
     calc = Calculator()
     config_form = ConfigForm(request.POST or None)
@@ -46,6 +51,14 @@ def index(request):
         plot_forms = make_forms(
             request.POST, FORM_TO_PLOT_FUNCTION.keys(), metadata_choices
         )
+
+    if USER_COLORS_PATH.exists():
+        context_user_colors_dict, context_user_colors_list, selected_colors = (
+            load_user_color_scheme(USER_COLORS_PATH)
+        )
+    else:
+        context_user_colors_list = COLOR_SCHEME_1
+    # TODO Check if this works when /user_files doesn't exist
 
     if request.method == "POST" and "calculate" in request.POST:
         # Clear tmp directory
@@ -75,7 +88,9 @@ def index(request):
 
         # Generate plots
         calc.set_plot_params(**get_params(plot_forms, FORM_TO_PLOT_FUNCTION))
-        peptide_plots, data_plots = calc.get_plots(as_tuple=True)
+        peptide_plots, data_plots = calc.get_plots(
+            as_tuple=True, colors=selected_colors
+        )
         i = 1
         for plot in peptide_plots:
             plot.write_image(
@@ -91,14 +106,6 @@ def index(request):
             i += 1
         results_ready = True
 
-    if USER_COLORS_PATH.exists():
-        with open(USER_COLORS_PATH, "r") as f:
-            user_colors_dict = yaml.safe_load(f)
-    user_colors_list = [
-        user_colors_dict.get(f"customColor{i}", "#000000") for i in range(1, 8)
-    ]
-    # TODO Check if this works when /user_files doesn't exist
-
     context = {
         "config_form": config_form,
         "feature_forms": feature_forms,
@@ -110,8 +117,8 @@ def index(request):
         "num_matches": num_matches,
         "peptide_plots": html_peptide_plots,
         "data_plots": html_data_plots,
-        "user_colors_dict": user_colors_dict,
-        "user_colors_list": user_colors_list,
+        "context_user_colors_dict": context_user_colors_dict,
+        "context_user_colors_list": context_user_colors_list,
     }
     return render(request, "index.html", context)
 
@@ -139,7 +146,6 @@ def download_plots(request):
 def save_colors_from_modal(request):
     if request.method == "POST":
         colors = {k: v for k, v in request.POST.items() if k != "csrfmiddlewaretoken"}
-        print("#####", colors)
 
         USER_COLORS_PATH.parent.mkdir(parents=True, exist_ok=True)
         with open(USER_COLORS_PATH, "w") as f:

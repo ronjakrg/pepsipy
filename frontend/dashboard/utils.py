@@ -4,6 +4,7 @@ from pathlib import Path
 import os
 from typing import Any
 from django.conf import settings
+import yaml
 from .forms import (
     CompareFeatureForm,
     CompareFeaturesForm,
@@ -13,6 +14,7 @@ from .forms import (
     MannWhitneyForm,
 )
 from pepsipy.features import FEATURES
+from .constants import COLOR_SCHEME_1, COLOR_SCHEME_2
 
 
 def load_data(name: str) -> pd.DataFrame:
@@ -144,3 +146,23 @@ def get_paired_list(dict: dict) -> list:
     """
     items = list(dict.items())
     return [items[i : i + 2] for i in range(0, len(items), 2)]
+
+
+def load_user_color_scheme(path: str):
+    """
+    TODO
+    """
+    with open(path, "r") as f:
+        context_dict = yaml.safe_load(f)
+    context_list = [context_dict.get(f"customColor{i}", "#000000") for i in range(1, 8)]
+    scheme = context_dict.get("colorScheme")
+    if scheme == "custom":
+        selected_colors = context_list
+    elif scheme == "1":
+        selected_colors = COLOR_SCHEME_1
+    elif scheme == "2":
+        selected_colors = COLOR_SCHEME_2
+    else:
+        selected_colors = None
+
+    return context_dict, context_list, selected_colors

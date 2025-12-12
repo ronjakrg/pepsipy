@@ -150,7 +150,10 @@ def get_paired_list(dict: dict) -> list:
 
 def load_user_color_scheme(path: str):
     """
-    TODO
+    Loads the colors.yaml config and returns
+        context_dict: Contains all entries as dict
+        context_list: Contains a list of all custom colors
+        selected_colors: Contains a list of selected colors, either from a scheme or custom colors
     """
     with open(path, "r") as f:
         context_dict = yaml.safe_load(f)

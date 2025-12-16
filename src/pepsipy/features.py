@@ -10,6 +10,7 @@ from typing import Callable
 from modlamp.descriptors import GlobalDescriptor
 import numpy as np
 import pandas as pd
+from pyteomics import mass
 
 from pepsipy.constants import (
     AA_FORMULA,
@@ -21,6 +22,7 @@ from pepsipy.constants import (
     WATER,
     CHEMICAL_CLASS,
     CHARGE_CLASS,
+    PROTON_MASS,
 )
 from pepsipy.utils import (
     sanitize_seq,
@@ -65,6 +67,48 @@ def _molecular_weight(seq: str) -> float:
     num = _seq_length(seq)
     weight = sum(AA_WEIGHTS[aa] for aa in seq) - (num - 1) * WATER
     return round(weight, 2)
+
+
+def _mass(seq: str, option: str = "monoisotopic") -> float:
+    """
+    Computes the mass of a given peptide sequence.
+        seq: Given sequence
+        option: Specification of which mass type to compute, can be "monoisotopic" or "average".
+    """
+    if option == "monoisotopic":
+        return round(mass.calculate_mass(sequence=seq, monoisotopic=True), 2)
+    if option == "average":
+        return round(mass.calculate_mass(sequence=seq, monoisotopic=False), 2)
+    else:
+        raise ValueError(f"Unknown option: {option}")
+
+
+def _theoretical_mz(
+    seq: str,
+    charges: int | float | list[int] | list[float] | str = [1],
+) -> str:
+    """
+    Computes the mass-to-charge ratio (m/z) for a sequence and its observed charge states.
+        seq: Given sequence
+        charges: A charge state or a list of charge states.
+    """
+    # TODO Move this conversion to MaxQuant import function
+    try:
+        if charges is np.nan:
+            charges = [1]  # Default
+        elif type(charges) is str:
+            charges = [int(z) for z in charges.split(";") if z.strip()]
+        elif type(charges) is int or type(charges) is float:
+            charges = [charges]
+        else:
+            charges = [int(z) for z in charges]
+    except Exception as e:
+        raise ValueError(f"Parameter 'Charge' could not be processed: {e}")
+
+    mz_vals = [
+        mass.calculate_mass(sequence=seq, monoisotopic=True, charge=z) for z in charges
+    ]
+    return ", ".join([f"{mz:.2f}" for mz in mz_vals])
 
 
 def _three_letter_code(seq: str) -> str:
@@ -311,6 +355,10 @@ FEATURES = {
     ),
     "boman_index": Feature("Boman index", True, _boman_index),
     "instability_index": Feature("Instability index", True, _instability_index),
+    "mass": Feature("Mass", True, _mass, {"mass_option": "option"}),
+    "theoretical_mz": Feature(
+        "Theoretical m/z", False, _theoretical_mz, {"theoretical_mz_charges": "charges"}
+    ),
 }
 
 
@@ -349,7 +397,20 @@ def _compute_features(
 
     # Compute features
     for feature, func in chosen_features.items():
-        sequences[feature] = sequences["Sequence"].apply(func)
+        # TODO Move this logic
+        # (Theoretical m/z is the only feature that processes MaxQuant output)
+        if feature == "Theoretical m/z":
+            if "Charges" in df.columns:
+                sequences["Theoretical m/z"] = df.apply(
+                    lambda row: _theoretical_mz(
+                        seq=row["Sequence"], charges=row["Charges"]
+                    ),
+                    axis=1,
+                )
+            else:
+                sequences[feature] = sequences["Sequence"].apply(func)
+        else:
+            sequences[feature] = sequences["Sequence"].apply(func)
 
     merged = pd.merge(
         df,

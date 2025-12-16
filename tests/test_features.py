@@ -7,6 +7,8 @@ from pepsipy.features import (
     _isoelectric_point,
     _molecular_formula,
     _molecular_weight,
+    _mass,
+    _theoretical_mz,
     _one_letter_code,
     _three_letter_code,
     _compute_features,
@@ -79,6 +81,23 @@ def test_molecular_weight():
     assert pytest.approx(5724.67, rel=1e-3) == _molecular_weight(
         "AGSCCDCILIQNNADMDTDYVCGLVTQMRHGVLEPHILWWAIMWSCHEMI"
     )
+
+
+def test_mass():
+    assert type(_mass("PEPTIDE", "monoisotopic")) is float
+    assert type(_mass("PEPTIDE", "average")) is float
+    with pytest.raises(ValueError) as e:
+        _mass("PEPTIDE", "foo")
+    assert "Unknown option" in str(e.value)
+
+
+def test_theoretical_mz():
+    seq = "PNYSGIRERCAMPWNWSQTTNGHLSEIDPFCEMNVVCCIGMDYHYCCKTW"
+    charges = [2, 3]
+    res = _theoretical_mz(seq, charges)
+    res_list = [float(val) for val in res.split(", ")]
+    assert isinstance(res_list, list)
+    assert len([2, 3]) == len(res_list)
 
 
 def test_three_letter_code():

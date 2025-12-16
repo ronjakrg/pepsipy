@@ -19,7 +19,7 @@
 | src/pepsipy/features.py                         |      142 |        1 |     99% |       153 |
 | src/pepsipy/plots.py                            |      211 |       37 |     82% |65-72, 77-124, 254, 258, 264, 278, 299, 305, 336, 366, 506, 515, 524 |
 | src/pepsipy/utils.py                            |       34 |        1 |     97% |        69 |
-|                                       **TOTAL** |  **714** |  **181** | **75%** |           |
+| **TOTAL**                                       |  **714** |  **181** | **75%** |           |
 
 
 ## Setup coverage badge

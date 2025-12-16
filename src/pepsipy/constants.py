@@ -184,6 +184,10 @@ CHARGE_CLASS_PER_AA = {
     "D": "Charged",
 }
 
+# Taken from R.L. Workman et al., 2022
+# https://pdg.lbl.gov/2022/listings/rpp2022-list-p.pdf
+PROTON_MASS = 1.007276466621
+
 # <---- MISCELLANEOUS ---->
 
 COLORS = [

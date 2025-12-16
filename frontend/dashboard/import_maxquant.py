@@ -30,7 +30,6 @@ def import_peptide_txt(file_path: Path, intensity_name: str = "Intensity") -> di
         "Missed cleavages",
         "PEP",
         "Charges",
-        "Mass",
     ]
     df = pd.read_csv(
         file_path,
@@ -74,7 +73,6 @@ def import_peptide_txt(file_path: Path, intensity_name: str = "Intensity") -> di
                 "Intensity",
                 "PEP",
                 "Charges",
-                "Mass",
             ]
         ]
 
@@ -87,7 +85,6 @@ def import_peptide_txt(file_path: Path, intensity_name: str = "Intensity") -> di
             "Intensity",
             "PEP",
             "Charges",
-            "Mass",
         ]
     ]
     ordered.dropna(subset=["Protein ID"], inplace=True)

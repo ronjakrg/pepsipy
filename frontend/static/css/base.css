@@ -1,6 +1,14 @@
 :root {
   --bs-primary: #511D43;
 }
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+.container-fluid {
+  flex: 1;
+}
 .bg-primary {
   background-color: var(--bs-primary) !important;
 }

@@ -1,5 +1,5 @@
 from django import forms
-
+from django.core.validators import FileExtensionValidator
 from pepsipy.features import FEATURES
 
 # Numeric features available for comparison
@@ -9,18 +9,17 @@ numeric_feature_choices = tuple(
 
 
 class ConfigForm(forms.Form):
-    data_name = forms.CharField(
-        label="Name of dataset in /data (.csv)",
-        max_length=100,
-        initial="peptides.csv",
-        widget=forms.TextInput(attrs={"class": "form-control"}),
+    data_file = forms.FileField(
+        validators=[FileExtensionValidator(["csv"])],
+        label="Dataset (.csv)",
+        widget=forms.FileInput(attrs={"class": "form-control"}),
     )
-    metadata_name = forms.CharField(
-        label="Name of metadata file in /data (.csv)",
-        max_length=100,
-        initial="metadata.csv",
-        widget=forms.TextInput(attrs={"class": "form-control"}),
+    metadata_file = forms.FileField(
+        validators=[FileExtensionValidator(["csv"])],   
+        label="Metadata (.csv)",
+        widget=forms.FileInput(attrs={"class": "form-control"}),
     )
+
     seq = forms.CharField(
         label="Peptide sequence of interest",
         max_length=100,
@@ -28,7 +27,7 @@ class ConfigForm(forms.Form):
         widget=forms.TextInput(attrs={"class": "form-control"}),
         required=False,
     )
-
+   
 
 # Feature forms
 class MolecularWeightForm(forms.Form):

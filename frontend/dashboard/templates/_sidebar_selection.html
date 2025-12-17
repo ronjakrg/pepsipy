@@ -1,6 +1,7 @@
 {% load static %}
 {# params: selection_forms #}
-
+  <form method="post" class="row">
+    {% csrf_token %}
 <div id="forms">
     <div class="d-flex align-items-center form-section-tile">
         <h5 class="white-title">Features</h5>
@@ -28,5 +29,14 @@
         style="bottom: 0; padding: 1rem 1rem 1rem 0"
         >
         <button type="submit" name="calculate" class="btn btn-purple">Calculate</button>
+          <div style="display: inline-flex">
+            <button type="button" class="btn btn-grey js-toggle-checkboxes me-1" data-checked="true">
+                Select all
+            </button>
+            <button type="button" class="btn btn-grey js-toggle-checkboxes" data-checked="false">
+                Unselect all
+            </button>
+        </div>
     </div>
 </div>
+  </form>

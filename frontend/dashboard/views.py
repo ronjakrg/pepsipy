@@ -1,7 +1,8 @@
+import io
 import zipfile
 import pandas as pd
 from django.shortcuts import render
-from django.http import FileResponse, JsonResponse
+from django.http import FileResponse, JsonResponse, HttpResponse
 from pathlib import Path
 import yaml
 
@@ -10,6 +11,13 @@ from pepsipy import Calculator
 
 from .forms import ConfigForm, FORM_TO_FEATURE_FUNCTION, FORM_TO_PLOT_FUNCTION
 from .utils import (
+    session_cache_clear,
+    session_cache_get_all,
+    session_cache_add,
+    uploaded_csv_to_string, 
+    df_to_csv_string,
+    csv_string_to_df,
+    load_uploaded_csv,
     load_data,
     get_params,
     get_match_for_seq,
@@ -20,7 +28,6 @@ from .utils import (
     load_user_color_scheme,
 )
 from .constants import USER_COLORS_PATH, COLOR_SCHEME_1
-
 
 def index(request):
     # Setup
@@ -39,15 +46,43 @@ def index(request):
     context_user_colors_list = []
     # For using colors in plots
     selected_colors = None
+    uploaded_data_name = ""
+    uploaded_metadata_name = ""
+
 
     calc = Calculator()
-    config_form = ConfigForm(request.POST or None)
+    config_form = ConfigForm(request.POST or None, request.FILES or None)
 
     if config_form.is_valid():
-        metadata = load_data(config_form.cleaned_data["metadata_name"])
+
+        # Store uploaded CSVs in session (only once per load)
+        if "load" in request.POST:
+            request.session["uploaded_data_name"] = config_form.cleaned_data["data_file"].name
+            request.session["uploaded_metadata_name"] = config_form.cleaned_data["metadata_file"].name
+
+            session_cache_add(
+                request,
+                "data_csv",
+                uploaded_csv_to_string(config_form.cleaned_data["data_file"])
+            )
+            session_cache_add(
+                request,
+                "metadata_csv",
+                uploaded_csv_to_string(config_form.cleaned_data["metadata_file"])
+            )
+            # request.session["metadata_csv"] = uploaded_csv_to_string(
+            #     config_form.cleaned_data["metadata_file"]
+            # )
+
+            request.session["seq"] = config_form.cleaned_data["seq"]
+            request.session.modified = True
+
+        # Load metadata from session
+        metadata = csv_string_to_df(session_cache_get_all(request, "metadata_csv")[0])
+        # metadata = csv_string_to_df(request.session["metadata_csv"])
         metadata_choices = [(col, col) for col in metadata.columns]
-        seq = config_form.cleaned_data["seq"]
-        calc.setup(seq=seq)
+
+
         feature_forms = make_forms(request.POST, FORM_TO_FEATURE_FUNCTION.keys())
         plot_forms = make_forms(
             request.POST, FORM_TO_PLOT_FUNCTION.keys(), metadata_choices
@@ -61,18 +96,35 @@ def index(request):
         context_user_colors_list = COLOR_SCHEME_1
 
     if request.method == "POST" and "calculate" in request.POST:
+        # Get data
+        # dataset = csv_string_to_df(request.session["data_csv"])
+        dataset = csv_string_to_df(session_cache_get_all(request, "data_csv")[0])
+        metadata = csv_string_to_df(session_cache_get_all(request, "metadata_csv")[0])
+        metadata_choices = [(col, col) for col in metadata.columns]
+        seq = request.session.get("seq", "")
+        
+        feature_forms = make_forms(request.POST, FORM_TO_FEATURE_FUNCTION.keys())
+        plot_forms = make_forms(
+            request.POST, FORM_TO_PLOT_FUNCTION.keys(), metadata_choices
+        )
+        
         # Clear tmp directory
         clear_tmp()
 
-        # Get data
-        calc.setup(
-            dataset=load_data(config_form.cleaned_data["data_name"]), metadata=metadata
-        )
+        calc.setup(dataset=dataset, metadata=metadata)
+        calc.setup(seq=seq)
 
         # Compute features
         calc.set_feature_params(**get_params(feature_forms, FORM_TO_FEATURE_FUNCTION))
         computed_features = calc.get_features()
-        computed_features.to_csv(settings.TMP_DIR / "features.csv", index=False)
+
+        session_cache_add(
+                request,
+                "features",
+                df_to_csv_string(computed_features)
+            )
+        # request.session["features_csv"] = df_to_csv_string(computed_features)
+        
 
         if calc.seq != "":
             # Filter data for peptide of interest
@@ -82,7 +134,15 @@ def index(request):
             # If peptide was not found in dataset
             if num_matches == 0:
                 res = calc.get_peptide_features()
-                res.to_csv(settings.TMP_DIR / "peptide_features.csv", index=False)
+                
+
+                session_cache_add(
+                    request,
+                    "computed_features",
+                    df_to_csv_string(res)
+                )
+
+                # request.session["peptide_features_csv"] = df_to_csv_string(res)
                 computed_peptide_features = res.iloc[0].to_dict()
 
             paired_peptide_features = get_paired_list(computed_peptide_features)
@@ -94,24 +154,41 @@ def index(request):
             )
 
         # Generate plots
+        # print(get_params(plot_forms, FORM_TO_PLOT_FUNCTION))
         calc.set_plot_params(**get_params(plot_forms, FORM_TO_PLOT_FUNCTION))
         peptide_plots, data_plots = calc.get_plots(
             as_tuple=True, colors=selected_colors
         )
-        i = 1
-        for plot in peptide_plots:
-            plot.write_image(
-                settings.TMP_DIR / "plots" / f"plot_{i}.png", format="png", scale=3
-            )
-            html_peptide_plots.append(plot.to_html(config={"responsive": True}))
-            i += 1
-        for plot in data_plots:
-            plot.write_image(
-                settings.TMP_DIR / "plots" / f"plot_{i}.png", format="png", scale=3
-            )
-            html_data_plots.append(plot.to_html(config={"responsive": True}))
-            i += 1
+
+        for i, plot in enumerate(peptide_plots + data_plots, start=1):
+            img_bytes = io.BytesIO()
+            plot.write_image(img_bytes, format="png", scale=3)
+            img_bytes.seek(0)
+
+            session_cache_add(request, f"""plot_{i}""", img_bytes.getvalue())
+
+            if i <= len(peptide_plots):
+                html_peptide_plots.append(plot.to_html(config={"responsive": True}))
+            else:
+                # print(plot)
+                html_data_plots.append(plot.to_html(config={"responsive": True}))
+
+        # i = 1
+        # for plot in peptide_plots:
+        #     plot.write_image(
+        #         settings.TMP_DIR / "plots" / f"plot_{i}.png", format="png", scale=3
+        #     )
+        #     html_peptide_plots.append(plot.to_html(config={"responsive": True}))
+        #     i += 1
+        # for plot in data_plots:
+        #     plot.write_image(
+        #         settings.TMP_DIR / "plots" / f"plot_{i}.png", format="png", scale=3
+        #     )
+        #     html_data_plots.append(plot.to_html(config={"responsive": True}))
+        #     i += 1
         results_ready = True
+        print("CALCULATION DONE")
+        request.session.modified = True
 
     context = {
         "config_form": config_form,
@@ -126,26 +203,49 @@ def index(request):
         "data_plots": html_data_plots,
         "context_user_colors_dict": context_user_colors_dict,
         "context_user_colors_list": context_user_colors_list,
+        "uploaded_data_name": request.session.get("uploaded_data_name"),
+        "uploaded_metadata_name": request.session.get("uploaded_metadata_name"),
     }
     return render(request, "index.html", context)
 
 
-def download_data(request):
-    filename = request.GET.get("filename")
-    return FileResponse(
-        open(settings.TMP_DIR / f"{filename}.csv", "rb"),
-        content_type="text/csv",
-        filename="features.csv",
-    )
+# def download_data(request):
+#     filename = request.GET.get("filename")
+#     return FileResponse(
+#         open(settings.TMP_DIR / f"{filename}.csv", "rb"),
+#         content_type="text/csv",
+#         filename="features.csv",
+#     )
 
+def download_data(request):
+    # csv_string = request.session.get("features_csv")
+    csv_string = session_cache_get_all(request, "features")[0]
+    if csv_string is None:
+        return HttpResponse("No data available", status=404)
+
+    response = HttpResponse(csv_string, content_type="text/csv")
+    response["Content-Disposition"] = 'attachment; filename="features.csv"'
+    return response
 
 def download_plots(request):
     path = settings.TMP_DIR / "plots.zip"
-    with zipfile.ZipFile(path, "w") as zipf:
-        for file in Path(settings.TMP_DIR / "plots").glob("*"):
-            zipf.write(file, arcname=file.name)
+    plot_keys = [key for key in session_cache_get_all(request) if key.startswith("plot_")]
+
+    # with zipfile.ZipFile(path, "w") as zipf:
+    #     for file in Path(settings.TMP_DIR / "plots").glob("*"):
+    #         zipf.write(file, arcname=file.name)
+    # return FileResponse(
+    #     open(path, "rb"), content_type="application/zip", filename="plots.zip"
+    # )
+    zip_buffer = io.BytesIO()
+    with zipfile.ZipFile(zip_buffer, "w") as zipf:
+        for key in plot_keys:
+            plot_bytes = session_cache_get_all(request, key)[0]  # returns list of values
+            zipf.writestr(f"{key}.png", plot_bytes)
+
+    zip_buffer.seek(0)
     return FileResponse(
-        open(path, "rb"), content_type="application/zip", filename="plots.zip"
+        zip_buffer, content_type="application/zip", filename="plots.zip"
     )
 
 

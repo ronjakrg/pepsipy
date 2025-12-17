@@ -5,6 +5,7 @@ import numpy as np
 import plotly.express as px
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
+from plotly.colors import sample_colorscale
 from scipy.stats import mannwhitneyu
 import warnings
 
@@ -365,9 +366,13 @@ def _raincloud(
         else:
             intensities = peptides[intensity_col]
 
-        peptides["Color"] = peptides[feature].apply(
-            lambda x: normalize_color(x, min_feature_val, max_feature_val, colorscale)
-        )
+        norm_vals = (peptides[feature] - min_feature_val) / (max_feature_val - min_feature_val)
+
+        peptides["Color"] = sample_colorscale(colorscale, norm_vals)
+
+        # peptides["Color"] = peptides[feature].apply(
+        #     lambda x: normalize_color(x, min_feature_val, max_feature_val, colorscale)
+        # )
 
         violin_y = np.zeros(len(intensities))
         box_y = np.full(len(intensities), violin_box_spacing)

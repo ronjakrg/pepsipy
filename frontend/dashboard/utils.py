@@ -1,4 +1,6 @@
+from collections.abc import Iterable
 from django.http import QueryDict
+from io import StringIO
 import pandas as pd
 from pathlib import Path
 import os
@@ -15,6 +17,86 @@ from .forms import (
 )
 from pepsipy.features import FEATURES
 from .constants import COLOR_SCHEME_1, COLOR_SCHEME_2
+
+
+from django.core.cache import cache
+import uuid
+
+CACHE_TIMEOUT = 60 * 60  # 1 hour
+
+def session_cache_add(request, namespace: str, value, timeout=CACHE_TIMEOUT):
+    """
+    Add an object to a session-scoped cache namespace.
+    """
+    if not request.session.session_key:
+        request.session.save()
+
+    cache_key = f"{request.session.session_key}:{namespace}:{uuid.uuid4()}"
+    cache.set(cache_key, value, timeout=timeout)
+
+    keys = request.session.get(namespace, [])
+    keys.append(cache_key)
+    request.session[namespace] = keys
+
+
+def session_cache_get_all(request, namespace: str | None = None):
+    """
+    Retrieve all cached objects for a namespace.
+    """
+    if namespace:
+        keys = request.session.get(namespace, [])
+        return [cache.get(k) for k in keys if cache.get(k) is not None]
+    
+    all_values = {}
+    for session_key, value in request.session.items():
+        if isinstance(value, Iterable) and not isinstance(value, str):
+            cached_list = [cache.get(k) for k in value if cache.get(k) is not None]
+            if cached_list:
+                all_values[session_key] = cached_list
+    return all_values
+
+
+def session_cache_clear(request, namespace: str):
+    """
+    Remove all cached objects for a namespace.
+    """
+    keys = request.session.pop(namespace, [])
+    for k in keys:
+        cache.delete(k)
+
+def df_to_csv_string(df: pd.DataFrame) -> str:
+    """
+    Serialize DataFrame to CSV string for session storage.
+    """
+    buf = StringIO()
+    df.to_csv(buf, index=False)
+    return buf.getvalue()
+
+def uploaded_csv_to_string(uploaded_file) -> str:
+    """
+    Read an uploaded CSV file and return its content as a string
+    for session storage.
+    """
+    uploaded_file.seek(0)
+    return uploaded_file.read().decode("utf-8")
+
+
+def csv_string_to_df(csv_string: str) -> pd.DataFrame:
+    """
+    Reconstruct a DataFrame from a CSV string stored in session.
+    """
+    return pd.read_csv(StringIO(csv_string))
+
+def load_uploaded_csv(uploaded_file) -> pd.DataFrame:
+    """
+    Load a CSV uploaded via Django FileField into a DataFrame.
+    The file is never written to disk.
+    """
+    try:
+        uploaded_file.seek(0)
+        return pd.read_csv(uploaded_file)
+    except Exception as e:
+        raise ValueError(f"Could not read uploaded CSV: {e}")
 
 
 def load_data(name: str) -> pd.DataFrame:

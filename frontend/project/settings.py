@@ -27,10 +27,12 @@ SECRET_KEY = "django-insecure-wjj!q6&o^5&f9w=^&w9*2m8p4djy_q5ao-p902e8(*r(n7xlit
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["pepsipy.witsyke.com", "localhost", "127.0.0.1"]
 
 
 # Application definition
+
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -120,7 +122,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = "static/"
-
+STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
@@ -129,3 +131,22 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# Use cache-backed sessions
+SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
+SESSION_CACHE_ALIAS = 'default'
+
+# Configure a cache backend capable of handling large CSVs
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',  # dev only
+        'LOCATION': 'unique-snowflake',  # arbitrary string
+        'TIMEOUT': 3600,  # session expires in 1 hour
+        'OPTIONS': {
+            'MAX_ENTRIES': 100,  # optional, increase if needed
+        }
+    }
+}
+
+# Optional: increase upload size if needed
+DATA_UPLOAD_MAX_MEMORY_SIZE = 1024 * 1024 * 1024  # 1 GB

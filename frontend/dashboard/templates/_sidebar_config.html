@@ -1,5 +1,18 @@
-{# params: config_form #}
+<!-- <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {% for field in config_form %}
+        <div class="form-group mb-2">
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+        </div>
+    {% endfor %}
+    <button type="submit" name="load" value="1" class="btn btn-purple">Load</button>
+</form> -->
 
+
+<form method="post" enctype="multipart/form-data">
+{# params: config_form #}
+{% csrf_token %}
 {% for field in config_form %}
     <div class="form-group mb-2">
         <label for="{{ field.id_for_label }}"> {{ field.label }} </label>
@@ -7,15 +20,17 @@
     </div>
 {% endfor %}
 <div class="flex-between">
-    <button type="submit" name="load" class="btn btn-purple">Load</button>
-    {% if config_form.is_bound %}
-        <div style="display: inline-flex">
-            <button type="button" class="btn btn-grey js-toggle-checkboxes me-1" data-checked="true">
-                Select all
-            </button>
-            <button type="button" class="btn btn-grey js-toggle-checkboxes" data-checked="false">
-                Unselect all
-            </button>
-        </div>
+    <button type="submit" name="load" value="1" class="btn btn-purple">Load</button>
+    <!-- {% if config_form.is_bound %}
+      
+    {% endif %} -->
+</div>
+</form>
+<div>
+    {% if uploaded_data_name != "" %}
+        <p>Uploaded dataset: {{ uploaded_data_name }}</p>
+    {% endif %}
+    {% if uploaded_metadata_name != "" %}
+        <p>Uploaded metadata: {{ uploaded_metadata_name }}</p>
     {% endif %}
 </div>

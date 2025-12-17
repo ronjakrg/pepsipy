@@ -1,0 +1,79 @@
+:root {
+  --bs-primary: #511D43;
+}
+.bg-primary {
+  background-color: var(--bs-primary) !important;
+}
+.btn-purple {
+  color: #ffffff;
+  background-color: #511D43;
+  border: none;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+.btn-purple:hover,
+.btn-purple:focus {
+  color: #ffffff;
+  background-color: #33122b;
+  text-decoration: none;
+}
+.btn-grey {
+  font-size: 0.8rem;
+  color: #000000;
+  background-color: #e8e8e8;
+  padding: 0.4rem 1rem;
+}
+.btn-grey:hover {
+  color: #000000;
+  background-color: #cccccc;
+}
+.table th {
+  font-weight: 400 !important;
+}
+.footer {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  background: #ffffff;
+  padding: 1rem;
+  text-align: left;
+  z-index: 1000;
+}
+.form-check-label {
+  display: block !important;
+}
+.title-with-icon {
+  display: flex;
+  align-items: center;
+}
+.flex-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.white-title {
+  color: white !important;
+  font-weight: bold;
+}
+.form-section-tile {
+  background-color: #8b527c;
+  padding: 0.5rem 0 0.25rem 0.5rem;
+  margin: 0.5rem 0;
+  border-radius: var(--bs-border-radius-lg, 0.5rem);
+}
+.table-cell {
+  min-width: 10rem;
+}
+.color-box {
+    display: inline-block;
+    width: 30px;
+    height: 20px;
+    vertical-align: middle;
+}
+.custom-color-input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  position: absolute; 
+  pointer-events: none;
+}

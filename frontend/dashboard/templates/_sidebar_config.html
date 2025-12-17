@@ -11,26 +11,18 @@
 
 
 <form method="post" enctype="multipart/form-data">
-{# params: config_form #}
-{% csrf_token %}
-{% for field in config_form %}
-    <div class="form-group mb-2">
-        <label for="{{ field.id_for_label }}"> {{ field.label }} </label>
-        {{ field }}
+    {# params: config_form #}
+    {% csrf_token %}
+    {% for field in config_form %}
+        <div class="form-group mb-2">
+            <label for="{{ field.id_for_label }}"> {{ field.label }} </label>
+            {{ field }}
+        </div>
+    {% endfor %}
+    <div class="flex-between">
+        <button type="submit" name="load" value="1" class="btn btn-purple">Load</button>
+        <!-- {% if config_form.is_bound %}
+        
+        {% endif %} -->
     </div>
-{% endfor %}
-<div class="flex-between">
-    <button type="submit" name="load" value="1" class="btn btn-purple">Load</button>
-    <!-- {% if config_form.is_bound %}
-      
-    {% endif %} -->
-</div>
 </form>
-<div>
-    {% if uploaded_data_name %}
-        <p>Uploaded dataset: {{ uploaded_data_name }}</p>
-    {% endif %}
-    {% if uploaded_metadata_name %}
-        <p>Uploaded metadata: {{ uploaded_metadata_name }}</p>
-    {% endif %}
-</div>

@@ -1,5 +1,6 @@
 from django import forms
 from django.core.validators import FileExtensionValidator
+from django.utils.safestring import mark_safe
 from pepsipy.features import FEATURES
 
 # Numeric features available for comparison
@@ -10,20 +11,22 @@ numeric_feature_choices = tuple(
 
 class ConfigForm(forms.Form):
     data_file = forms.FileField(
-        validators=[FileExtensionValidator(["csv"])],
-        label="Dataset (.csv)",
+        validators=[FileExtensionValidator(["csv", "txt"])],
+        label=mark_safe(
+            "Peptide dataset<br>(peptides.txt from MaxQuant or simple list as .csv)"
+        ),
         widget=forms.FileInput(attrs={"class": "form-control"}),
     )
     metadata_file = forms.FileField(
         validators=[FileExtensionValidator(["csv"])],
-        label="Metadata (.csv)",
+        label="Metadata file (.csv)",
         widget=forms.FileInput(attrs={"class": "form-control"}),
     )
 
     seq = forms.CharField(
         label="Peptide sequence of interest",
         max_length=100,
-        initial="SVIDQSRVLNLGPITR",
+        initial="",
         widget=forms.TextInput(attrs={"class": "form-control"}),
         required=False,
     )

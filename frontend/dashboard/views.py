@@ -79,6 +79,7 @@ def index(request):
             # )
 
             request.session["seq"] = config_form.cleaned_data["seq"]
+            seq = config_form.cleaned_data["seq"]
             request.session.modified = True
 
         # Load metadata from session
@@ -105,6 +106,7 @@ def index(request):
         metadata = csv_string_to_df(session_cache_get_all(request, "metadata_csv")[0])
         metadata_choices = [(col, col) for col in metadata.columns]
         seq = request.session.get("seq", "")
+        print("✨✨✨✨", seq)
 
         feature_forms = make_forms(request.POST, FORM_TO_FEATURE_FUNCTION.keys())
         plot_forms = make_forms(
@@ -184,6 +186,9 @@ def index(request):
         results_ready = True
         print("CALCULATION DONE")
         request.session.modified = True
+
+        # For keeping seq in text field after calculating
+        config_form = ConfigForm(initial={"seq": seq})
 
     context = {
         "config_form": config_form,

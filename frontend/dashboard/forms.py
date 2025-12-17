@@ -15,7 +15,7 @@ class ConfigForm(forms.Form):
         widget=forms.FileInput(attrs={"class": "form-control"}),
     )
     metadata_file = forms.FileField(
-        validators=[FileExtensionValidator(["csv"])],   
+        validators=[FileExtensionValidator(["csv"])],
         label="Metadata (.csv)",
         widget=forms.FileInput(attrs={"class": "form-control"}),
     )
@@ -27,7 +27,7 @@ class ConfigForm(forms.Form):
         widget=forms.TextInput(attrs={"class": "form-control"}),
         required=False,
     )
-   
+
 
 # Feature forms
 class MolecularWeightForm(forms.Form):

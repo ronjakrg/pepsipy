@@ -31,11 +31,13 @@ def yaml_to_string(data: Any) -> str:
     """
     return yaml.safe_dump(data, sort_keys=False)
 
+
 def string_to_yaml(yaml_string: str) -> Any:
     """
     Parse a YAML-formatted string into a Python object (dict, list, etc.).
     """
     return yaml.safe_load(yaml_string)
+
 
 def session_cache_add(request, namespace: str, value, timeout=CACHE_TIMEOUT):
     """
@@ -59,7 +61,7 @@ def session_cache_get_all(request, namespace: str | None = None):
     if namespace:
         keys = request.session.get(namespace, [])
         return [cache.get(k) for k in keys if cache.get(k) is not None]
-    
+
     all_values = {}
     for session_key, value in request.session.items():
         if isinstance(value, Iterable) and not isinstance(value, str):
@@ -77,6 +79,7 @@ def session_cache_clear(request, namespace: str):
     for k in keys:
         cache.delete(k)
 
+
 def df_to_csv_string(df: pd.DataFrame) -> str:
     """
     Serialize DataFrame to CSV string for session storage.
@@ -84,6 +87,7 @@ def df_to_csv_string(df: pd.DataFrame) -> str:
     buf = StringIO()
     df.to_csv(buf, index=False)
     return buf.getvalue()
+
 
 def uploaded_csv_to_string(uploaded_file) -> str:
     """
@@ -99,6 +103,7 @@ def csv_string_to_df(csv_string: str) -> pd.DataFrame:
     Reconstruct a DataFrame from a CSV string stored in session.
     """
     return pd.read_csv(StringIO(csv_string))
+
 
 def load_uploaded_csv(uploaded_file) -> pd.DataFrame:
     """
@@ -282,7 +287,6 @@ def load_user_color_scheme(request):
         selected_colors = None
 
     return context_dict, context_list, selected_colors
-
 
     # with open(path, "r") as f:
     #     context_dict = yaml.safe_load(f)

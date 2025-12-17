@@ -133,18 +133,18 @@ STATICFILES_DIRS = [
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Use cache-backed sessions
-SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
-SESSION_CACHE_ALIAS = 'default'
+SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+SESSION_CACHE_ALIAS = "default"
 
 # Configure a cache backend capable of handling large CSVs
 CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',  # dev only
-        'LOCATION': 'unique-snowflake',  # arbitrary string
-        'TIMEOUT': 3600,  # session expires in 1 hour
-        'OPTIONS': {
-            'MAX_ENTRIES': 100,  # optional, increase if needed
-        }
+    "default": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",  # dev only
+        "LOCATION": "unique-snowflake",  # arbitrary string
+        "TIMEOUT": 3600,  # session expires in 1 hour
+        "OPTIONS": {
+            "MAX_ENTRIES": 100,  # optional, increase if needed
+        },
     }
 }
 

@@ -366,7 +366,9 @@ def _raincloud(
         else:
             intensities = peptides[intensity_col]
 
-        norm_vals = (peptides[feature] - min_feature_val) / (max_feature_val - min_feature_val)
+        norm_vals = (peptides[feature] - min_feature_val) / (
+            max_feature_val - min_feature_val
+        )
 
         peptides["Color"] = sample_colorscale(colorscale, norm_vals)
 

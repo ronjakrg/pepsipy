@@ -19,4 +19,3 @@ sys.path.insert(0, str(PROJECT_PATH))
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "project.settings")
 
 application = get_wsgi_application()
-

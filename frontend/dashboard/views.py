@@ -88,9 +88,9 @@ def index(request):
             request.POST, FORM_TO_PLOT_FUNCTION.keys(), metadata_choices
         )
 
-    if USER_COLORS_PATH.exists():
+    if request.session.get("user_colors"):
         context_user_colors_dict, context_user_colors_list, selected_colors = (
-            load_user_color_scheme(USER_COLORS_PATH)
+            load_user_color_scheme(request)
         )
     else:
         context_user_colors_list = COLOR_SCHEME_1
@@ -108,8 +108,10 @@ def index(request):
             request.POST, FORM_TO_PLOT_FUNCTION.keys(), metadata_choices
         )
         
-        # Clear tmp directory
-        clear_tmp()
+        # # Clear tmp directory
+        # clear_tmp()
+        # print(dataset)
+        # print(metadata)
 
         calc.setup(dataset=dataset, metadata=metadata)
         calc.setup(seq=seq)
@@ -253,9 +255,8 @@ def download_plots(request):
 def save_colors_from_modal(request):
     if request.method == "POST":
         colors = {k: v for k, v in request.POST.items() if k != "csrfmiddlewaretoken"}
+        request.session["user_colors"] = colors
+        request.session.modified = True
 
-        USER_COLORS_PATH.parent.mkdir(parents=True, exist_ok=True)
-        with open(USER_COLORS_PATH, "w") as f:
-            yaml.dump(colors, f)
         return JsonResponse({"status": "ok", "colors": colors})
     return JsonResponse({"status": "error", "message": "Invalid method"}, status=405)

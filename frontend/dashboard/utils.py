@@ -24,6 +24,19 @@ import uuid
 
 CACHE_TIMEOUT = 60 * 60  # 1 hour
 
+
+def yaml_to_string(data: Any) -> str:
+    """
+    Serialize a Python object (dict, list, etc.) to a YAML-formatted string.
+    """
+    return yaml.safe_dump(data, sort_keys=False)
+
+def string_to_yaml(yaml_string: str) -> Any:
+    """
+    Parse a YAML-formatted string into a Python object (dict, list, etc.).
+    """
+    return yaml.safe_load(yaml_string)
+
 def session_cache_add(request, namespace: str, value, timeout=CACHE_TIMEOUT):
     """
     Add an object to a session-scoped cache namespace.
@@ -248,17 +261,17 @@ def update_tuple_in_paired_list(
     return paired_list
 
 
-def load_user_color_scheme(path: str):
+def load_user_color_scheme(request):
     """
     Loads the colors.yaml config and returns
         context_dict: Contains all entries as dict
         context_list: Contains a list of all custom colors
         selected_colors: Contains a list of selected colors, either from a scheme or custom colors
     """
-    with open(path, "r") as f:
-        context_dict = yaml.safe_load(f)
+    context_dict = request.session.get("user_colors", {})
     context_list = [context_dict.get(f"customColor{i}", "#000000") for i in range(1, 8)]
     scheme = context_dict.get("colorScheme")
+
     if scheme == "custom":
         selected_colors = context_list
     elif scheme == "1":
@@ -269,3 +282,19 @@ def load_user_color_scheme(path: str):
         selected_colors = None
 
     return context_dict, context_list, selected_colors
+
+
+    # with open(path, "r") as f:
+    #     context_dict = yaml.safe_load(f)
+    # context_list = [context_dict.get(f"customColor{i}", "#000000") for i in range(1, 8)]
+    # scheme = context_dict.get("colorScheme")
+    # if scheme == "custom":
+    #     selected_colors = context_list
+    # elif scheme == "1":
+    #     selected_colors = COLOR_SCHEME_1
+    # elif scheme == "2":
+    #     selected_colors = COLOR_SCHEME_2
+    # else:
+    #     selected_colors = None
+
+    # return context_dict, context_list, selected_colors

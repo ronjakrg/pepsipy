@@ -11,11 +11,22 @@
     {% endblock %}
 
     {% block js %}
-    <script type="text/javascript" src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+    {% endblock %}
+
+    {% block meta %}
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <!-- <link rel="icon" type="image/svg+xml" href="..."> -->
+        <link rel="canonical" href="{{ request.build_absolute_uri }}">
+        <meta name="keywords" content="proteomics, peptidomics, peptides, chemical properties, physical properties, mass spectrometry, visualization, analysis" data-rh="true">
+		<meta property="og:title" content="PepMEASURE">
+        <meta property="og:type" content="website">
+        <meta property="og:url" content="https://pepmeasure.org/">
+        <meta property="og:site_name" content="PepMEASURE">
     {% endblock %}
 
     {% block title %}
-        <title>PEPSI Dashboard</title>
+        <title>PepMEASURE</title>
     {% endblock %}
 </head>
 <body>

@@ -10,4 +10,6 @@ urlpatterns = [
         views.save_colors_from_modal,
         name="save_colors_from_modal",
     ),
+    path("privacy", views.privacy, name="privacy"),
+    path("imprint", views.imprint, name="imprint"),
 ]

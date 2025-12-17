@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block title %}
+    <title>Imprint | PepMEASURE</title>
+{% endblock %}
+
+{% block meta %}
+    <meta name="description" content="Legal information and contact details for PepMEASURE" data-rh="true">
+    <meta property="og:title" content="Imprint | PepMEASURE" data-rh="true">
+	<meta property="og:description" content="Legal information and contact details for PepMEASURE" data-rh="true">    
+{% endblock %}
+
+{% block content %}
+
+{% block navbar %}
+  {% include "navbar.html" %}
+{% endblock %}
+
+<div class="container mt-5">
+    <h1>Imprint</h1>
+
+    <section class="mt-4">
+        <h2>Information according to § 5 TMG (German Telemedia Act)</h2>
+        <p>
+            Hasso-Plattner-Institut für Digital Engineering gGmbH<br>
+            Prof.-Dr.-Helmert-Str. 2-3<br>
+            14482 Potsdam<br>
+            Germany
+        </p>
+    </section>
+
+    <section class="mt-4">
+        <h2>Contact</h2>
+        <p>
+            Email: <a href="mailto:christoph.schlaffner@hpi.de">christoph.schlaffner@hpi.de</a><br>
+            Website: <a href="https://pepmeasure.org/">https://pepmeasure.org</a>
+        </p>
+    </section>
+
+    <section class="mt-4">
+        <h2>Represented by</h2>
+        <p>
+            Prof. Dr. Tobias Friedrich (Geschäftsführer)<br>
+            Dr. Henrik Haenecke (Geschäftsführer)
+        </p>
+    </section>
+
+    <section class="mt-4">
+        <h2>Register Entry</h2>
+        <p>
+            Register Court: Amtsgericht Potsdam<br>
+            Registration Number: HRB 12184 P
+        </p>
+    </section>
+
+    <section class="mt-4">
+        <h2>Responsible for Content</h2>
+        <p>
+            Christoph Schlaffner<br>
+            Prof.-Dr.-Helmert-Str. 2-3<br>
+            14482 Potsdam
+        </p>
+    </section>
+
+    <section class="mt-4">
+        <h2 class="mb-2">Disclaimer</h2>
+        <h3>Liability for Content</h3>
+        <p>The contents of our pages have been created with the utmost care. However, we cannot guarantee the accuracy, completeness, or timeliness of the content. As a service provider, we are responsible for our own content on these pages in accordance with general laws. However, we are not obliged to monitor transmitted or stored third-party information or to investigate circumstances that indicate illegal activity.</p>
+
+        <h3>Liability for Links</h3>
+        <p>Our website contains links to external third-party websites over whose content we have no control. Therefore, we cannot accept any liability for this third-party content. The respective provider or operator of the pages is always responsible for the content of the linked pages.</p>
+    </section>
+
+    <section class="mt-4 mb-5">
+        <h2>Data Protection</h2>
+        <p>For information about how we handle your personal data, please refer to our <a href="{% url 'privacy' %}">Privacy Policy</a>.</p>
+    </section>
+
+    <section class="mt-4" style="margin-bottom: 100px;">
+        <h2>PepMEASURE</h2>
+        <p>Analysis platform for the calculation of physical and chemical properties of peptides in proteomics and peptidomics research.</p>
+    </section>
+</div>
+
+{% block footer %}
+  {% include "footer.html" %}
+{% endblock %}
+
+{% endblock %}

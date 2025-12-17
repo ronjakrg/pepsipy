@@ -14,7 +14,7 @@ from .utils import (
     session_cache_clear,
     session_cache_get_all,
     session_cache_add,
-    uploaded_csv_to_string, 
+    uploaded_csv_to_string,
     df_to_csv_string,
     csv_string_to_df,
     load_uploaded_csv,
@@ -28,6 +28,7 @@ from .utils import (
     load_user_color_scheme,
 )
 from .constants import USER_COLORS_PATH, COLOR_SCHEME_1
+
 
 def index(request):
     # Setup
@@ -49,7 +50,6 @@ def index(request):
     uploaded_data_name = ""
     uploaded_metadata_name = ""
 
-
     calc = Calculator()
     config_form = ConfigForm(request.POST or None, request.FILES or None)
 
@@ -57,18 +57,22 @@ def index(request):
 
         # Store uploaded CSVs in session (only once per load)
         if "load" in request.POST:
-            request.session["uploaded_data_name"] = config_form.cleaned_data["data_file"].name
-            request.session["uploaded_metadata_name"] = config_form.cleaned_data["metadata_file"].name
+            request.session["uploaded_data_name"] = config_form.cleaned_data[
+                "data_file"
+            ].name
+            request.session["uploaded_metadata_name"] = config_form.cleaned_data[
+                "metadata_file"
+            ].name
 
             session_cache_add(
                 request,
                 "data_csv",
-                uploaded_csv_to_string(config_form.cleaned_data["data_file"])
+                uploaded_csv_to_string(config_form.cleaned_data["data_file"]),
             )
             session_cache_add(
                 request,
                 "metadata_csv",
-                uploaded_csv_to_string(config_form.cleaned_data["metadata_file"])
+                uploaded_csv_to_string(config_form.cleaned_data["metadata_file"]),
             )
             # request.session["metadata_csv"] = uploaded_csv_to_string(
             #     config_form.cleaned_data["metadata_file"]
@@ -81,7 +85,6 @@ def index(request):
         metadata = csv_string_to_df(session_cache_get_all(request, "metadata_csv")[0])
         # metadata = csv_string_to_df(request.session["metadata_csv"])
         metadata_choices = [(col, col) for col in metadata.columns]
-
 
         feature_forms = make_forms(request.POST, FORM_TO_FEATURE_FUNCTION.keys())
         plot_forms = make_forms(
@@ -102,12 +105,12 @@ def index(request):
         metadata = csv_string_to_df(session_cache_get_all(request, "metadata_csv")[0])
         metadata_choices = [(col, col) for col in metadata.columns]
         seq = request.session.get("seq", "")
-        
+
         feature_forms = make_forms(request.POST, FORM_TO_FEATURE_FUNCTION.keys())
         plot_forms = make_forms(
             request.POST, FORM_TO_PLOT_FUNCTION.keys(), metadata_choices
         )
-        
+
         # # Clear tmp directory
         # clear_tmp()
         # print(dataset)
@@ -120,13 +123,8 @@ def index(request):
         calc.set_feature_params(**get_params(feature_forms, FORM_TO_FEATURE_FUNCTION))
         computed_features = calc.get_features()
 
-        session_cache_add(
-                request,
-                "features",
-                df_to_csv_string(computed_features)
-            )
+        session_cache_add(request, "features", df_to_csv_string(computed_features))
         # request.session["features_csv"] = df_to_csv_string(computed_features)
-        
 
         if calc.seq != "":
             # Filter data for peptide of interest
@@ -136,13 +134,8 @@ def index(request):
             # If peptide was not found in dataset
             if num_matches == 0:
                 res = calc.get_peptide_features()
-                
 
-                session_cache_add(
-                    request,
-                    "computed_features",
-                    df_to_csv_string(res)
-                )
+                session_cache_add(request, "computed_features", df_to_csv_string(res))
 
                 # request.session["peptide_features_csv"] = df_to_csv_string(res)
                 computed_peptide_features = res.iloc[0].to_dict()
@@ -219,6 +212,7 @@ def index(request):
 #         filename="features.csv",
 #     )
 
+
 def download_data(request):
     # csv_string = request.session.get("features_csv")
     csv_string = session_cache_get_all(request, "features")[0]
@@ -229,9 +223,12 @@ def download_data(request):
     response["Content-Disposition"] = 'attachment; filename="features.csv"'
     return response
 
+
 def download_plots(request):
     path = settings.TMP_DIR / "plots.zip"
-    plot_keys = [key for key in session_cache_get_all(request) if key.startswith("plot_")]
+    plot_keys = [
+        key for key in session_cache_get_all(request) if key.startswith("plot_")
+    ]
 
     # with zipfile.ZipFile(path, "w") as zipf:
     #     for file in Path(settings.TMP_DIR / "plots").glob("*"):
@@ -242,7 +239,9 @@ def download_plots(request):
     zip_buffer = io.BytesIO()
     with zipfile.ZipFile(zip_buffer, "w") as zipf:
         for key in plot_keys:
-            plot_bytes = session_cache_get_all(request, key)[0]  # returns list of values
+            plot_bytes = session_cache_get_all(request, key)[
+                0
+            ]  # returns list of values
             zipf.writestr(f"{key}.png", plot_bytes)
 
     zip_buffer.seek(0)
@@ -260,3 +259,11 @@ def save_colors_from_modal(request):
 
         return JsonResponse({"status": "ok", "colors": colors})
     return JsonResponse({"status": "error", "message": "Invalid method"}, status=405)
+
+
+def privacy(request):
+    return render(request, "privacy.html")
+
+
+def imprint(request):
+    return render(request, "imprint.html")

@@ -31,6 +31,10 @@ from .constants import USER_COLORS_PATH, COLOR_SCHEME_1
 
 
 def index(request):
+    # Clear session on fresh page load
+    if request.method == "GET":
+        request.session.flush()
+
     # Setup
     seq = ""
     computed_features = pd.DataFrame()
@@ -106,7 +110,6 @@ def index(request):
         metadata = csv_string_to_df(session_cache_get_all(request, "metadata_csv")[0])
         metadata_choices = [(col, col) for col in metadata.columns]
         seq = request.session.get("seq", "")
-        print("✨✨✨✨", seq)
 
         feature_forms = make_forms(request.POST, FORM_TO_FEATURE_FUNCTION.keys())
         plot_forms = make_forms(

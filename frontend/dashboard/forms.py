@@ -40,6 +40,29 @@ class MolecularWeightForm(forms.Form):
     )
 
 
+class MassForm(forms.Form):
+    selected = forms.BooleanField(
+        label=FEATURES["mass"].label,
+        required=False,
+    )
+    mass_option = forms.ChoiceField(
+        label="Option",
+        choices=(
+            ("monoisotopic", "Monoisotopic"),
+            ("average", "Average"),
+        ),
+        required=False,
+        widget=forms.Select(attrs={"class": "form-control"}),
+    )
+
+
+class TheoreticalMZForm(forms.Form):
+    selected = selected = forms.BooleanField(
+        label=FEATURES["theoretical_mz"].label,
+        required=False,
+    )
+
+
 class ThreeLetterCodeForm(forms.Form):
     selected = forms.BooleanField(
         label=FEATURES["three_letter_code"].label,
@@ -353,6 +376,8 @@ FORM_TO_FEATURE_FUNCTION = {
     MolecularWeightForm: "molecular_weight",
     ThreeLetterCodeForm: "three_letter_code",
     MolecularFormulaForm: "molecular_formula",
+    MassForm: "mass",
+    TheoreticalMZForm: "theoretical_mz",
     SeqLengthForm: "seq_length",
     AromaticityForm: "aromaticity",
     AliphaticIndexForm: "aliphatic_index",

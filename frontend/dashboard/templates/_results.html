@@ -16,7 +16,7 @@
                                     {{ value|insert_break:"3"|safe }}
                                 {% else %}
                                     {{ value }}
-                                    {% if label == "Molecular weight" %}<span> Da</span>{% endif %}
+                                    {% if label == "Molecular weight" or label == "Mass" %}<span> Da</span>{% endif %}
                                 {% endif %}
                             </td>
                         {% endfor %}

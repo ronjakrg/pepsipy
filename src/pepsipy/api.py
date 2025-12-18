@@ -6,6 +6,8 @@ from pepsipy.features import (
     _seq_length,
     _aa_frequency,
     _molecular_weight,
+    _mass,
+    _theoretical_mz,
     _three_letter_code,
     _one_letter_code,
     _gravy,
@@ -102,6 +104,9 @@ class Calculator:
         molecular_formula: bool = False,
         seq_length: bool = False,
         molecular_weight: bool = False,
+        mass: bool = False,
+        mass_option: str = "monoisotopic",
+        theoretical_mz: bool = False,
         gravy: bool = False,
         isoelectric_point: bool = False,
         isoelectric_point_option: str = "bjellqvist",
@@ -209,6 +214,8 @@ class Calculator:
     seq_length = staticmethod(_seq_length)
     aa_frequency = staticmethod(_aa_frequency)
     molecular_weight = staticmethod(_molecular_weight)
+    mass = staticmethod(_mass)
+    theoretical_mz = staticmethod(_theoretical_mz)
     three_letter_code = staticmethod(_three_letter_code)
     one_letter_code = staticmethod(_one_letter_code)
     gravy = staticmethod(_gravy)

@@ -7,3 +7,4 @@ plotly==6.1.2
 kaleido==0.2.1
 scikit-learn==1.7.0
 modlamp==4.3.2
+pyteomics==4.7.5

@@ -7,6 +7,7 @@
 | frontend/\_\_init\_\_.py                        |        0 |        0 |    100% |           |
 | frontend/dashboard/\_\_init\_\_.py              |        0 |        0 |    100% |           |
 | frontend/dashboard/constants.py                 |        7 |        0 |    100% |           |
+| frontend/dashboard/import\_maxquant.py          |       69 |       69 |      0% |     5-158 |
 | frontend/dashboard/migrations/\_\_init\_\_.py   |        0 |        0 |    100% |           |
 | frontend/dashboard/templatetags/\_\_init\_\_.py |        0 |        0 |    100% |           |
 | frontend/dashboard/templatetags/utils.py        |       10 |       10 |      0% |      1-18 |
@@ -14,12 +15,12 @@
 | frontend/dashboard/views.py                     |       83 |       68 |     18% |27-130, 134-135, 143-147, 154-161 |
 | frontend/project/\_\_init\_\_.py                |        0 |        0 |    100% |           |
 | src/pepsipy/\_\_init\_\_.py                     |        2 |        0 |    100% |           |
-| src/pepsipy/api.py                              |      115 |       19 |     83% |238, 287-322 |
-| src/pepsipy/constants.py                        |       16 |        0 |    100% |           |
-| src/pepsipy/features.py                         |      142 |        1 |     99% |       153 |
+| src/pepsipy/api.py                              |      117 |       19 |     84% |245, 294-329 |
+| src/pepsipy/constants.py                        |       17 |        0 |    100% |           |
+| src/pepsipy/features.py                         |      166 |        7 |     96% |98, 100, 102, 105-106, 197, 404 |
 | src/pepsipy/plots.py                            |      211 |       37 |     82% |65-72, 77-124, 254, 258, 264, 278, 299, 305, 336, 366, 506, 515, 524 |
 | src/pepsipy/utils.py                            |       34 |        1 |     97% |        69 |
-| **TOTAL**                                       |  **714** |  **181** | **75%** |           |
+| **TOTAL**                                       |  **810** |  **256** | **68%** |           |
 
 
 ## Setup coverage badge

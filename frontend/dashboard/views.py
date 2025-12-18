@@ -28,6 +28,7 @@ from .utils import (
     load_user_color_scheme,
 )
 from .constants import USER_COLORS_PATH, COLOR_SCHEME_1
+from .import_maxquant import import_peptide_txt
 
 
 def index(request):
@@ -59,7 +60,7 @@ def index(request):
 
     if config_form.is_valid():
 
-        # Store uploaded CSVs in session (only once per load)
+        # Store uploaded files in session (only once per load)
         if "load" in request.POST:
             request.session["uploaded_data_name"] = config_form.cleaned_data[
                 "data_file"
@@ -68,11 +69,20 @@ def index(request):
                 "metadata_file"
             ].name
 
-            session_cache_add(
-                request,
-                "data_csv",
-                uploaded_csv_to_string(config_form.cleaned_data["data_file"]),
-            )
+            if request.session["uploaded_data_name"].endswith(".txt"):
+                data_df = import_peptide_txt(config_form.cleaned_data["data_file"])
+                session_cache_add(
+                    request,
+                    "data_csv",
+                    df_to_csv_string(data_df),
+                )
+            else:
+                session_cache_add(
+                    request,
+                    "data_csv",
+                    uploaded_csv_to_string(config_form.cleaned_data["data_file"]),
+                )
+            
             session_cache_add(
                 request,
                 "metadata_csv",

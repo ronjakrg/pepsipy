@@ -9,17 +9,15 @@ from enum import Enum
 import pandas as pd
 
 
-def import_peptide_txt(file_path: Path, intensity_name: str = "Intensity") -> dict:
+def import_peptide_txt(file, intensity_name: str = "Intensity") -> pd.DataFrame:
     """
     Converts a MaxQuant peptide.txt file into a pandas DataFrame.
-        file_path: Path to the peptide.txt file.
+        file: File object (e.g., uploaded file from Django) or path to the peptide.txt file.
         intensity_name: Name of the intensity column to extract. Default is "Intensity".
     """
     allowed = {item.value for item in IntensityType}
     if intensity_name not in allowed:
         raise ValueError(f"Unknown intensity name: {intensity_name}")
-    if not Path(file_path).is_file():
-        raise FileNotFoundError(f"Cannot find peptide file at {file_path}")
 
     if intensity_name in [IntensityType.LFQ_INTENSITY.value, IntensityType.IBAQ.value]:
         intensity_name = IntensityType.INTENSITY.value
@@ -31,13 +29,16 @@ def import_peptide_txt(file_path: Path, intensity_name: str = "Intensity") -> di
         "PEP",
         "Charges",
     ]
-    df = pd.read_csv(
-        file_path,
-        sep="\t",
-        low_memory=False,
-        na_values=["", 0],
-        keep_default_na=True,
-    )
+    
+    if hasattr(file, 'read'):
+        file.seek(0)
+        df = pd.read_csv(
+            file,
+            sep="\t",
+            low_memory=False,
+            na_values=["", 0],
+            keep_default_na=True,
+        )
 
     if "Sample" not in df.columns:
         id_df = df[id_columns]

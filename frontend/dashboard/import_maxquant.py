@@ -29,8 +29,8 @@ def import_peptide_txt(file, intensity_name: str = "Intensity") -> pd.DataFrame:
         "PEP",
         "Charges",
     ]
-    
-    if hasattr(file, 'read'):
+
+    if hasattr(file, "read"):
         file.seek(0)
         df = pd.read_csv(
             file,

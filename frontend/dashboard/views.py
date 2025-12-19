@@ -58,6 +58,35 @@ def index(request):
     calc = Calculator()
     config_form = ConfigForm(request.POST or None, request.FILES or None)
 
+    # Loading prepared example
+    if "load_example" in request.POST:
+        request.session["uploaded_data_name"] = "example_peptides.csv"
+        request.session["uploaded_metadata_name"] = "example_metadata.csv"
+        request.session["seq"] = "SVIDQSRVLNLGPITR"
+
+        session_cache_add(
+            request,
+            "data_csv",
+            df_to_csv_string(pd.read_csv("../data/example_peptides.csv")),
+        )
+        session_cache_add(
+            request,
+            "metadata_csv",
+            df_to_csv_string(pd.read_csv("../data/example_metadata.csv")),
+        )
+        request.session.modified = True
+
+        # Fill forms
+        metadata = csv_string_to_df(session_cache_get_all(request, "metadata_csv")[0])
+        metadata_choices = [(col, col) for col in metadata.columns]
+        feature_forms = make_forms(request.POST, FORM_TO_FEATURE_FUNCTION.keys())
+        plot_forms = make_forms(
+            request.POST, FORM_TO_PLOT_FUNCTION.keys(), metadata_choices
+        )
+        seq = "SVIDQSRVLNLGPITR"
+        config_form = ConfigForm(initial={"seq": seq})
+
+    # Process user input
     if config_form.is_valid():
 
         # Store uploaded files in session (only once per load)
@@ -82,7 +111,7 @@ def index(request):
                     "data_csv",
                     uploaded_csv_to_string(config_form.cleaned_data["data_file"]),
                 )
-            
+
             session_cache_add(
                 request,
                 "metadata_csv",

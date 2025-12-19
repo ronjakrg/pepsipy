@@ -3,7 +3,7 @@ __pycache__/
 .coverage
 *.egg-info/
 /data/*
-!/data/example_peptides.csv
+!/data/example_peptides.txt
 !/data/example_metadata.csv
 /build/*
 /results/*

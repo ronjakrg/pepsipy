@@ -60,7 +60,7 @@ def index(request):
 
     # Loading prepared example
     if "load_example" in request.POST:
-        request.session["uploaded_data_name"] = "example_peptides.csv"
+        request.session["uploaded_data_name"] = "example_peptides.txt"
         request.session["uploaded_metadata_name"] = "example_metadata.csv"
         request.session["seq"] = "SVIDQSRVLNLGPITR"
 
@@ -99,6 +99,7 @@ def index(request):
 
             if request.session["uploaded_data_name"].endswith(".txt"):
                 data_df = import_peptide_txt(config_form.cleaned_data["data_file"])
+                print(data_df.head())
                 session_cache_add(
                     request,
                     "data_csv",

@@ -19,10 +19,20 @@
 
     <!-- SIDEBAR COLUMN -->
     <div class="col-md-3 border-end pe-4">
-        <h5 class="title-with-icon">
+        <div class="d-flex align-items-center justify-content-between">
+          <h5 class="title-with-icon">
             <img src="{% static 'img/house.svg' %}" class="me-1" width="18" height="18">
             <b>Welcome to PepMEASURE!</b>
-        </h5>
+          </h5>
+          <form method="post" name="" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="flex-between">
+                <button type="submit" name="load_example" value="1" class="btn btn-grey fs-6">
+                  <span>Load example</span>
+                </button>
+            </div>
+          </form>
+        </div>
         {% include "_sidebar_config.html" %}
         {% if feature_forms|length > 0 %}
             {% include "_sidebar_selection.html" %}

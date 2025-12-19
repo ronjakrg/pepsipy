@@ -67,7 +67,7 @@ def index(request):
         session_cache_add(
             request,
             "data_csv",
-            df_to_csv_string(pd.read_csv("../data/example_peptides.csv")),
+            df_to_csv_string(import_peptide_txt("../data/example_peptides.txt")),
         )
         session_cache_add(
             request,
@@ -83,8 +83,7 @@ def index(request):
         plot_forms = make_forms(
             request.POST, FORM_TO_PLOT_FUNCTION.keys(), metadata_choices
         )
-        seq = "SVIDQSRVLNLGPITR"
-        config_form = ConfigForm(initial={"seq": seq})
+        config_form = ConfigForm(initial={"seq": request.session["seq"]})
 
     # Process user input
     if config_form.is_valid():

@@ -8,6 +8,17 @@ from enum import Enum
 
 import pandas as pd
 
+def _read_peptide_file(file):
+    if hasattr(file, "read"):
+        file.seek(0)
+    return pd.read_csv(
+        file,
+        sep="\t",
+        low_memory=False,
+        na_values=["", 0],
+        keep_default_na=True,
+    )
+
 
 def import_peptide_txt(file, intensity_name: str = "Intensity") -> pd.DataFrame:
     """
@@ -30,15 +41,7 @@ def import_peptide_txt(file, intensity_name: str = "Intensity") -> pd.DataFrame:
         "Charges",
     ]
 
-    if hasattr(file, "read"):
-        file.seek(0)
-        df = pd.read_csv(
-            file,
-            sep="\t",
-            low_memory=False,
-            na_values=["", 0],
-            keep_default_na=True,
-        )
+    df = _read_peptide_file(file)
 
     if "Sample" not in df.columns:
         id_df = df[id_columns]

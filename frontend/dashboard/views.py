@@ -172,7 +172,7 @@ def index(request):
 
         for i, plot in enumerate(peptide_plots + data_plots, start=1):
             img_bytes = io.BytesIO()
-            plot.write_image(img_bytes, format="png", scale=3)
+            plot.write_image(img_bytes, format="pdf", scale=3)
             img_bytes.seek(0)
 
             session_cache_add(request, f"""plot_{i}""", img_bytes.getvalue())
@@ -260,7 +260,7 @@ def download_plots(request):
             plot_bytes = session_cache_get_all(request, key)[
                 0
             ]  # returns list of values
-            zipf.writestr(f"{key}.png", plot_bytes)
+            zipf.writestr(f"{key}.pdf", plot_bytes)
 
     zip_buffer.seek(0)
     return FileResponse(

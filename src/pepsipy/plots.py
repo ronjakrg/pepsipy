@@ -366,8 +366,8 @@ def _raincloud(
         else:
             intensities = peptides[intensity_col]
 
-        norm_vals = (peptides[feature] - min_feature_val) / (
-            max_feature_val - min_feature_val
+        norm_vals = (peptides[feature] - min_feature_val) / max(
+            max_feature_val - min_feature_val, 1.0
         )
 
         peptides["Color"] = sample_colorscale(colorscale, norm_vals)
@@ -462,9 +462,9 @@ def _raincloud(
     # Adjust x-axis ticks to log10
     if log_scaled:
         valid_logscaled = np.log10(df[intensity_col].dropna())
-        min = int(np.floor(valid_logscaled.min()))
-        max = int(np.ceil(valid_logscaled.max()))
-        tickvals = list(range(min, max + 1))
+        min_val = int(np.floor(valid_logscaled.min()))
+        max_val = int(np.ceil(valid_logscaled.max()))
+        tickvals = list(range(min_val, max_val + 1))
         ticktext = [convert_exponential_to_suffix(t) for t in tickvals]
         fig.update_xaxes(
             row=len(groups),
@@ -501,6 +501,7 @@ def _mann_whitney_u_test(
         group_a: First comparison group
         group_b: Second comparison group
         alternative: Chosen test alternative (two-sided, greater, less)
+        intensity_threshold: Peptides with intensities below this threshold are not included
         colors: List of color codes (in hexadecimal format) to use in the plot
     """
     peptides = df.copy()

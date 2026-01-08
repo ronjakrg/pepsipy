@@ -419,3 +419,19 @@ def _compute_features(
         how="left",
     )
     return merged
+
+
+# could be moved to utils.py
+def get_match_for_seq(data: pd.DataFrame, seq: str) -> dict:
+    """
+    Matches the given sequence to a row of computed sequences and removes all columns that do not correspond to a feature.
+    Returns the number of matches and the found features as dict.
+    """
+    ALLOWED = {f.label for f in FEATURES.values()} | {"Sequence", "Protein ID"}
+    matched = data[data["Sequence"] == seq]
+    num_matches = len(matched)
+    matched = matched.loc[:, matched.columns.isin(ALLOWED)]
+    if not matched.empty:
+        return (num_matches, matched.iloc[0].to_dict())
+    else:
+        return (0, {})

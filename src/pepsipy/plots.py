@@ -4,6 +4,7 @@ import pandas as pd
 import numpy as np
 import plotly.express as px
 import plotly.graph_objects as go
+from plotly.colors import sample_colorscale
 from plotly.subplots import make_subplots
 from scipy.stats import mannwhitneyu
 import warnings
@@ -318,8 +319,8 @@ def _compare_feature(
 
 def _raincloud(
     df: pd.DataFrame,
-    group_by: str = "Group",
     feature: str = "Sequence length",
+    group_by: str = "Group",
     log_scaled: bool = True,
     colors: list = None,
 ) -> go.Figure:
@@ -355,7 +356,7 @@ def _raincloud(
         rows=len(groups),
         cols=1,
         shared_xaxes=True,
-        vertical_spacing=0.025,
+        # vertical_spacing=0.025,
     )
 
     for i, group in enumerate(groups):
@@ -365,9 +366,11 @@ def _raincloud(
         else:
             intensities = peptides[intensity_col]
 
-        peptides["Color"] = peptides[feature].apply(
-            lambda x: normalize_color(x, min_feature_val, max_feature_val, colorscale)
+        norm_vals = (peptides[feature] - min_feature_val) / (
+            max_feature_val - min_feature_val
         )
+
+        peptides["Color"] = sample_colorscale(colorscale, norm_vals)
 
         violin_y = np.zeros(len(intensities))
         box_y = np.full(len(intensities), violin_box_spacing)
@@ -388,7 +391,7 @@ def _raincloud(
             line=dict(color=COLORS_BY_NAME["lightgray"]),
             hoverinfo="skip",
         )
-        scatter = go.Scatter(
+        scatter = go.Scattergl(
             x=intensities,
             y=scatter_y,
             mode="markers",
@@ -487,6 +490,7 @@ def _mann_whitney_u_test(
     group_a: str = "",
     group_b: str = "",
     alternative: str = "two-sided",
+    intensity_threshold: float = None,
     colors: list = COLORS,
 ) -> go.Figure:
     """
@@ -499,9 +503,14 @@ def _mann_whitney_u_test(
         alternative: Chosen test alternative (two-sided, greater, less)
         colors: List of color codes (in hexadecimal format) to use in the plot
     """
+    peptides = df.copy()
+    intensity_col = get_column_name(peptides, "intensity")
+    if intensity_threshold is not None:
+        peptides = peptides[peptides[intensity_col] > intensity_threshold]
+
     # Prepare data
     if not group_a or not group_b:
-        all_groups = df[group_by].unique()
+        all_groups = peptides[group_by].unique()
         if len(all_groups) < 2:
             raise ValueError(
                 f"Not enough options for {group_by} in metadata, but 2 are required."
@@ -510,10 +519,10 @@ def _mann_whitney_u_test(
         warnings.warn(
             f"{group_a} and {group_b} were selected for performing Mann-Whitney U test because at least one input was empty."
         )
-        sub = df[[group_by, feature, "Sequence"]].copy()
+        sub = peptides[[group_by, feature, "Sequence"]].copy()
     else:
-        sub = df.loc[
-            df[group_by].isin([group_a, group_b]), [group_by, feature, "Sequence"]
+        sub = peptides.loc[
+            peptides[group_by].isin([group_a, group_b]), [group_by, feature, "Sequence"]
         ].copy()
     sub = sub.dropna(subset=[feature])
     sub = sub.drop_duplicates([group_by, "Sequence"], keep="first")
@@ -521,80 +530,124 @@ def _mann_whitney_u_test(
     y_pos = sub.loc[sub[group_by] == group_b, feature].to_numpy()
     num_x, num_y = len(x), len(y_pos)
     if num_x < 2 or num_y < 2:
-        raise ValueError(
-            f"Not enough values: {group_a}={num_x}, {group_b}={num_y} (at least 2 per group required)."
+        # raise ValueError(
+        #     f"Not enough values: {group_a}={num_x}, {group_b}={num_y} (at least 2 per group required)."
+        # )
+        text = f"Not enough values: {group_a}={num_x}, {group_b}={num_y} (at least 2 per group required after filtering of intensities). "
+
+        fig = go.Figure()
+
+        # Square
+        fig.add_shape(
+            type="rect",
+            x0=0,
+            y0=0,
+            x1=1,
+            y1=1,
+            line=dict(color="black", width=2),
+            fillcolor="white",
         )
 
-    # Execute test
-    mw = mannwhitneyu(x, y_pos, alternative=alternative, method="auto")
-    p = float(mw.pvalue)
+        # Centered wrapped text
+        fig.add_annotation(
+            x=0.5,
+            y=0.5,
+            text=text.replace(" ", "<br>", 8),  # simple manual wrap example
+            showarrow=False,
+            xanchor="center",
+            yanchor="middle",
+            align="center",
+            font=dict(size=14),
+        )
 
-    # Boxplot
-    fig = px.box(
-        sub,
-        x=group_by,
-        y=feature,
-        color=group_by,
-        color_discrete_sequence=colors,
-        title=f"Mann-Whitney U test of {feature}: {group_a} vs {group_b}",
-        hover_name="Sequence",
-    )
+        fig.update_layout(
+            title=dict(
+                text=f"Mann-Whitney U test of <br> {feature}: {group_a} vs {group_b}",
+            ),
+            width=400,
+            height=400,
+            margin=dict(l=10, r=10, t=10, b=10),
+            xaxis=dict(range=[0, 1], showgrid=False, zeroline=False, visible=False),
+            yaxis=dict(
+                range=[0, 1],
+                showgrid=False,
+                zeroline=False,
+                visible=False,
+                scaleanchor="x",  # ensures square aspect ratio
+                scaleratio=1,
+            ),
+        )
+    else:
+        # Execute test
+        mw = mannwhitneyu(x, y_pos, alternative=alternative, method="auto")
+        p = float(mw.pvalue)
 
-    # Significance bracket
-    BOX_BRACKET_GAP = 0.05
-    BRACKET_HEIGHT = 0.03
+        # Boxplot
+        fig = px.box(
+            sub,
+            x=group_by,
+            y=feature,
+            color=group_by,
+            color_discrete_sequence=colors,
+            title=f"Mann-Whitney U test of {feature}: {group_a} vs {group_b}",
+            hover_name="Sequence",
+        )
 
-    feature_min = float(sub[feature].min())
-    feature_max = float(sub[feature].max())
-    span = max(feature_max - feature_min, 1.0)
-    y_pos = feature_max + BOX_BRACKET_GAP * span
-    y_height = BRACKET_HEIGHT * span
-    x_group_a, x_group_b = group_a, group_b
+        # Significance bracket
+        BOX_BRACKET_GAP = 0.05
+        BRACKET_HEIGHT = 0.03
 
-    fig.add_shape(  # Left part
-        type="line",
-        xref="x",
-        yref="y",
-        x0=x_group_a,
-        x1=x_group_a,
-        y0=y_pos,
-        y1=y_pos + y_height,
-    )
-    fig.add_shape(  # Middle part
-        type="line",
-        xref="x",
-        yref="y",
-        x0=x_group_a,
-        x1=x_group_b,
-        y0=y_pos + (y_height * 0.88),
-        y1=y_pos + (y_height * 0.88),
-    )
-    fig.add_shape(  # Right part
-        type="line",
-        xref="x",
-        yref="y",
-        x0=x_group_b,
-        x1=x_group_b,
-        y0=y_pos + y_height,
-        y1=y_pos,
-    )
-    fig.add_annotation(
-        x=0.5,
-        xref="paper",
-        y=y_pos + y_height,
-        yref="y",
-        text=f"p = {round(p, 3)}",
-        showarrow=False,
-        align="center",
-        yanchor="bottom",
-    )
+        feature_min = float(sub[feature].min())
+        feature_max = float(sub[feature].max())
+        span = max(feature_max - feature_min, 1.0)
+        y_pos = feature_max + BOX_BRACKET_GAP * span
+        y_height = BRACKET_HEIGHT * span
+        x_group_a, x_group_b = group_a, group_b
 
-    fig.update_yaxes(
-        range=[
-            feature_min - BOX_BRACKET_GAP * span,
-            y_pos + y_height + 2 * BOX_BRACKET_GAP * span,
-        ]
-    )
+        fig.add_shape(  # Left part
+            type="line",
+            xref="x",
+            yref="y",
+            x0=x_group_a,
+            x1=x_group_a,
+            y0=y_pos,
+            y1=y_pos + y_height,
+        )
+        fig.add_shape(  # Middle part
+            type="line",
+            xref="x",
+            yref="y",
+            x0=x_group_a,
+            x1=x_group_b,
+            y0=y_pos + (y_height * 0.88),
+            y1=y_pos + (y_height * 0.88),
+        )
+        fig.add_shape(  # Right part
+            type="line",
+            xref="x",
+            yref="y",
+            x0=x_group_b,
+            x1=x_group_b,
+            y0=y_pos + y_height,
+            y1=y_pos,
+        )
+        fig.add_annotation(
+            x=0.5,
+            xref="paper",
+            y=y_pos + y_height,
+            yref="y",
+            text=f"p = {round(p, 3)}",
+            showarrow=False,
+            align="center",
+            yanchor="bottom",
+        )
+
+        fig.update_yaxes(
+            range=[
+                feature_min - BOX_BRACKET_GAP * span,
+                y_pos + y_height + 2 * BOX_BRACKET_GAP * span,
+            ]
+        )
     return fig
 
 

@@ -325,5 +325,6 @@ class Calculator:
         for plot in plots:
             pio.write_image(plot, PROJECT_PATH / "results" / f"plot{i}.png", scale=3)
             i += 1
-        print(f"""You can find all generated plots in '{PROJECT_PATH / "results"}'.""")
+        results_path = PROJECT_PATH / "results"
+        print(f"You can find all generated plots in '{results_path}'.")
         print("Successfully executed PEPSI demonstration. Happy coding! 💻🧬")

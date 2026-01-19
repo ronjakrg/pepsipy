@@ -15,12 +15,12 @@
 | frontend/dashboard/views.py                     |       83 |       68 |     18% |27-130, 134-135, 143-147, 154-161 |
 | frontend/project/\_\_init\_\_.py                |        0 |        0 |    100% |           |
 | src/pepsipy/\_\_init\_\_.py                     |        2 |        0 |    100% |           |
-| src/pepsipy/api.py                              |      117 |       19 |     84% |245, 294-329 |
+| src/pepsipy/api.py                              |      118 |       20 |     83% |246, 295-331 |
 | src/pepsipy/constants.py                        |       17 |        0 |    100% |           |
 | src/pepsipy/features.py                         |      166 |        7 |     96% |98, 100, 102, 105-106, 197, 404 |
-| src/pepsipy/plots.py                            |      211 |       37 |     82% |65-72, 77-124, 254, 258, 264, 278, 299, 305, 336, 366, 506, 515, 524 |
-| src/pepsipy/utils.py                            |       34 |        1 |     97% |        69 |
-| **TOTAL**                                       |  **810** |  **256** | **68%** |           |
+| src/pepsipy/plots.py                            |      221 |       42 |     81% |66-73, 78-125, 255, 259, 265, 279, 300, 306, 337, 366, 509, 515, 524, 536-563 |
+| src/pepsipy/utils.py                            |       43 |        1 |     98% |        69 |
+| **TOTAL**                                       |  **830** |  **262** | **68%** |           |
 
 
 ## Setup coverage badge

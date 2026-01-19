@@ -2,7 +2,6 @@ import pandas as pd
 from plotly.colors import sample_colorscale
 
 from pepsipy.constants import AA_LETTERS
-from pepsipy.features import FEATURES
 
 
 def sanitize_seq(seq: str) -> str:
@@ -83,6 +82,8 @@ def get_match_for_seq(data: pd.DataFrame, seq: str) -> dict:
     Matches the given sequence to a row of computed sequences and removes all columns that do not correspond to a feature.
     Returns the number of matches and the found features as dict.
     """
+    from pepsipy.features import FEATURES
+
     ALLOWED = {f.label for f in FEATURES.values()} | {"Sequence", "Protein ID"}
     matched = data[data["Sequence"] == seq]
     num_matches = len(matched)

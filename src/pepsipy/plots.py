@@ -356,7 +356,6 @@ def _raincloud(
         rows=len(groups),
         cols=1,
         shared_xaxes=True,
-        # vertical_spacing=0.025,
     )
 
     for i, group in enumerate(groups):
@@ -713,6 +712,7 @@ PLOTS = {
             "mann_whitney_group_a": "group_a",
             "mann_whitney_group_b": "group_b",
             "mann_whitney_alternative": "alternative",
+            "mann_whitney_intensity_threshold": "intensity_threshold",
         },
     ),
 }

@@ -156,6 +156,7 @@ class Calculator:
         mann_whitney_group_a: str = None,
         mann_whitney_group_b: str = None,
         mann_whitney_alternative: str = "two-sided",
+        mann_whitney_intensity_threshold: float = None,
     ):
         """
         Selects peptide and dataset plots and their related parameters.

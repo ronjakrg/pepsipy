@@ -2,6 +2,7 @@ import pandas as pd
 from plotly.colors import sample_colorscale
 
 from pepsipy.constants import AA_LETTERS
+from pepsipy.features import FEATURES
 
 
 def sanitize_seq(seq: str) -> str:
@@ -75,3 +76,18 @@ def convert_exponential_to_suffix(exp: int) -> str:
         return f"{value//10**3}k"
     else:
         return str(int(value))
+
+
+def get_match_for_seq(data: pd.DataFrame, seq: str) -> dict:
+    """
+    Matches the given sequence to a row of computed sequences and removes all columns that do not correspond to a feature.
+    Returns the number of matches and the found features as dict.
+    """
+    ALLOWED = {f.label for f in FEATURES.values()} | {"Sequence", "Protein ID"}
+    matched = data[data["Sequence"] == seq]
+    num_matches = len(matched)
+    matched = matched.loc[:, matched.columns.isin(ALLOWED)]
+    if not matched.empty:
+        return (num_matches, matched.iloc[0].to_dict())
+    else:
+        return (0, {})

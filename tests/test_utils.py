@@ -10,6 +10,7 @@ from pepsipy.utils import (
     normalize_color,
     extract_related_kwargs,
     convert_exponential_to_suffix,
+    get_match_for_seq,
 )
 from tests.constants import PEPTIDES
 
@@ -73,3 +74,24 @@ def test_convert_exponential_to_suffix():
     assert "10k" == convert_exponential_to_suffix(4)
     assert "10M" == convert_exponential_to_suffix(7)
     assert "10B" == convert_exponential_to_suffix(10)
+
+
+def test_get_match_for_seq():
+    data = pd.DataFrame(
+        {
+            "Sample": ["AD01_C1_INSOLUBLE_01", "CTR01_C1_INSOLUBLE_01"],
+            "Protein ID": ["A0A075B6S2", "A0A075B6S2"],
+            "Sequence": ["FSGVPDR", "PEPTIDE"],
+            "Intensity": [936840.0, "NaN"],
+            "PEP": [0.0068633, 0.0056387],
+            "GRAVY": [2.0, 1.0],
+        }
+    )
+    seq = "PEPTIDE"
+    expected_match = {
+        "Sequence": "PEPTIDE",
+        "Protein ID": "A0A075B6S2",
+        "GRAVY": 1.0,
+    }
+    assert (1, expected_match) == get_match_for_seq(data, seq)
+    assert (0, {}) == get_match_for_seq(data, "PEP")
